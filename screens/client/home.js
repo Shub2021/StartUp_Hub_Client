@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,29 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  StatusBar,
 } from "react-native";
-import { COLORS, icons, images, FONTS, SIZES } from "../../constants";
+import { COLORS, icons, images, FONTS, SIZES, URLs } from "../../constants";
 
-const Home = () => {
+const Home = ({ navigation }) => {
   // Dummy Datas
+
+  const [data, setdata] = React.useState([]);
+  const [loading, setloading] = React.useState(true);
+
+  useEffect(() => {
+    fetchData();
+    setloading(false);
+  }, []);
+
+  const fetchData = () => {
+    fetch(URLs.cn + "/product/")
+      .then((res) => res.json())
+      .then((result) => {
+        // console.log(result);
+        setdata(result);
+      });
+  };
 
   const initialCurrentLocation = {
     streetName: "Kuching",
@@ -449,6 +467,7 @@ const Home = () => {
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
+            paddingTop: SIZES.padding,
           }}
         >
           <View
@@ -458,9 +477,10 @@ const Home = () => {
               backgroundColor: COLORS.lightGray3,
               alignItems: "center",
               borderRadius: SIZES.radius,
+              paddingVertical: SIZES.padding,
             }}
           >
-            <Text style={{ ...FONTS.h3 }}>Location</Text>
+            <Text style={{ ...FONTS.h3 }}>Products</Text>
           </View>
         </View>
 
@@ -490,6 +510,8 @@ const Home = () => {
         style={{
           marginBottom: SIZES.padding * 2,
         }}
+        // onPress={() => navigation.navigate("Item", { item, currentLocation })}
+        onPress={() => navigation.navigate("Item", item)}
       >
         <View
           style={{
@@ -497,7 +519,7 @@ const Home = () => {
           }}
         >
           <Image
-            source={item.photo}
+            source={{ uri: item.picture }}
             resizeMode="cover"
             style={{
               width: "100%",
@@ -520,12 +542,12 @@ const Home = () => {
               ...styles.shadow,
             }}
           >
-            <Text style={{ ...FONTS.h4 }}>{item.duration}</Text>
+            <Text style={{ ...FONTS.h4 }}>Rs. {item.unitprice} /=</Text>
           </View>
         </View>
 
         {/* resturent Infromation */}
-        <Text style={{ ...FONTS.body2 }}>{item.name}</Text>
+        <Text style={{ ...FONTS.body2 }}>{item.product_name}</Text>
         <View
           style={{
             marginTop: SIZES.padding,
@@ -542,14 +564,14 @@ const Home = () => {
               marginRight: 10,
             }}
           />
-          <Text style={{ ...FONTS.body3 }}>{item.rating}</Text>
+          {/* <Text style={{ ...FONTS.body3 }}>{item.rating}</Text> */}
           <View
             style={{
               flexDirection: "row",
               marginLeft: 10,
             }}
           >
-            {item.categories.map((categoryId) => {
+            {/* {item.categories.map((categoryId) => {
               return (
                 <View
                   style={{
@@ -570,10 +592,10 @@ const Home = () => {
                   </Text>
                 </View>
               );
-            })}
+            })} */}
 
             {/* Price */}
-            {[1, 2, 3].map((priceRating) => (
+            {/* {[1, 2, 3].map((priceRating) => (
               <Text
                 key={priceRating}
                 style={{
@@ -583,10 +605,10 @@ const Home = () => {
                       ? COLORS.black
                       : COLORS.darkgray,
                 }}
-              > 
+              >
                 $
               </Text>
-            ))}
+            ))} */}
           </View>
         </View>
       </TouchableOpacity>
@@ -594,8 +616,8 @@ const Home = () => {
 
     return (
       <FlatList
-        data={restaurants}
-        keyExtractor={(item) => `${item.id}`}
+        data={data}
+        keyExtractor={(item) => item._id.toString()}
         renderItem={renderItem}
         contentContainerStyle={{
           paddingHorizontal: SIZES.padding * 2,
