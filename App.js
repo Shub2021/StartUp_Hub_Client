@@ -13,6 +13,7 @@ import SubscribedStartups from "./screens/Investor/SubscribedStartups";
 import ViewPlan from "./screens/Investor/ViewPlan";
 import Notifications from "./screens/Investor/Notifications";
 import HomeInvestor from "./screens/Investor/HomeInvestor";
+import ItemReviews from "./screens/client/ItemReviews";
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ export default function App() {
           <Stack.Screen name="Home" component={Tabs} />
           <Stack.Screen name="Item" component={Item} />
           <Stack.Screen name="ItemLocation" component={ItemLocation} />
+          <Stack.Screen name="ItemReviews" component={ItemReviews} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator>
