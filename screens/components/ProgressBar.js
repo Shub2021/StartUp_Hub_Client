@@ -8,7 +8,7 @@ const ProgressBar = (props) => {
   return (
     <View
       style={{
-        height: 20,
+        height: 10,
         width: "100%",
         backgroundColor: "#e0e0de",
         borderRadius: 50,
@@ -29,14 +29,18 @@ const ProgressBar = (props) => {
             // padding: 5,
             color: "white",
             fontWeight: "bold",
-            transition: 'width 1s ease-in-out',
+            transition: "width 1s ease-in-out", 
+            width: "100%",
+
           }}
         >
           <Text
             style={{
               textAlign: "center",
-              paddingTop: 3,
+              height: 13,
+              marginTop: -3,
               color: COLORS.white,
+              // backgroundColor: "red",
             }}
           >
             {`${completed}%`}

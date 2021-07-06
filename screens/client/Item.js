@@ -276,33 +276,18 @@ const Item = ({ route, navigation }) => {
               </View>
 
               {/* external data */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 10,
-                }}
-              >
-                <Image
-                  source={icons.star}
-                  style={{
-                    width: 20,
-                    height: 25,
-                    marginRight: 10,
-                  }}
-                />
-
-                <Text style={{ ...FONTS.body3, color: COLORS.darkgray }}>
-                  {}cal
-                </Text>
-              </View>
 
               <TouchableOpacity
                 style={{
                   //   width: SIZES.width * 0.9,
                   padding: SIZES.padding,
+                  paddingTop: 3,
+                  paddingBottom: 3,
                   backgroundColor: COLORS.secondary,
                   alignItems: "center",
-                  borderRadius: SIZES.radius * 0.3,
+                  borderRadius: SIZES.radius * 3,
+                  width: 150,
+                  marginBottom: 3,
                 }}
                 onPress={() => navigation.navigate("ItemReviews", product)}
               >
@@ -434,6 +419,20 @@ const Item = ({ route, navigation }) => {
               justifyContent: "center",
             }}
           >
+            <TouchableOpacity
+              style={{
+                width: SIZES.width * 0.9,
+                padding: SIZES.padding,
+                backgroundColor: COLORS.secondary,
+                alignItems: "center",
+                borderRadius: SIZES.radius,
+                marginBottom: SIZES.padding,
+              }}
+            >
+              <Text style={{ color: COLORS.white, ...FONTS.h2 }}>
+                Add to cart
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={{
                 width: SIZES.width * 0.9,

@@ -58,4 +58,5 @@ router.get("/:category", (req, res, next) => {
       });
     });
 });
+
 module.exports = router;
