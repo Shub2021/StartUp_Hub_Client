@@ -2,18 +2,23 @@ import React from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons, EvilIcons } from "@expo/vector-icons";
 
-// import Tabss from "./navigation/tabs";
-import Home from "./screens/client/home";
+import { StatusBar } from "react-native";
+import { StatusBar } from "expo-status-bar";
+
+import Tabs from "./navigation/tabs";
+import Item from "./screens/client/Item";
+import ItemLocation from "./screens/client/ItemLocation";
 import Profile from "./screens/Investor/Profile";
 import CreateInvestment from "./screens/Investor/CreateInvestment";
 import SubscribedStartups from "./screens/Investor/SubscribedStartups";
 import ViewPlan from "./screens/Investor/ViewPlan";
 import Notifications from "./screens/Investor/Notifications";
 import HomeInvestor from "./screens/Investor/HomeInvestor";
-import { StatusBar } from "expo-status-bar";
+import ItemReviews from "./screens/client/ItemReviews";
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -75,6 +80,9 @@ export default function App() {
           // initialRouteName={"Home"}
         >
           <Stack.Screen name="Home" component={Tabs} />
+          <Stack.Screen name="Item" component={Item} />
+          <Stack.Screen name="ItemLocation" component={ItemLocation} />
+          <Stack.Screen name="ItemReviews" component={ItemReviews} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator>
@@ -110,6 +118,8 @@ export default function App() {
           />
         </Stack.Navigator>
       )}
+
+      <StatusBar barStyle="light-content" />
     </NavigationContainer>
   );
 }
