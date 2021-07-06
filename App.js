@@ -7,9 +7,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons, EvilIcons } from "@expo/vector-icons";
 
 import { StatusBar } from "react-native";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 
-import Tabs from "./navigation/tabs";
+import Tabss from "./navigation/tabs";
 import Item from "./screens/client/Item";
 import ItemLocation from "./screens/client/ItemLocation";
 import Profile from "./screens/Investor/Profile";
@@ -69,7 +69,7 @@ const myOptions = {
 };
 
 export default function App() {
-  const type = "Profile";
+  const type = "client";
   return (
     <NavigationContainer>
       {type === "client" ? (
@@ -79,7 +79,7 @@ export default function App() {
           }}
           // initialRouteName={"Home"}
         >
-          <Stack.Screen name="Home" component={Tabs} />
+          <Stack.Screen name="Home" component={Tabss} />
           <Stack.Screen name="Item" component={Item} />
           <Stack.Screen name="ItemLocation" component={ItemLocation} />
           <Stack.Screen name="ItemReviews" component={ItemReviews} />
