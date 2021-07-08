@@ -16,6 +16,25 @@ const CreateInvestment = (props) => {
   const [description, setDescription] = useState("");
   const [condition, setCondition] = useState("");
 
+  const submitData = () => {
+    fetch(" https://5c357aafcce4.ngrok.io/send", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        email,
+        description,
+        condition,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
   return (
     <View style={styles.root}>
       <TextInput
@@ -70,8 +89,8 @@ const CreateInvestment = (props) => {
         theme={theme}
         mode="outlined"
         multiline={true}
-        numberOfLines={6}
-        maxLength={600}
+        // numberOfLines={6}
+        // maxLength={600}
         onChangeText={(text) => setDescription()}
       />
 
@@ -82,8 +101,8 @@ const CreateInvestment = (props) => {
         theme={theme}
         mode="outlined"
         multiline={true}
-        numberOfLines={4}
-        maxLength={300}
+        // numberOfLines={4}
+        // maxLength={300}
         onChangeText={(text) => setCondition()}
       />
 
@@ -93,6 +112,7 @@ const CreateInvestment = (props) => {
           style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
           icon=""
           mode="contained"
+          onPress={() => submitData()}
         >
           Publish
         </Button>

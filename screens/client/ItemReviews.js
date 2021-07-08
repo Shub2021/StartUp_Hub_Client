@@ -22,9 +22,48 @@ const ItemReviews = ({ route, navigation }) => {
   const scrollX = new Animated.Value(0);
 
   const [product, setProduct] = React.useState(route.params);
+  const [rating, setRating] = React.useState(0);
+  const [rateCount, setRateCount] = React.useState(0);
+  const [exceletCount, setexceletCount] = React.useState(0);
+  const [goodCount, setgoodCount] = React.useState(0);
+  const [avgCount, setavgCount] = React.useState(0);
+  const [lowAvgCount, setlowAvgCount] = React.useState(0);
+  const [poorCount, setpoorCount] = React.useState(0);
 
   const [isModalVisible, setModalVisible] = React.useState(false);
   const [starCount, setstarCount] = React.useState(0);
+
+  React.useEffect(() => {
+    var rate = 0;
+    var rateCount = 0;
+    if (product.rating.length > 1) {
+      for (let i = 1; i < product.rating.length; i++) {
+        const element = product.rating[i].rate;
+        rate = rate + element;
+        rateCount = i;
+        if (element == 5) {
+          var count = ((exceletCount + 1) / rateCount) * 100;
+          setexceletCount(count);
+        } else if (element == 4) {
+          var count = ((goodCount + 1) / rateCount) * 100;
+          setgoodCount(count);
+        } else if (element == 3) {
+          var count = ((avgCount + 1) / rateCount) * 100;
+          setavgCount(count);
+        } else if (element == 2) {
+          var count = ((lowAvgCount + 1) / rateCount) * 100;
+          setlowAvgCount(count);
+        } else if (element == 1) {
+          var count = ((poorCount + 1) / rateCount) * 100;
+          setlowAvgCount(count);
+        }
+      }
+
+      rate = rate / rateCount;
+    }
+    setRateCount(rateCount);
+    setRating(parseInt(rate));
+  }, []);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -35,64 +74,37 @@ const ItemReviews = ({ route, navigation }) => {
   }
 
   const testData = [
-    { bgcolor: "#4AA44B", completed: 60 },
-    { bgcolor: "#A6D433", completed: 30 },
-    { bgcolor: "#F6E535", completed: 53 },
-    { bgcolor: "#F5A523", completed: 40 },
-    { bgcolor: "#EC3A12", completed: 21 },
+    { bgcolor: "#4AA44B", completed: exceletCount },
+    { bgcolor: "#A6D433", completed: goodCount },
+    { bgcolor: "#F6E535", completed: avgCount },
+    { bgcolor: "#F5A523", completed: lowAvgCount },
+    { bgcolor: "#EC3A12", completed: poorCount },
   ];
 
-  const data = [
-    {
-      id: 1,
-      image: "https://bootdey.com/img/Content/avatar/avatar1.png",
-      name: "Nimal Perera",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-    },
-    {
-      id: 2,
-      image: "https://bootdey.com/img/Content/avatar/avatar6.png",
-      name: "Amal Perera",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-    },
-    {
-      id: 3,
-      image: "https://bootdey.com/img/Content/avatar/avatar7.png",
-      name: "Kamal Perera",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-    },
-    {
-      id: 4,
-      image: "https://bootdey.com/img/Content/avatar/avatar2.png",
-      name: "Sunil",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-    },
-    {
-      id: 5,
-      image: "https://bootdey.com/img/Content/avatar/avatar3.png",
-      name: "Perera",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-    },
-    {
-      id: 6,
-      image: "https://bootdey.com/img/Content/avatar/avatar4.png",
-      name: "Don",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-    },
-    {
-      id: 7,
-      image: "https://bootdey.com/img/Content/avatar/avatar5.png",
-      name: "Bob",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-    },
-  ];
+  const data = product.rating;
+  // [
+  //   {
+  //     id: 1,
+  //     image: "https://bootdey.com/img/Content/avatar/avatar1.png",
+  //     name: "Nimal Perera",
+  //     comment:
+  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
+  //   },
+  //   {
+  //     id: 2,
+  //     image: "https://bootdey.com/img/Content/avatar/avatar6.png",
+  //     name: "Amal Perera",
+  //     comment:
+  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
+  //   },
+  //   {
+  //     id: 3,
+  //     image: "https://bootdey.com/img/Content/avatar/avatar7.png",
+  //     name: "Kamal Perera",
+  //     comment:
+  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
+  //   },
+  // ];
 
   function renderHeader() {
     return (
@@ -172,7 +184,7 @@ const ItemReviews = ({ route, navigation }) => {
               ...FONTS.largeTitle,
             }}
           >
-            4.0
+            {rating}
           </Text>
           <View
             style={{
@@ -218,7 +230,7 @@ const ItemReviews = ({ route, navigation }) => {
             />
           </View>
           <Text style={{ ...FONTS.h3, color: COLORS.darkgray }}>
-            Based on 23 reviews
+            Based on {rateCount} reviews
           </Text>
         </View>
         <View style={{ marginTop: 20 }}>
@@ -343,11 +355,11 @@ const ItemReviews = ({ route, navigation }) => {
     const renderItem = ({ item }) => (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => {}}>
-          <Image style={styles.image} source={{ uri: item.image }} />
+          {/* <Image style={styles.image} source={{ uri: item.image }} /> */}
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.contentHeader}>
-            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.name}>{item._id}</Text>
             <Text style={styles.time}>9:58 am</Text>
           </View>
           <Text rkType="primary3 mediumLine">{item.comment}</Text>
@@ -363,7 +375,7 @@ const ItemReviews = ({ route, navigation }) => {
           return <View style={styles.separator} />;
         }}
         keyExtractor={(item) => {
-          return item.id.toString();
+          return item._id.toString();
         }}
         renderItem={renderItem}
         contentContainerStyle={{

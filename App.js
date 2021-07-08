@@ -7,9 +7,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons, EvilIcons } from "@expo/vector-icons";
 
 import { StatusBar } from "react-native";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 
-import Tabs from "./navigation/tabs";
+import Tabss from "./navigation/tabs";
 import Item from "./screens/client/Item";
 import ItemLocation from "./screens/client/ItemLocation";
 import Profile from "./screens/Investor/Profile";
@@ -19,8 +19,11 @@ import ViewPlan from "./screens/Investor/ViewPlan";
 import Notifications from "./screens/Investor/Notifications";
 import HomeInvestor from "./screens/Investor/HomeInvestor";
 import ItemReviews from "./screens/client/ItemReviews";
+import Login from "./screens/login";
+import Register from "./screens/client/ClientRegistration";
 
 const Stack = createStackNavigator();
+const ClientStack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 const RootHome = () => {
@@ -68,57 +71,125 @@ const myOptions = {
   },
 };
 
+function LoadClientScreens() {
+  return (
+    <ClientStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <ClientStack.Screen name="Home" component={Tabss} />
+      <ClientStack.Screen name="Item" component={Item} />
+      <ClientStack.Screen name="ItemLocation" component={ItemLocation} />
+      <ClientStack.Screen name="ItemReviews" component={ItemReviews} />
+    </ClientStack.Navigator>
+  );
+}
+
 export default function App() {
+<<<<<<< HEAD
   const type = "Profile";
+=======
+  const [loading, setloading] = React.useState(true);
+  const [islogged, setLogged] = React.useState(false);
+  const [data, setData] = React.useState("");
+  const [type, setType] = React.useState("");
+  const getData = async () => {
+    try {
+      var jsonValue = "";
+      jsonValue = await AsyncStorage.getItem("token");
+      //console.log(jsonValue);
+      const email = await AsyncStorage.getItem("email");
+      const name = await AsyncStorage.getItem("name");
+      const type = await AsyncStorage.getItem("type");
+
+      setType(type);
+      setData(jsonValue);
+      if (jsonValue) {
+        setLogged(true);
+        //console.log("done");
+      } else {
+        setLogged(false);
+        //console.log("hmm");
+      }
+      setloading(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+>>>>>>> 02ad7ab248bc1a8f931656aeb142cc431d16c72a
   return (
     <NavigationContainer>
-      {type === "client" ? (
+      {islogged ? (
+        type === "client" ? (
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+            // initialRouteName={"Home"}
+          >
+            <Stack.Screen
+              name="LoadClientScreens"
+              component={LoadClientScreens}
+            />
+          </Stack.Navigator>
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Profile"
+              component={RootHome}
+              options={{ ...myOptions, title: "Profile" }}
+            />
+            <Stack.Screen
+              name="ViewPlan"
+              component={ViewPlan}
+              options={{ ...myOptions, title: "ViewPlan" }}
+            />
+            <Stack.Screen
+              name="CreateInvestment"
+              component={CreateInvestment}
+              options={{ ...myOptions, title: "CreateInvestment" }}
+            />
+            <Stack.Screen
+              name="Notifications"
+              component={Notifications}
+              options={{ ...myOptions, title: "Notifications" }}
+            />
+            <Stack.Screen
+              name="SubscribedStartups"
+              component={SubscribedStartups}
+              options={{ ...myOptions, title: "SubscribedStartups" }}
+            />
+            <Stack.Screen
+              name="HomeInvestor"
+              component={HomeInvestor}
+              options={{ ...myOptions, title: "HomeInvestor" }}
+            />
+          </Stack.Navigator>
+        )
+      ) : (
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={"Home"}
         >
-          <Stack.Screen name="Home" component={Tabs} />
-          <Stack.Screen name="Item" component={Item} />
-          <Stack.Screen name="ItemLocation" component={ItemLocation} />
-          <Stack.Screen name="ItemReviews" component={ItemReviews} />
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator>
           <Stack.Screen
-            name="Profile"
-            component={RootHome}
-            options={{ ...myOptions, title: "Profile" }}
+            name="Login"
+            component={Login}
+            options={{ ...myOptions, title: "Login" }}
           />
           <Stack.Screen
-            name="ViewPlan"
-            component={ViewPlan}
-            options={{ ...myOptions, title: "ViewPlan" }}
+            name="Register"
+            component={Register}
+            options={{ ...myOptions, title: "Register" }}
           />
           <Stack.Screen
-            name="CreateInvestment"
-            component={CreateInvestment}
-            options={{ ...myOptions, title: "CreateInvestment" }}
-          />
-          <Stack.Screen
-            name="Notifications"
-            component={Notifications}
-            options={{ ...myOptions, title: "Notifications" }}
-          />
-          <Stack.Screen
-            name="SubscribedStartups"
-            component={SubscribedStartups}
-            options={{ ...myOptions, title: "SubscribedStartups" }}
-          />
-          <Stack.Screen
-            name="HomeInvestor"
-            component={HomeInvestor}
-            options={{ ...myOptions, title: "HomeInvestor" }}
+            name="LoadClientScreens"
+            component={LoadClientScreens}
           />
         </Stack.Navigator>
       )}
-
       <StatusBar barStyle="light-content" />
     </NavigationContainer>
   );
