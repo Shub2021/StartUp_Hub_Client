@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/Startup_User");
+const User = require("../models/Users");
 const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
@@ -22,6 +22,7 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
+  console.log("awaaaaaaaaaaa");
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -36,12 +37,13 @@ router.post("/signup", (req, res, next) => {
               error: err,
             });
           } else {
+            console.log(hash);
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
-              br_number: req.body.br_number,
               name: req.body.name,
               email: req.body.email,
               password: hash,
+              type: req.body.type,
             });
             user
               .save()
@@ -81,7 +83,6 @@ router.post("/login", (req, res, next) => {
             {
               email: user[0].email,
               userId: user[0]._id,
-              br_number: user[0].br_number,
               username: user[0].name,
             },
             constants.jwtkey,
@@ -93,8 +94,10 @@ router.post("/login", (req, res, next) => {
           return res.status(200).json({
             message: "Auth successful",
             token: token,
-            br_number: user[0].br_number,
             name: user[0].name,
+            type: user[0].type,
+            email: user[0].email,
+            userId: user[0]._id,
           });
         }
         res.status(401).json({

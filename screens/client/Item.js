@@ -441,6 +441,12 @@ const Item = ({ route, navigation }) => {
                 alignItems: "center",
                 borderRadius: SIZES.radius,
               }}
+              onPress = {() =>
+                  navigation.navigate("ItemLocation", {
+                    product: product,
+                    currentLocation: currentLocation
+                  })
+                }
             >
               <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Order</Text>
             </TouchableOpacity>
