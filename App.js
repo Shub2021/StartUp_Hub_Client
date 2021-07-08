@@ -21,11 +21,11 @@ import HomeInvestor from "./screens/Investor/HomeInvestor";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
-import { isLoading } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const ClientStack = createStackNavigator();
+const InvestorStack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 const RootHome = () => {
@@ -88,6 +88,43 @@ function LoadClientScreens() {
   );
 }
 
+function LoadInvestor() {
+  return (
+    <InvestorStack.Navigator>
+      <InvestorStack.Screen
+        name="Profile"
+        component={RootHome}
+        options={{ ...myOptions, title: "Profile" }}
+      />
+      <InvestorStack.Screen
+        name="ViewPlan"
+        component={ViewPlan}
+        options={{ ...myOptions, title: "ViewPlan" }}
+      />
+      <InvestorStack.Screen
+        name="CreateInvestment"
+        component={CreateInvestment}
+        options={{ ...myOptions, title: "CreateInvestment" }}
+      />
+      <InvestorStack.Screen
+        name="Notifications"
+        component={Notifications}
+        options={{ ...myOptions, title: "Notifications" }}
+      />
+      <InvestorStack.Screen
+        name="SubscribedStartups"
+        component={SubscribedStartups}
+        options={{ ...myOptions, title: "SubscribedStartups" }}
+      />
+      <InvestorStack.Screen
+        name="HomeInvestor"
+        component={HomeInvestor}
+        options={{ ...myOptions, title: "HomeInvestor" }}
+      />
+    </InvestorStack.Navigator>
+  );
+}
+
 export default function App() {
   const [loading, setloading] = React.useState(true);
   const [islogged, setLogged] = React.useState(false);
@@ -121,7 +158,9 @@ export default function App() {
       console.log(e);
     }
   };
-
+  React.useEffect(() => {
+    getData();
+  });
   return (
     <NavigationContainer>
       {loading ? (
@@ -140,37 +179,12 @@ export default function App() {
             />
           </Stack.Navigator>
         ) : (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Profile"
-              component={RootHome}
-              options={{ ...myOptions, title: "Profile" }}
-            />
-            <Stack.Screen
-              name="ViewPlan"
-              component={ViewPlan}
-              options={{ ...myOptions, title: "ViewPlan" }}
-            />
-            <Stack.Screen
-              name="CreateInvestment"
-              component={CreateInvestment}
-              options={{ ...myOptions, title: "CreateInvestment" }}
-            />
-            <Stack.Screen
-              name="Notifications"
-              component={Notifications}
-              options={{ ...myOptions, title: "Notifications" }}
-            />
-            <Stack.Screen
-              name="SubscribedStartups"
-              component={SubscribedStartups}
-              options={{ ...myOptions, title: "SubscribedStartups" }}
-            />
-            <Stack.Screen
-              name="HomeInvestor"
-              component={HomeInvestor}
-              options={{ ...myOptions, title: "HomeInvestor" }}
-            />
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="LoadInvestor" component={LoadInvestor} />
           </Stack.Navigator>
         )
       ) : (
@@ -193,6 +207,7 @@ export default function App() {
             name="LoadClientScreens"
             component={LoadClientScreens}
           />
+          <Stack.Screen name="LoadInvestor" component={LoadInvestor} />
         </Stack.Navigator>
       )}
       <StatusBar barStyle="light-content" />

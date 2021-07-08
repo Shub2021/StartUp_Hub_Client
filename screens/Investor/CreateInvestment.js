@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, Picker, View } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
+import { URLs } from "../../constants";
+
 import {
   MaterialCommunityIcons,
   Ionicons,
@@ -15,6 +17,25 @@ const CreateInvestment = (props) => {
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
   const [condition, setCondition] = useState("");
+
+  const submitData = () => {
+    fetch(URLs.cn + "/plan/send", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        email,
+        description,
+        condition,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
 
   return (
     <View style={styles.root}>
@@ -70,8 +91,8 @@ const CreateInvestment = (props) => {
         theme={theme}
         mode="outlined"
         multiline={true}
-        numberOfLines={6}
-        maxLength={600}
+        // numberOfLines={6}
+        // maxLength={600}
         onChangeText={(text) => setDescription()}
       />
 
@@ -82,8 +103,8 @@ const CreateInvestment = (props) => {
         theme={theme}
         mode="outlined"
         multiline={true}
-        numberOfLines={4}
-        maxLength={300}
+        // numberOfLines={4}
+        // maxLength={300}
         onChangeText={(text) => setCondition()}
       />
 
@@ -93,6 +114,7 @@ const CreateInvestment = (props) => {
           style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
           icon=""
           mode="contained"
+          onPress={() => submitData()}
         >
           Publish
         </Button>

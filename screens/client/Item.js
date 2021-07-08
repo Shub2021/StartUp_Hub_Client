@@ -57,6 +57,14 @@ const Item = ({ route, navigation }) => {
     }
   };
 
+  function getClientCart(){
+    
+  }
+
+  function addItemToCart(){
+
+  }
+
   function editOrder(action, menuId, price) {
     let orderList = orderItems.slice();
 
@@ -192,9 +200,10 @@ const Item = ({ route, navigation }) => {
         <Text style={{ ...FONTS.body2, textAlign: "center" }}>
           Similer Products
         </Text>
-        {menuItems?.map((item) => {
+        {menuItems?.map((item, index) => {
           return (
             <TouchableOpacity
+              key={`menu-${index}`}
               style={{
                 marginBottom: SIZES.padding * 2,
               }}
@@ -568,6 +577,7 @@ const Item = ({ route, navigation }) => {
                 marginBottom: SIZES.padding,
                 flex: 1,
               }}
+
             >
               <Text style={{ color: COLORS.white, ...FONTS.h2 }}>
                 Add to cart
