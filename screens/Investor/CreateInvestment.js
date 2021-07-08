@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, Picker, View } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
+import { URLs } from "../../constants";
+
 import {
   MaterialCommunityIcons,
   Ionicons,
@@ -17,7 +19,7 @@ const CreateInvestment = (props) => {
   const [condition, setCondition] = useState("");
 
   const submitData = () => {
-    fetch(" https://5c357aafcce4.ngrok.io/send", {
+    fetch(URLs.cn + "/plan/send", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
