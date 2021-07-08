@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons, EvilIcons } from "@expo/vector-icons";
 
-import { StatusBar } from "react-native";
+import { StatusBar, ActivityIndicator } from "react-native";
 // import { StatusBar } from "expo-status-bar";
 
 import Tabss from "./navigation/tabs";
@@ -21,6 +21,8 @@ import HomeInvestor from "./screens/Investor/HomeInvestor";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
+import { isLoading } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const ClientStack = createStackNavigator();
@@ -91,6 +93,11 @@ export default function App() {
   const [islogged, setLogged] = React.useState(false);
   const [data, setData] = React.useState("");
   const [type, setType] = React.useState("");
+
+  React.useEffect(() => {
+    getData();
+  });
+
   const getData = async () => {
     try {
       var jsonValue = "";
@@ -117,7 +124,9 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {islogged ? (
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : islogged ? (
         type === "client" ? (
           <Stack.Navigator
             screenOptions={{

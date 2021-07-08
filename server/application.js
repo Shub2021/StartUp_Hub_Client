@@ -5,9 +5,11 @@ const application = express();
 require("./models/Startup_Company");
 require("./models/Startup_User");
 require("./models/Users");
+require("./models/Cart");
 const userRoutes = require("./routes/user");
 const companyRoutes = require("./routes/company");
 const productRoutes = require("./routes/products");
+const cartRoutes = require("./routes/cart");
 
 application.use(bodyParser.json());
 
@@ -35,6 +37,7 @@ mongoose.Promise = global.Promise;
 application.use("/users", userRoutes);
 application.use("/company", companyRoutes);
 application.use("/product", productRoutes);
+// application.use("/cart", cartRoutes);
 
 application.listen(3000, () => {
   console.log("server runnig");
