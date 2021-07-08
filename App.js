@@ -69,7 +69,7 @@ const myOptions = {
 };
 
 export default function App() {
-  const type = "client";
+  const type = "Profile";
   return (
     <NavigationContainer>
       {type === "client" ? (
