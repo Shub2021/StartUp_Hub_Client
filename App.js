@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons, EvilIcons } from "@expo/vector-icons";
 
-import { StatusBar } from "react-native";
+import { StatusBar, ActivityIndicator } from "react-native";
 // import { StatusBar } from "expo-status-bar";
 
 import Tabss from "./navigation/tabs";
@@ -21,9 +21,11 @@ import HomeInvestor from "./screens/Investor/HomeInvestor";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const ClientStack = createStackNavigator();
+const InvestorStack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 const RootHome = () => {
@@ -86,10 +88,44 @@ function LoadClientScreens() {
   );
 }
 
+function LoadInvestor() {
+  return (
+    <InvestorStack.Navigator>
+      <InvestorStack.Screen
+        name="Profile"
+        component={RootHome}
+        options={{ ...myOptions, title: "Profile" }}
+      />
+      <InvestorStack.Screen
+        name="ViewPlan"
+        component={ViewPlan}
+        options={{ ...myOptions, title: "ViewPlan" }}
+      />
+      <InvestorStack.Screen
+        name="CreateInvestment"
+        component={CreateInvestment}
+        options={{ ...myOptions, title: "CreateInvestment" }}
+      />
+      <InvestorStack.Screen
+        name="Notifications"
+        component={Notifications}
+        options={{ ...myOptions, title: "Notifications" }}
+      />
+      <InvestorStack.Screen
+        name="SubscribedStartups"
+        component={SubscribedStartups}
+        options={{ ...myOptions, title: "SubscribedStartups" }}
+      />
+      <InvestorStack.Screen
+        name="HomeInvestor"
+        component={HomeInvestor}
+        options={{ ...myOptions, title: "HomeInvestor" }}
+      />
+    </InvestorStack.Navigator>
+  );
+}
+
 export default function App() {
-<<<<<<< HEAD
-  const type = "Profile";
-=======
   const [loading, setloading] = React.useState(true);
   const [islogged, setLogged] = React.useState(false);
   const [data, setData] = React.useState("");
@@ -117,11 +153,14 @@ export default function App() {
       console.log(e);
     }
   };
-
->>>>>>> 02ad7ab248bc1a8f931656aeb142cc431d16c72a
+  React.useEffect(() => {
+    getData();
+  });
   return (
     <NavigationContainer>
-      {islogged ? (
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : islogged ? (
         type === "client" ? (
           <Stack.Navigator
             screenOptions={{
@@ -135,37 +174,12 @@ export default function App() {
             />
           </Stack.Navigator>
         ) : (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Profile"
-              component={RootHome}
-              options={{ ...myOptions, title: "Profile" }}
-            />
-            <Stack.Screen
-              name="ViewPlan"
-              component={ViewPlan}
-              options={{ ...myOptions, title: "ViewPlan" }}
-            />
-            <Stack.Screen
-              name="CreateInvestment"
-              component={CreateInvestment}
-              options={{ ...myOptions, title: "CreateInvestment" }}
-            />
-            <Stack.Screen
-              name="Notifications"
-              component={Notifications}
-              options={{ ...myOptions, title: "Notifications" }}
-            />
-            <Stack.Screen
-              name="SubscribedStartups"
-              component={SubscribedStartups}
-              options={{ ...myOptions, title: "SubscribedStartups" }}
-            />
-            <Stack.Screen
-              name="HomeInvestor"
-              component={HomeInvestor}
-              options={{ ...myOptions, title: "HomeInvestor" }}
-            />
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="LoadInvestor" component={LoadInvestor} />
           </Stack.Navigator>
         )
       ) : (
@@ -188,6 +202,7 @@ export default function App() {
             name="LoadClientScreens"
             component={LoadClientScreens}
           />
+          <Stack.Screen name="LoadInvestor" component={LoadInvestor} />
         </Stack.Navigator>
       )}
       <StatusBar barStyle="light-content" />
