@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, Picker, View } from "react-native";
+import { StyleSheet, Text, Picker, View, Alert } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
 import { URLs } from "../../constants";
 
@@ -10,8 +10,8 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 
-const CreateInvestment = (props) => {
-  const [selectedValue, setSelectedValue] = useState("Annual");
+const CreateInvestment = ({ navigation }) => {
+  const [interestRate, setinterestRate] = useState("");
   const [title, setTitle] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
@@ -20,20 +20,23 @@ const CreateInvestment = (props) => {
 
   const submitData = () => {
     fetch(URLs.cn + "/plan/send", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         title,
+        contact,
         email,
+        interestRate,
         description,
         condition,
       }),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        Alert.alert("Investment Plan Created Succesfully");
+        navigation.navigate("ViewPlan");
       });
   };
 
@@ -45,7 +48,7 @@ const CreateInvestment = (props) => {
         value={title}
         theme={theme}
         mode="outlined"
-        onChangeText={(text) => setTitle()}
+        onChangeText={(text) => setTitle(text)}
       />
 
       <TextInput
@@ -55,7 +58,7 @@ const CreateInvestment = (props) => {
         theme={theme}
         keyboardType="number-pad"
         mode="outlined"
-        onChangeText={(Number) => setContact()}
+        onChangeText={(Number) => setContact(Number)}
       />
       <TextInput
         style={styles.inputStyles}
@@ -63,24 +66,20 @@ const CreateInvestment = (props) => {
         value={email}
         theme={theme}
         mode="outlined"
-        onChangeText={(text) => setEmail()}
+        onChangeText={(text) => setEmail(text)}
       />
 
       <Text style={styles.inputStyles}>Period of Calculation interest</Text>
       <Card style={{ margin: 10 }}>
         <View style={styles.card}>
           <Picker
-            selectedValue={selectedValue}
+            selectedValue={interestRate}
             style={{ height: 30, width: 200 }}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedValue(itemValue)
-            }
+            onValueChange={(value) => setinterestRate(value)}
           >
             <Picker.Item label="Annual" value="annual" />
             <Picker.Item label="Monthly" value="monthly" />
           </Picker>
-
-          {/* </View> */}
         </View>
       </Card>
 
@@ -90,10 +89,10 @@ const CreateInvestment = (props) => {
         value={description}
         theme={theme}
         mode="outlined"
-        multiline={true}
+        // multiline={true}
         // numberOfLines={6}
         // maxLength={600}
-        onChangeText={(text) => setDescription()}
+        onChangeText={(text) => setDescription(text)}
       />
 
       <TextInput
@@ -102,10 +101,10 @@ const CreateInvestment = (props) => {
         value={condition}
         theme={theme}
         mode="outlined"
-        multiline={true}
+        // multiline={true}
         // numberOfLines={4}
         // maxLength={300}
-        onChangeText={(text) => setCondition()}
+        onChangeText={(text) => setCondition(text)}
       />
 
       <View style={{ alignItems: "center", marginTop: 30 }}>
@@ -119,11 +118,12 @@ const CreateInvestment = (props) => {
           Publish
         </Button>
         <Button
-          onPress={() => props.navigation.navigate("ViewPlan")}
+          onPress={() => navigation.navigate("ViewPlan")}
           style={{ width: 300, padding: 3, marginTop: 50 }}
           color="#0396FF"
           icon="cursor-default-click-outline"
           mode="outlined"
+          // onPress={() => navigation.navigate("ViewPlan")}
         >
           View Plan
         </Button>

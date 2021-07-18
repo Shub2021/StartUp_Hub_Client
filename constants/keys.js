@@ -1,4 +1,4 @@
 module.exports = {
   jwtkey: "abcd",
-  cn: "http://dddcb67c2bd4.ngrok.io",
+  cn: "http://fc836f87c8a8.ngrok.io",
 };

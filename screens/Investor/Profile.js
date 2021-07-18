@@ -125,7 +125,7 @@ const Profile = (props) => {
           icon="cursor-default-click-outline"
           mode="contained"
         >
-          View Plan
+          Create Plan
         </Button>
       </ScrollView>
     </View>

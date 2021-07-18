@@ -6,10 +6,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 const HomeInvestor = (props) => {
   const data = [
     { id: 1, cName: "Ravindu Perera", cType: "Retail Business" },
-    { id: 2, cName: "Ravindu Perera", cType: "Retail Business" },
-    { id: 3, cName: "Ravindu Perera", cType: "Retail Business" },
-    { id: 4, cName: "Ravindu Perera", cType: "Retail Business" },
-    { id: 5, cName: "Ravindu Perera", cType: "Retail Business" },
+    { id: 2, cName: "Tharuka Heshan", cType: "Retail Business" },
+    { id: 3, cName: "Nuwan Fernando", cType: "Retail Business" },
+    { id: 4, cName: "Amal Sampath", cType: "Retail Business" },
+    { id: 5, cName: "Gayan Perera", cType: "Retail Business" },
     { id: 6, cName: "Ravindu Perera", cType: "Retail Business" },
     { id: 7, cName: "Ravindu Perera", cType: "Retail Business" },
   ];

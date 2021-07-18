@@ -6,7 +6,7 @@ const constants = require("../../constants/keys");
 const InvestmentPlan = require("../models/InvestmentPlan");
 
 router.get("/", (req, res) => {
-  InvestmentPlan.find({})
+  InvestmentPlan.findOne({})
     .then((data) => {
       res.send(data);
     })
@@ -19,8 +19,9 @@ router.post("/send", (req, res) => {
   const InvestmentPlan = new plan({
     _id: new mongoose.Types.ObjectId(),
     title: req.body.title,
-    contactNumber: req.body.contactNumber,
+    contact: req.body.contact,
     email: req.body.email,
+    interestRate: req.body.interestRate,
     description: req.body.description,
     condition: req.body.condition,
   });
@@ -48,7 +49,7 @@ router.post("/delete", (req, res) => {
 router.post("/update", (req, res) => {
   InvestmentPlan.findByIdAndUpdate(req.body.id, {
     title: req.body.title,
-    contactNumber: req.body.contactNumber,
+    contact: req.body.contact,
     email: req.body.email,
     description: req.body.description,
     condition: req.body.condition,
