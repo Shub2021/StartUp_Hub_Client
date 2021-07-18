@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -36,6 +37,20 @@ const Home = ({ navigation }) => {
         setdata(result);
         setselectedProducts(result);
       });
+  };
+
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("name");
+      await AsyncStorage.removeItem("email");
+      await AsyncStorage.removeItem("type");
+      props.navigation.navigate("Login");
+    } catch (e) {
+      console.log(e);
+    }
+
+    console.log("Done.");
   };
 
   const initialCurrentLocation = {
@@ -495,6 +510,7 @@ const Home = ({ navigation }) => {
             paddingRight: SIZES.padding * 2,
             justifyContent: "center",
           }}
+          onPress={logout}
         >
           <Image
             source={icons.basket}

@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import {
   View,
@@ -21,6 +22,8 @@ const Item = ({ route, navigation }) => {
 
   const [company, setCompany] = React.useState(null);
   const [currentLocation, setCurrentLocation] = React.useState(null);
+  const [cart, setCart] = React.useState(null);
+  const [email, setEmail] = React.useState(null);
   const [orderItems, setOrderItems] = React.useState([]);
 
   const [menuItems, setMenuItems] = React.useState([]);
@@ -29,7 +32,7 @@ const Item = ({ route, navigation }) => {
   React.useEffect(() => {
     fetchData();
     fetchCompanyData();
-
+    getData();
     setloading(false);
   }, []);
 
@@ -57,12 +60,25 @@ const Item = ({ route, navigation }) => {
     }
   };
 
-  function getClientCart(){
-    
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    setEmail(email);
+  };
+
+  function getClientCart(userEmail) {
+    fetch(URLs.cn + "/cart/" + userEmail)
+      .then((res) => res.json())
+      .then((result) => {
+        setCart(result);
+      });
   }
 
-  function addItemToCart(){
-
+  function addItemToCart() {
+    getClientCart(email);
+    console.log(product);
+    console.log(orderItems);
+    console.log(cart);
+    // cart.productList[cart.productList.length] =
   }
 
   function editOrder(action, menuId, price) {
@@ -577,7 +593,7 @@ const Item = ({ route, navigation }) => {
                 marginBottom: SIZES.padding,
                 flex: 1,
               }}
-
+              onPress={addItemToCart()}
             >
               <Text style={{ color: COLORS.white, ...FONTS.h2 }}>
                 Add to cart

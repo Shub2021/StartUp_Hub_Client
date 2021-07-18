@@ -19,9 +19,9 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.get("/:userID", (req, res, next) => {
-  const userID = req.params.category;
-  Cart.find({ clientId: userID })
+router.get("/:userEmail", (req, res, next) => {
+  const userEmail = req.params.userEmail;
+  Cart.find({ clientEmail: userEmail })
     .exec()
     .then((docs) => {
       // console.log(docs);
@@ -29,7 +29,7 @@ router.get("/:userID", (req, res, next) => {
       if (docs.length < 1) {
         const cart = new Cart({
           _id: new mongoose.Types.ObjectId(),
-          clientId: userID,
+          clientEmail: userEmail,
           productList: [],
         });
         cart.save().then((result) => {

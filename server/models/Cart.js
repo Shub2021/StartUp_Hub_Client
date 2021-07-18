@@ -7,7 +7,7 @@ const productListSchema = new mongoose.Schema({
 
 const CartSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  clientId: Number,
+  clientEmail: String,
   productList: [productListSchema],
 });
 
