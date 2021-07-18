@@ -130,6 +130,11 @@ export default function App() {
   const [islogged, setLogged] = React.useState(false);
   const [data, setData] = React.useState("");
   const [type, setType] = React.useState("");
+
+  React.useEffect(() => {
+    getData();
+  });
+
   const getData = async () => {
     try {
       var jsonValue = "";
