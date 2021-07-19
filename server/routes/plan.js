@@ -19,8 +19,9 @@ router.post("/send", (req, res) => {
   const InvestmentPlan = new plan({
     _id: new mongoose.Types.ObjectId(),
     title: req.body.title,
-    contact: req.body.contact,
-    email: req.body.email,
+    minInvest: req.body.minInvest,
+    maxInvest: req.body.maxInvest,
+    interestTime: req.body.interestTime,
     interestRate: req.body.interestRate,
     description: req.body.description,
     condition: req.body.condition,
@@ -49,8 +50,10 @@ router.post("/delete", (req, res) => {
 router.post("/update", (req, res) => {
   InvestmentPlan.findByIdAndUpdate(req.body.id, {
     title: req.body.title,
-    contact: req.body.contact,
-    email: req.body.email,
+    minInvest: req.body.minInvest,
+    maxInvest: req.body.maxInvest,
+    interestTime: req.body.interestTime,
+    interestRate: req.body.interestRate,
     description: req.body.description,
     condition: req.body.condition,
   })

@@ -40,43 +40,32 @@ const ViewPlan = ({ navigation }) => {
             <View style={{ flexDirection: "row" }}>
               <View>
                 <Text style={styles.title}>Minimum</Text>
-                <Text style={styles.filed}>100,000 LKR</Text>
+                <Text style={styles.filed}>{data.minInvest} LKR</Text>
               </View>
 
               <View>
                 <Text style={styles.title}>Maximum</Text>
-                <Text style={styles.filed}>500,000 LKR</Text>
+                <Text style={styles.filed}>{data.maxInvest} LKR</Text>
               </View>
             </View>
 
-            <Title>03) Period of Calculation Interest</Title>
-            <Text style={styles.filed}>{data.title}</Text>
-
-            <Title>04) Interest Rate</Title>
+            <Title>03) Interest Rate</Title>
             <View style={{ flexDirection: "row" }}>
               <View>
                 <Text style={styles.title}>Annual</Text>
-                <Text style={styles.filed}>3%</Text>
+                <Text style={styles.filed}>{data.interestTime}</Text>
               </View>
               <View>
-                <Text style={styles.title}>Monthly</Text>
-                <Text style={styles.filed}>5%</Text>
+                <Text style={{ fontWeight: "bold", marginTop: 3 }}>
+                  Growth Rate
+                </Text>
+                <Text style={styles.filed}>{data.interestRate}%</Text>
               </View>
             </View>
-            <Title>05) Description</Title>
-            <Text style={styles.descriptionStyle}>
-              In publishing and graphic design, Lorem ipsum is a placeholder
-              text commonly used to demonstrate the visual form of a document or
-              a typeface without relying on meaningful content. In publishing
-              and graphic design, Lorem ipsum is a placeholder text commonly
-              used to demonstrate the visual form of a document or a typeface
-              without relying on meaningful conten.
-            </Text>
-            <Title>06) Terms and Conditions</Title>
-            <Text style={styles.descriptionStyle}>
-              In publishing and graphic design, Lorem ipsum is a placeholder
-              text commonly used to demonstrate the visual form of.
-            </Text>
+            <Title>04) Description</Title>
+            <Text style={styles.descriptionStyle}>{data.description}</Text>
+            <Title>05) Terms and Conditions</Title>
+            <Text style={styles.descriptionStyle}>{data.condition}</Text>
           </Card>
           <Button
             onPress={() => navigation.navigate("CreateInvestment")}

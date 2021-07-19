@@ -7,8 +7,23 @@ import {
   Fontisto,
   MaterialIcons,
 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = (props) => {
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("name");
+      await AsyncStorage.removeItem("email");
+      await AsyncStorage.removeItem("type");
+      props.navigation.navigate("Login");
+    } catch (e) {
+      console.log(e);
+    }
+
+    console.log("Done.");
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -126,6 +141,22 @@ const Profile = (props) => {
           mode="contained"
         >
           Create Plan
+        </Button>
+        <Button
+          onPress={logout}
+          style={{
+            // width: "100%",
+            padding: 3,
+            marginTop: 20,
+            marginLeft: 50,
+            marginRight: 50,
+            marginBottom: 20,
+          }}
+          color="#0396FF"
+          icon="cursor-default-click-outline"
+          mode="contained"
+        >
+          Logout
         </Button>
       </ScrollView>
     </View>
