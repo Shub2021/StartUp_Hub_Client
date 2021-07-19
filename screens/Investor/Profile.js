@@ -8,6 +8,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CompleteProfile from "./CompleteProfile";
 
 const Profile = (props) => {
   const logout = async () => {
@@ -157,6 +158,22 @@ const Profile = (props) => {
           mode="contained"
         >
           Logout
+        </Button>
+        <Button
+          onPress={() => props.navigation.navigate("CompleteProfile")}
+          style={{
+            // width: "100%",
+            padding: 3,
+            marginTop: 20,
+            marginLeft: 50,
+            marginRight: 50,
+            marginBottom: 20,
+          }}
+          color="#0396FF"
+          icon="cursor-default-click-outline"
+          mode="contained"
+        >
+          Complete Profile
         </Button>
       </ScrollView>
     </View>
