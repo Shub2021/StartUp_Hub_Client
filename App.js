@@ -191,6 +191,16 @@ export default function App() {
             }}
           >
             <Stack.Screen name="LoadInvestor" component={LoadInvestor} />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ ...myOptions, title: "Login" }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{ ...myOptions, title: "Register" }}
+            />
           </Stack.Navigator>
         )
       ) : (
