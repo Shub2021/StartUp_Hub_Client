@@ -74,7 +74,7 @@ const SubscribedStartups = (props) => {
 
 const dtheme = {
   colors: {
-    primary: "#8699fe",
+    primary: "#658eff",
   },
 };
 const atheme = {

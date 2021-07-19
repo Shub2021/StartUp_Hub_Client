@@ -32,20 +32,20 @@ const Notifications = () => {
               style={{ flexDirection: "row", marginLeft: 5, marginTop: 20 }}
             >
               <Button
-                icon="checkbox-marked-circle-outline"
-                theme={atheme}
-                mode="Text button"
-                onPress={() => console.log("Pressed")}
-              >
-                Add Startup
-              </Button>
-              <Button
                 icon="delete"
                 theme={dtheme}
                 mode="Text button"
                 onPress={() => console.log("Pressed")}
               >
                 Delete
+              </Button>
+              <Button
+                icon="checkbox-marked-circle-outline"
+                theme={atheme}
+                mode="Text button"
+                onPress={() => console.log("Pressed")}
+              >
+                Add Startup
               </Button>
             </View>
           </View>

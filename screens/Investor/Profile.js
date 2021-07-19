@@ -143,38 +143,41 @@ const Profile = (props) => {
         >
           Create Plan
         </Button>
-        <Button
-          onPress={logout}
+        <View
           style={{
-            // width: "100%",
-            padding: 3,
-            marginTop: 20,
-            marginLeft: 50,
-            marginRight: 50,
-            marginBottom: 20,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginBottom: 50,
+            marginTop: 50,
           }}
-          color="#0396FF"
-          icon="cursor-default-click-outline"
-          mode="contained"
         >
-          Logout
-        </Button>
-        <Button
-          onPress={() => props.navigation.navigate("CompleteProfile")}
-          style={{
-            // width: "100%",
-            padding: 3,
-            marginTop: 20,
-            marginLeft: 50,
-            marginRight: 50,
-            marginBottom: 20,
-          }}
-          color="#0396FF"
-          icon="cursor-default-click-outline"
-          mode="contained"
-        >
-          Complete Profile
-        </Button>
+          <Button
+            onPress={logout}
+            color="#0396FF"
+            icon="logout"
+            mode="outlined"
+          >
+            Logout
+          </Button>
+          <Button
+            onPress={() => props.navigation.navigate("CompleteProfile")}
+            style={
+              {
+                // width: "100%",
+                // padding: 3,
+                // marginTop: 20,
+                // marginLeft: 50,
+                // marginRight: 50,
+                // marginBottom: 20,
+              }
+            }
+            color="#cdeaff"
+            icon="autorenew"
+            mode="contained"
+          >
+            Update Profile
+          </Button>
+        </View>
       </ScrollView>
     </View>
   );

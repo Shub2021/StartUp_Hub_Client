@@ -47,7 +47,7 @@ const CompleteProfile = () => {
           <Button
             // onPress={() => navigation.navigate("ViewPlan")}
             style={{ margin: 50 }}
-            color="#0396FF"
+            color="#79c7ff"
             icon="content-save-outline"
             mode="contained"
             // onPress={() => navigation.navigate("ViewPlan")}
