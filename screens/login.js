@@ -23,7 +23,6 @@ export default function Login(props) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const signin = async () => {
-    //console.log(email);
     fetch(URLs.cn + "/users/login", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -40,8 +39,9 @@ export default function Login(props) {
           try {
             await AsyncStorage.setItem("token", result.token);
             await AsyncStorage.setItem("email", email);
-            await AsyncStorage.setItem("name", result.name);
+            await AsyncStorage.setItem("userId", result.userId);
             await AsyncStorage.setItem("type", result.type);
+            console.log(result.type + "  hkjjkhkjh");
             if (result.type === "client") {
               props.navigation.navigate("LoadClientScreens");
             } else {

@@ -45,7 +45,7 @@ const Home = ({ navigation }) => {
       await AsyncStorage.removeItem("name");
       await AsyncStorage.removeItem("email");
       await AsyncStorage.removeItem("type");
-      props.navigation.navigate("Login");
+      navigation.navigate("Login");
     } catch (e) {
       console.log(e);
     }
