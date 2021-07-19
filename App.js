@@ -18,6 +18,7 @@ import SubscribedStartups from "./screens/Investor/SubscribedStartups";
 import ViewPlan from "./screens/Investor/ViewPlan";
 import Notifications from "./screens/Investor/Notifications";
 import HomeInvestor from "./screens/Investor/HomeInvestor";
+import CompleteProfile from "./screens/Investor/CompleteProfile";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
@@ -121,6 +122,11 @@ function LoadInvestor() {
         name="HomeInvestor"
         component={HomeInvestor}
         options={{ ...myOptions, title: "HomeInvestor" }}
+      />
+      <InvestorStack.Screen
+        name="CompleteProfile"
+        component={CompleteProfile}
+        options={{ ...myOptions, title: "Complete Profile" }}
       />
     </InvestorStack.Navigator>
   );
