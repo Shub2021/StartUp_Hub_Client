@@ -22,6 +22,7 @@ import CompleteProfile from "./screens/Investor/CompleteProfile";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
+import postRegisterForm from "./screens/postRegisterForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
@@ -183,6 +184,21 @@ export default function App() {
               name="LoadClientScreens"
               component={LoadClientScreens}
             />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ ...myOptions, title: "Login" }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{ ...myOptions, title: "Register" }}
+            />
+            <Stack.Screen
+              name="postRegisterForm"
+              component={postRegisterForm}
+              options={{ ...myOptions, title: "Account Type" }}
+            />
           </Stack.Navigator>
         ) : (
           <Stack.Navigator
@@ -201,6 +217,11 @@ export default function App() {
               component={Register}
               options={{ ...myOptions, title: "Register" }}
             />
+            <Stack.Screen
+              name="postRegisterForm"
+              component={postRegisterForm}
+              options={{ ...myOptions, title: "Account Type" }}
+            />
           </Stack.Navigator>
         )
       ) : (
@@ -218,6 +239,11 @@ export default function App() {
             name="Register"
             component={Register}
             options={{ ...myOptions, title: "Register" }}
+          />
+          <Stack.Screen
+            name="postRegisterForm"
+            component={postRegisterForm}
+            options={{ ...myOptions, title: "Account Type" }}
           />
           <Stack.Screen
             name="LoadClientScreens"

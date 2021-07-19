@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -17,9 +16,8 @@ import {
   Picker,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { URLs } from "../../constants";
 
-export default function Register(props) {
+export default function postRegisterForm(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,31 +28,8 @@ export default function Register(props) {
 
   const submitData = () => {
     if (password == repassword) {
-      console.log("aoffffaaaaaaaaa");
-      console.log(
-        JSON.stringify({
-          name,
-          email,
-          type,
-          password,
-        })
-      );
-      console.log(URLs.cn);
-      fetch(URLs.cn + "/users/signup", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          type,
-          password,
-        }),
-      });
-
-      Alert.alert("Registered Successfully");
-      props.navigation.navigate("Login");
+      // props.navigation.navigate("Login");
     } else {
-      Alert.alert("Password and re entered passwors does not match");
     }
     abortController.abort();
   };
@@ -65,7 +40,7 @@ export default function Register(props) {
       style={styles.container}
     >
       <ImageBackground
-        source={require("../../assets/img1.png")}
+        source={require("../assets/img1.png")}
         style={styles.header}
         imageStyle={{ borderBottomRightRadius: 30 }}
       >
@@ -83,20 +58,10 @@ export default function Register(props) {
       </ImageBackground>
       <ScrollView>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
-            placeholder="Name"
-            value={name}
-            onChangeText={(text) => setName(text)}
-          />
+          <Text>You can use this applications as a Cilent or an Invester. Selcet your account type.</Text>
         </View>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
+          <Text></Text>
         </View>
         <View style={styles.inputContainer}>
           <TextInput

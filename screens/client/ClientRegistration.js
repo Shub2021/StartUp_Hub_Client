@@ -122,6 +122,14 @@ export default function Register(props) {
             Register
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.inputContainer, styles.btn]}
+          onPress={() => props.navigation.navigate("postRegisterForm")}
+        >
+          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
+            Next
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
