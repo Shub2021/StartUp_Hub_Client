@@ -4,19 +4,29 @@ import { TextInput, Button } from "react-native-paper";
 
 const CompleteProfile = () => {
   const [bName, setbName] = useState("");
+  const [investArea, seInvestArea] = useState("");
   const [bAddress, setbAddress] = useState("");
   const [uNIC, setuNIC] = useState("");
   const [bTelephone, setbTelephone] = useState("");
+
   return (
     <View style={styles.root}>
       <ScrollView>
         <TextInput
           style={styles.inputStyles}
-          label="Business Title"
+          label="Business Name"
           value={bName}
           theme={theme}
           mode="outlined"
           onChangeText={(text) => setbName(text)}
+        />
+        <TextInput
+          style={styles.inputStyles}
+          label="Investment Area"
+          value={investArea}
+          theme={theme}
+          mode="outlined"
+          onChangeText={(text) => seInvestArea(text)}
         />
         <TextInput
           style={styles.inputStyles}
@@ -43,6 +53,7 @@ const CompleteProfile = () => {
           mode="outlined"
           onChangeText={(text) => setbTelephone(text)}
         />
+
         <View>
           <Button
             // onPress={() => navigation.navigate("ViewPlan")}

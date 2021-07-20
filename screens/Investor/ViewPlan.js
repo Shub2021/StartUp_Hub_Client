@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
-import { Title, Card, Button, Badge } from "react-native-paper";
+import { StyleSheet, Text, View } from "react-native";
+import {
+  Title,
+  Card,
+  Button,
+  Badge,
+  ActivityIndicator,
+} from "react-native-paper";
 import { URLs } from "../../constants";
 
 import {
@@ -75,20 +81,11 @@ const ViewPlan = ({ navigation }) => {
               marginTop: 50,
               marginLeft: 60,
             }}
-            color="#5972fe"
+            color="#0396FF"
             icon="square-edit-outline"
             mode="contained"
           >
             Edit Plan
-          </Button>
-          <Button
-            onPress={() => props.navigation.navigate("CreateInvestment")}
-            style={{ width: 200, padding: 3, marginTop: 20, marginLeft: 110 }}
-            color="red"
-            icon="delete"
-            mode="outlined"
-          >
-            Remove Plan
           </Button>
         </>
       ) : (

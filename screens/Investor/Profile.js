@@ -30,12 +30,7 @@ const Profile = (props) => {
       <ScrollView>
         <Card style={styles.cardHeader}>
           <View>
-            <Image
-              source={{
-                uri: "https://image.freepik.com/free-vector/brainstorming-illustration_65141-415.jpg",
-              }}
-              style={{ height: 150 }}
-            />
+            <Image style={{ height: 150 }} />
             <View style={{ alignItems: "center", marginTop: -50 }}>
               <Image
                 style={{ width: 140, height: 140, borderRadius: 70 }}
@@ -48,7 +43,12 @@ const Profile = (props) => {
           <View style={{ alignItems: "center" }}>
             <View style={{ flexDirection: "row" }}>
               <Title
-                style={{ marginTop: 10, alignItems: "center", marginLeft: 15 }}
+                style={{
+                  marginTop: 10,
+                  alignItems: "center",
+                  marginLeft: 15,
+                  marginBottom: 20,
+                }}
               >
                 Ravindu Perera
               </Title>
@@ -59,10 +59,23 @@ const Profile = (props) => {
                 color="#0396FF"
               />
             </View>
-            <Text style={{ fontSize: 18, marginBottom: 40 }}>Sri Lanka</Text>
           </View>
         </Card>
 
+        <Card style={styles.profileCard}>
+          <View style={styles.cardIcon}>
+            <MaterialCommunityIcons
+              style={{ marginTop: 5 }}
+              name="finance"
+              size={25}
+              color="black"
+            />
+            <View style={{ marginLeft: 20 }}>
+              <Text style={styles.fieldTitle}>Investmont Filed</Text>
+              <Text style={styles.cardField}>Financial Investment</Text>
+            </View>
+          </View>
+        </Card>
         <Card style={styles.profileCard}>
           <View style={styles.cardIcon}>
             <Ionicons
@@ -77,6 +90,7 @@ const Profile = (props) => {
             </View>
           </View>
         </Card>
+
         <Card style={styles.profileCard}>
           <View style={styles.cardIcon}>
             <Fontisto
@@ -85,25 +99,10 @@ const Profile = (props) => {
               size={25}
               color="black"
             />
+
             <View style={{ marginLeft: 20 }}>
               <Text style={styles.fieldTitle}>E-mail</Text>
               <Text style={styles.cardField}>sample@gmail.com</Text>
-            </View>
-          </View>
-        </Card>
-
-        <Card style={styles.profileCard}>
-          <View style={styles.cardIcon}>
-            <MaterialCommunityIcons
-              style={{ marginTop: 5 }}
-              name="finance"
-              size={25}
-              color="black"
-            />
-
-            <View style={{ marginLeft: 20 }}>
-              <Text style={styles.fieldTitle}>Investmont Filed</Text>
-              <Text style={styles.cardField}>Financial Investment</Text>
             </View>
           </View>
         </Card>

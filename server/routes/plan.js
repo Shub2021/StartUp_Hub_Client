@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const plan = require("../models/InvestmentPlan");
 const constants = require("../../constants/keys");
 const InvestmentPlan = require("../models/InvestmentPlan");
 
@@ -16,7 +15,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/send", (req, res) => {
-  const InvestmentPlan = new plan({
+  const investmentPlan = new InvestmentPlan({
     _id: new mongoose.Types.ObjectId(),
     title: req.body.title,
     minInvest: req.body.minInvest,
@@ -26,7 +25,8 @@ router.post("/send", (req, res) => {
     description: req.body.description,
     condition: req.body.condition,
   });
-  InvestmentPlan.save()
+  investmentPlan
+    .save()
     .then((data) => {
       console.log(data);
       res.send(data);
@@ -37,7 +37,8 @@ router.post("/send", (req, res) => {
 });
 
 router.post("/delete", (req, res) => {
-  InvestmentPlan.findByIdAndRemove(req.body.id)
+  investmentPlan
+    .findByIdAndRemove(req.body.id)
     .then((data) => {
       console.log(data);
       res.send(data);
@@ -48,15 +49,16 @@ router.post("/delete", (req, res) => {
 });
 
 router.post("/update", (req, res) => {
-  InvestmentPlan.findByIdAndUpdate(req.body.id, {
-    title: req.body.title,
-    minInvest: req.body.minInvest,
-    maxInvest: req.body.maxInvest,
-    interestTime: req.body.interestTime,
-    interestRate: req.body.interestRate,
-    description: req.body.description,
-    condition: req.body.condition,
-  })
+  investmentPlan
+    .findByIdAndUpdate(req.body.id, {
+      title: req.body.title,
+      minInvest: req.body.minInvest,
+      maxInvest: req.body.maxInvest,
+      interestTime: req.body.interestTime,
+      interestRate: req.body.interestRate,
+      description: req.body.description,
+      condition: req.body.condition,
+    })
     .then((data) => {
       console.log(data);
       res.send(data);

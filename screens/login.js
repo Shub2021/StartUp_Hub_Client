@@ -41,7 +41,7 @@ export default function Login(props) {
             await AsyncStorage.setItem("email", email);
             await AsyncStorage.setItem("userId", result.userId);
             await AsyncStorage.setItem("type", result.type);
-            console.log(result.type + "  hkjjkhkjh");
+
             if (result.type === "client") {
               props.navigation.navigate("LoadClientScreens");
             } else {
