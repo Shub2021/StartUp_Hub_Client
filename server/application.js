@@ -8,11 +8,13 @@ require("./models/Startup_User");
 require("./models/InvestmentPlan");
 require("./models/Users");
 require("./models/Cart");
+require("./models/Investors");
 
 const userRoutes = require("./routes/user");
 const companyRoutes = require("./routes/company");
 const productRoutes = require("./routes/products");
 const InvestPlanRoutes = require("./routes/plan");
+const InvestorRegRoutes = require("./routes/investors");
 const cartRoutes = require("./routes/cart");
 
 application.use(bodyParser.json());
@@ -21,6 +23,7 @@ const Startup_Company = mongoose.model("Startup_Company");
 const Startup_User = mongoose.model("Startup_User");
 const Product = mongoose.model("Product");
 const InvestmentPlan = mongoose.model("InvestmentPlan");
+const Investors = mongoose.model("Investors");
 const UserAuthentication = mongoose.model("Users");
 const Cart = mongoose.model("Cart");
 
@@ -46,6 +49,7 @@ application.use("/users", userRoutes);
 application.use("/company", companyRoutes);
 application.use("/product", productRoutes);
 application.use("/plan", InvestPlanRoutes);
+application.use("/investor", InvestorRegRoutes);
 application.use("/cart", cartRoutes);
 
 application.listen(3000, () => {

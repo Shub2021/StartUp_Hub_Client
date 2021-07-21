@@ -41,7 +41,7 @@ export default function Login(props) {
             await AsyncStorage.setItem("email", email);
             await AsyncStorage.setItem("userId", result.userId);
             await AsyncStorage.setItem("type", result.type);
-            console.log(result.type + "  hkjjkhkjh");
+
             if (result.type === "client") {
               props.navigation.navigate("LoadClientScreens");
             } else {
@@ -68,29 +68,26 @@ export default function Login(props) {
       style={styles.container}
     >
       <ImageBackground
-        source={require("../assets/img1.png")}
+        source={require("../assets/images/startup_logo_cover.png")}
         style={styles.header}
         imageStyle={{ borderBottomRightRadius: 65 }}
       >
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.welcome}>Welcome To,</Text>
-          <Text style={styles.title}>STARTUP HUB</Text>
-        </View>
+        <View style={styles.welcomeContainer}></View>
       </ImageBackground>
       <Text style={styles.logintxt}>Login</Text>
       <View style={styles.inputContainer}>
-        <Icons name="mail" color="#306bff" size={30} />
+        <Icons name="mail" color="#306bff" size={20} />
         <TextInput
-          style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
+          style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 18 }}
           placeholder="Email"
           value={email}
           onChangeText={(text) => setEmail(text)}
         />
       </View>
       <View style={styles.inputContainer}>
-        <Icons name="lock" color="#306bff" size={30} />
+        <Icons name="lock" color="#306bff" size={20} />
         <TextInput
-          style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
+          style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 18 }}
           placeholder="Password"
           value={password}
           onChangeText={(text) => setPassword(text)}
@@ -123,19 +120,24 @@ const styles = StyleSheet.create({
   },
   header: {
     height: Keyboard.height,
-    width: "100%",
-    borderBottomRightRadius: 70,
+    // width: 400,
+    height: 150,
+    marginTop: 50,
+    marginLeft: 25,
+    marginRight: 25,
+    marginBottom: 65,
+    // borderBottomRightRadius: 70,
   },
   title: {
     fontSize: 40,
     fontWeight: "bold",
-    color: "white",
+    color: "red",
   },
   welcome: {
     fontSize: 25,
     marginBottom: 15,
     fontWeight: "bold",
-    color: "white",
+    color: "red",
   },
   welcomeContainer: {
     justifyContent: "center",
@@ -154,11 +156,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 35,
-    borderWidth: 2,
+    borderWidth: 1.5,
     marginTop: 24,
     paddingHorizontal: 10,
     borderColor: "#306bff",
-    borderRadius: 23,
+    borderRadius: 10,
     paddingVertical: 2,
     height: 45,
   },

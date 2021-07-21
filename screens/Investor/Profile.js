@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { Title, Card, Button, Badge } from "react-native-paper";
 import {
@@ -9,8 +9,25 @@ import {
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CompleteProfile from "./CompleteProfile";
+import { URLs } from "../../constants";
 
 const Profile = (props) => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const getData = () => {
+    fetch(URLs.cn + "/investor/")
+      .then((response) => response.json())
+      .then((json) => {
+        setData(json);
+      });
+  };
+
+  useEffect(() => {
+    // .catch((error) => console.error(error))
+    getData();
+    setLoading(false);
+    console.log(data);
+  }, []);
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("token");
@@ -31,10 +48,8 @@ const Profile = (props) => {
         <Card style={styles.cardHeader}>
           <View>
             <Image
-              source={{
-                uri: "https://image.freepik.com/free-vector/brainstorming-illustration_65141-415.jpg",
-              }}
-              style={{ height: 150 }}
+              source={require("../../assets/images/startup_logo_cover.png")}
+              style={{ height: 150, width: 425 }}
             />
             <View style={{ alignItems: "center", marginTop: -50 }}>
               <Image
@@ -48,9 +63,14 @@ const Profile = (props) => {
           <View style={{ alignItems: "center" }}>
             <View style={{ flexDirection: "row" }}>
               <Title
-                style={{ marginTop: 10, alignItems: "center", marginLeft: 15 }}
+                style={{
+                  marginTop: 10,
+                  alignItems: "center",
+                  marginLeft: 15,
+                  marginBottom: 20,
+                }}
               >
-                Ravindu Perera
+                {data.cName}
               </Title>
               <MaterialIcons
                 style={{ marginTop: 7, marginLeft: 5 }}
@@ -58,36 +78,6 @@ const Profile = (props) => {
                 size={15}
                 color="#0396FF"
               />
-            </View>
-            <Text style={{ fontSize: 18, marginBottom: 40 }}>Sri Lanka</Text>
-          </View>
-        </Card>
-
-        <Card style={styles.profileCard}>
-          <View style={styles.cardIcon}>
-            <Ionicons
-              style={{ marginTop: 5 }}
-              name="call-outline"
-              size={25}
-              color="black"
-            />
-            <View style={{ marginLeft: 20 }}>
-              <Text style={styles.fieldTitle}>Contact Number</Text>
-              <Text style={styles.cardField}>076-6552441</Text>
-            </View>
-          </View>
-        </Card>
-        <Card style={styles.profileCard}>
-          <View style={styles.cardIcon}>
-            <Fontisto
-              style={{ marginTop: 5 }}
-              name="email"
-              size={25}
-              color="black"
-            />
-            <View style={{ marginLeft: 20 }}>
-              <Text style={styles.fieldTitle}>E-mail</Text>
-              <Text style={styles.cardField}>sample@gmail.com</Text>
             </View>
           </View>
         </Card>
@@ -100,10 +90,39 @@ const Profile = (props) => {
               size={25}
               color="black"
             />
-
             <View style={{ marginLeft: 20 }}>
               <Text style={styles.fieldTitle}>Investmont Filed</Text>
-              <Text style={styles.cardField}>Financial Investment</Text>
+              <Text style={styles.cardField}>{data.investArea}</Text>
+            </View>
+          </View>
+        </Card>
+        <Card style={styles.profileCard}>
+          <View style={styles.cardIcon}>
+            <Ionicons
+              style={{ marginTop: 5 }}
+              name="call-outline"
+              size={25}
+              color="black"
+            />
+            <View style={{ marginLeft: 20 }}>
+              <Text style={styles.fieldTitle}>Contact Number</Text>
+              <Text style={styles.cardField}>{data.cTel}</Text>
+            </View>
+          </View>
+        </Card>
+
+        <Card style={styles.profileCard}>
+          <View style={styles.cardIcon}>
+            <Fontisto
+              style={{ marginTop: 5 }}
+              name="email"
+              size={25}
+              color="black"
+            />
+
+            <View style={{ marginLeft: 20 }}>
+              <Text style={styles.fieldTitle}>E-mail</Text>
+              <Text style={styles.cardField}>sample@gmail.com</Text>
             </View>
           </View>
         </Card>
@@ -143,38 +162,34 @@ const Profile = (props) => {
         >
           Create Plan
         </Button>
-        <Button
-          onPress={logout}
+        <View
           style={{
-            // width: "100%",
-            padding: 3,
-            marginTop: 20,
-            marginLeft: 50,
-            marginRight: 50,
-            marginBottom: 20,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginBottom: 50,
+            marginTop: 50,
           }}
-          color="#0396FF"
-          icon="cursor-default-click-outline"
-          mode="contained"
         >
-          Logout
-        </Button>
-        <Button
-          onPress={() => props.navigation.navigate("CompleteProfile")}
-          style={{
-            // width: "100%",
-            padding: 3,
-            marginTop: 20,
-            marginLeft: 50,
-            marginRight: 50,
-            marginBottom: 20,
-          }}
-          color="#0396FF"
-          icon="cursor-default-click-outline"
-          mode="contained"
-        >
-          Complete Profile
-        </Button>
+          <Button
+            onPress={logout}
+            color="#0396FF"
+            icon="logout"
+            mode="outlined"
+          >
+            Logout
+          </Button>
+          <Button
+            style={{
+              borderRadius: 20,
+            }}
+            onPress={() => props.navigation.navigate("CompleteProfile")}
+            color="#a4c8ff"
+            icon="autorenew"
+            mode="contained"
+          >
+            Update Profile
+          </Button>
+        </View>
       </ScrollView>
     </View>
   );

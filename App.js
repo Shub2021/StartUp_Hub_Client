@@ -54,8 +54,8 @@ const RootHome = () => {
           },
         })}
         tabBarOptions={{
-          activeTintColor: "red",
-          inactiveTintColor: "gray",
+          activeTintColor: "#4991ff",
+          inactiveTintColor: "#8d8d8e",
         }}
       >
         <Tabs.Screen name="Profile" component={Profile} />

@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const constants = require("../../constants/keys");
-const InvestmentPlan = require("../models/InvestmentPlan");
+const Investors = require("../models/Investors");
 
 router.get("/", (req, res) => {
-  InvestmentPlan.findOne({})
+  Investors.findOne({})
     .then((data) => {
       res.send(data);
     })
@@ -15,17 +15,15 @@ router.get("/", (req, res) => {
 });
 
 router.post("/send", (req, res) => {
-  const investmentPlan = new InvestmentPlan({
+  const investors = new Investors({
     _id: new mongoose.Types.ObjectId(),
-    title: req.body.title,
-    minInvest: req.body.minInvest,
-    maxInvest: req.body.maxInvest,
-    interestTime: req.body.interestTime,
-    interestRate: req.body.interestRate,
-    description: req.body.description,
-    condition: req.body.condition,
+    cName: req.body.cName,
+    investArea: req.body.investArea,
+    cAddress: req.body.cAddress,
+    nic: req.body.nic,
+    cTel: req.body.cTel,
   });
-  investmentPlan
+  investors
     .save()
     .then((data) => {
       console.log(data);
@@ -37,7 +35,7 @@ router.post("/send", (req, res) => {
 });
 
 router.post("/delete", (req, res) => {
-  investmentPlan
+  investors
     .findByIdAndRemove(req.body.id)
     .then((data) => {
       console.log(data);
@@ -49,15 +47,14 @@ router.post("/delete", (req, res) => {
 });
 
 router.post("/update", (req, res) => {
-  investmentPlan
+  investors
     .findByIdAndUpdate(req.body.id, {
-      title: req.body.title,
-      minInvest: req.body.minInvest,
-      maxInvest: req.body.maxInvest,
-      interestTime: req.body.interestTime,
-      interestRate: req.body.interestRate,
-      description: req.body.description,
-      condition: req.body.condition,
+      _id: new mongoose.Types.ObjectId(),
+      cName: req.body.cName,
+      investArea: req.body.investArea,
+      cAddress: req.body.cAddress,
+      nic: req.body.nic,
+      cTel: req.body.cTel,
     })
     .then((data) => {
       console.log(data);
