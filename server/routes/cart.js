@@ -24,8 +24,6 @@ router.get("/:userEmail", (req, res, next) => {
   Cart.find({ clientEmail: userEmail })
     .exec()
     .then((docs) => {
-      // console.log(docs);
-
       if (docs.length < 1) {
         const cart = new Cart({
           _id: new mongoose.Types.ObjectId(),

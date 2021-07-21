@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Animated,
+  Alert,
 } from "react-native";
 
 import { icons, COLORS, SIZES, FONTS, URLs } from "../../constants";
@@ -68,16 +69,10 @@ const Item = ({ route, navigation }) => {
   };
 
   function addItemToCart() {
-    // if (orderItems) {
-
-    // } else {
-
-    // }
-    console.log("awaaaaaaaaaa");
     console.log(product);
-
     console.log(cart);
-    console.log(orderItems);
+    cart.productList.
+    
     // cart.productList[cart.productList.length] =
   }
 

@@ -37,10 +37,7 @@ router.post("/signup", (req, res, next) => {
               error: err,
             });
           } else {
-            console.log(hash);
-            console.log(req.body.name);
-            console.log(req.body.email);
-            console.log(req.body.type);
+
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               name: req.body.name,

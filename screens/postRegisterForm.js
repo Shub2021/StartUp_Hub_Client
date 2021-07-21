@@ -31,16 +31,6 @@ export default function postRegisterForm(props) {
   const abortController = new AbortController();
 
   const submitData = () => {
-    console.log(URLs.cn + " urllllllllll");
-    console.log(email + " emaillllllll");
-    console.log(
-      JSON.stringify({
-        name,
-        email,
-        type,
-        password,
-      })
-    );
     fetch(URLs.cn + "/users/signup", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -173,6 +163,8 @@ export default function postRegisterForm(props) {
                           flexDirection: "column",
                           width: "auto",
                           minWidth: 50,
+                          fontSize: SIZES.body3,
+                          marginBottom: SIZES.padding * 2,
                         }}
                       >
                         {data.discription}
@@ -185,7 +177,10 @@ export default function postRegisterForm(props) {
           </TouchableWithoutFeedback>
         </View>
         {selectedIndex === 1 ? (
-          <TouchableOpacity style={[styles.inputContainer, styles.btn]}>
+          <TouchableOpacity
+            style={[styles.inputContainer, styles.btn]}
+            onPress={() => props.navigation.navigate("InvestorRegistration", {name,email,password, selected})}
+          >
             <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
               Proceed
             </Text>
