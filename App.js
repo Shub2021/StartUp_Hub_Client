@@ -20,6 +20,7 @@ import Notifications from "./screens/Investor/Notifications";
 import HomeInvestor from "./screens/Investor/HomeInvestor";
 import CompleteProfile from "./screens/Investor/CompleteProfile";
 import InvestorRegistration from "./screens/Investor/InvesterRegistration";
+import UpdatePlan from "./screens/Investor/UpdatePlan";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
@@ -128,6 +129,11 @@ function LoadInvestor() {
         name="CompleteProfile"
         component={CompleteProfile}
         options={{ ...myOptions, title: "Complete Profile" }}
+      />
+      <InvestorStack.Screen
+        name="UpdatePlan"
+        component={UpdatePlan}
+        options={{ ...myOptions, title: "Update Plan" }}
       />
     </InvestorStack.Navigator>
   );

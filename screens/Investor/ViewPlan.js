@@ -75,7 +75,7 @@ const ViewPlan = ({ navigation }) => {
             <Text style={styles.descriptionStyle}>{data.condition}</Text>
           </Card>
           <Button
-            onPress={() => navigation.navigate("CreateInvestment")}
+            onPress={() => navigation.navigate("UpdatePlan", data)}
             style={{
               width: 300,
               padding: 3,

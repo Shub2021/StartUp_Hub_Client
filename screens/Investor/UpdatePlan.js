@@ -17,18 +17,22 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 
-const CreateInvestment = ({ navigation }) => {
-  const [title, setTitle] = useState("");
-  const [minInvest, setminInvest] = useState("");
-  const [maxInvest, setmaxInvest] = useState("");
-  const [interestTime, setinterestTime] = useState("");
-  const [interestRate, setinterestRate] = useState("");
-  const [description, setDescription] = useState("");
-  const [condition, setCondition] = useState("");
+const UpdatePlan = ({ navigation, route }) => {
+  console.log(route);
+  const [data, setData] = useState(route.params);
+  const [_id, setID] = useState(route.params._id);
+
+  const [title, setTitle] = useState(route.params.title);
+  const [minInvest, setminInvest] = useState(route.params.minInvest);
+  const [maxInvest, setmaxInvest] = useState(route.params.maxInvest);
+  const [interestTime, setinterestTime] = useState(route.params.interestTime);
+  const [interestRate, setinterestRate] = useState(route.params.interestRate);
+  const [description, setDescription] = useState(route.params.description);
+  const [condition, setCondition] = useState(route.params.condition);
 
   const submitData = () => {
-    fetch(URLs.cn + "/plan/send", {
-      method: "POST",
+    fetch(URLs.cn + "/plan/" + _id, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
@@ -41,9 +45,12 @@ const CreateInvestment = ({ navigation }) => {
         description,
         condition,
       }),
-    }).then((res) => res.json());
-    Alert.alert("Investment Plan Created Succesfully");
-    navigation.navigate("ViewPlan");
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert("Investment Plan Created Succesfully");
+        navigation.navigate("ViewPlan");
+      });
   };
 
   return (
@@ -192,4 +199,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateInvestment;
+export default UpdatePlan;

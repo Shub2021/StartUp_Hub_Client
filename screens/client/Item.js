@@ -71,8 +71,8 @@ const Item = ({ route, navigation }) => {
   function addItemToCart() {
     console.log(product);
     console.log(cart);
-    cart.productList.
-    
+    // cart.productList.
+
     // cart.productList[cart.productList.length] =
   }
 

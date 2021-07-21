@@ -48,9 +48,11 @@ router.post("/delete", (req, res) => {
     });
 });
 
-router.post("/update", (req, res) => {
-  investmentPlan
-    .findByIdAndUpdate(req.body.id, {
+router.patch("/:planID", (req, res, next) => {
+  const id = req.params.planID;
+  InvestmentPlan.findByIdAndUpdate(
+    { _id: id },
+    {
       title: req.body.title,
       minInvest: req.body.minInvest,
       maxInvest: req.body.maxInvest,
@@ -58,13 +60,16 @@ router.post("/update", (req, res) => {
       interestRate: req.body.interestRate,
       description: req.body.description,
       condition: req.body.condition,
-    })
-    .then((data) => {
-      console.log(data);
-      res.send(data);
+    }
+  )
+    .exec()
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
+      res.status(500).json({ error: err });
     });
 });
 
