@@ -13,6 +13,8 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
+import Iconics from "react-native-vector-icons/MaterialCommunityIcons";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icons from "@expo/vector-icons/AntDesign";
 import { URLs } from "../constants";
@@ -22,6 +24,8 @@ export default function Login(props) {
   //const dispatch = useDispatch();
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [notvisible, setVisible] = useState(true);
+
   const signin = async () => {
     fetch(URLs.cn + "/users/login", {
       method: "post",
@@ -84,7 +88,7 @@ export default function Login(props) {
           onChangeText={(text) => setEmail(text)}
         />
       </View>
-      <View style={styles.inputContainer}>
+      {/* <View style={styles.inputContainer}>
         <Icons name="lock" color="#306bff" size={20} />
         <TextInput
           style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 18 }}
@@ -92,7 +96,32 @@ export default function Login(props) {
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
+      </View> */}
+      <View style={styles.inputContainer}>
+        <Icons name="lock" color="#306bff" size={25} />
+        <TextInput
+          style={{
+            paddingHorizontal: 10,
+            color: "#306bff",
+            fontSize: 20,
+          }}
+          placeholder="Password"
+          value={password}
+          secureTextEntry={notvisible}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TouchableOpacity
+          style={{ marginLeft: 280, top: 6, position: "absolute" }}
+          onPress={() => setVisible(!notvisible)}
+        >
+          {notvisible ? (
+            <Iconics name="eye-outline" color="#306bff" size={25} />
+          ) : (
+            <Iconics name="eye-off-outline" color="#306bff" size={25} />
+          )}
+        </TouchableOpacity>
       </View>
+
       <TouchableOpacity
         style={[styles.inputContainer, styles.btn]}
         onPress={signin}

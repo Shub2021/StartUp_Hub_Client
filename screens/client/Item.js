@@ -69,10 +69,24 @@ const Item = ({ route, navigation }) => {
   };
 
   function addItemToCart() {
-    console.log(product);
-    console.log(cart);
-    cart.productList.
-    
+    // console.log(cart);
+
+    if (cart[0].productList.length > 0) {
+
+      for (let Object of cart[0].productList) {
+        console.log(Object.username + " neeeeeeeee");
+        if (Object._id == product._id) {
+          Alert.alert("Product is already added to the cart");
+          return;
+        }
+      }
+    } else {
+      cart[0].productList = [product._id];
+      console.log(cart[0].productList);
+      console.log(cart);
+    }
+    // cart.productList.
+
     // cart.productList[cart.productList.length] =
   }
 
