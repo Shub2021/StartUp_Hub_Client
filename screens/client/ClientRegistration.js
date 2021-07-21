@@ -31,7 +31,6 @@ export default function Register(props) {
 
   function submitData() {
     if (password == repassword) {
-      console.log(password + " pwd");
       props.navigation.navigate("postRegisterForm", { name, email, password });
     } else {
       Alert.alert("Password and re entered passwors does not match");
@@ -153,7 +152,7 @@ const styles = StyleSheet.create({
     // alignSelf: "center",
     padding: SIZES.padding * 2,
     marginTop: SIZES.body3,
-    // color: "#1255ff",
+    color: "#1255ff",
   },
   btn: {
     backgroundColor: "#306bff",

@@ -19,6 +19,7 @@ import ViewPlan from "./screens/Investor/ViewPlan";
 import Notifications from "./screens/Investor/Notifications";
 import HomeInvestor from "./screens/Investor/HomeInvestor";
 import CompleteProfile from "./screens/Investor/CompleteProfile";
+import InvestorRegistration from "./screens/Investor/InvesterRegistration";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
@@ -199,6 +200,11 @@ export default function App() {
               component={postRegisterForm}
               options={{ ...myOptions, title: "Account Type" }}
             />
+            <Stack.Screen
+              name="InvestorRegistration"
+              component={InvestorRegistration}
+              options={{ ...myOptions, title: "Investor Registration" }}
+            />
           </Stack.Navigator>
         ) : (
           <Stack.Navigator
@@ -222,6 +228,11 @@ export default function App() {
               component={postRegisterForm}
               options={{ ...myOptions, title: "Account Type" }}
             />
+            <Stack.Screen
+              name="InvestorRegistration"
+              component={InvestorRegistration}
+              options={{ ...myOptions, title: "Investor Registration" }}
+            />
           </Stack.Navigator>
         )
       ) : (
@@ -244,6 +255,15 @@ export default function App() {
             name="postRegisterForm"
             component={postRegisterForm}
             options={{ ...myOptions, title: "Account Type" }}
+          />
+          <Stack.Screen
+            name="InvestorRegistration"
+            component={InvestorRegistration}
+            options={{
+              ...myOptions,
+              title: "Investor Registration",
+              headerShown: true,
+            }}
           />
           <Stack.Screen
             name="LoadClientScreens"

@@ -7,6 +7,7 @@ const Investor_RegSchema = new mongoose.Schema({
   cAddress: String,
   nic: Number,
   cTel: Number,
+  email: String,
 });
 
 module.exports = mongoose.model("Investors", Investor_RegSchema);

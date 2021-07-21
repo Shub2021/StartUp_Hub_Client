@@ -22,6 +22,7 @@ router.post("/send", (req, res) => {
     cAddress: req.body.cAddress,
     nic: req.body.nic,
     cTel: req.body.cTel,
+    email:req.body.email,
   });
   investors
     .save()
