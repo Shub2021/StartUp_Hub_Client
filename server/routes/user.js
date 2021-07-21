@@ -22,7 +22,7 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-  console.log("awaaaaaaaaaaa");
+  console.log(req.body);
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -38,6 +38,9 @@ router.post("/signup", (req, res, next) => {
             });
           } else {
             console.log(hash);
+            console.log(req.body.name);
+            console.log(req.body.email);
+            console.log(req.body.type);
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               name: req.body.name,

@@ -373,9 +373,6 @@ const Home = ({ navigation }) => {
 
     setSelectedCategory(category);
     setselectedProducts(productlist);
-    // console.log(data);
-    console.log(category.name);
-    console.log(productlist);
   }
 
   function getCategoryNameById(id) {

@@ -41,9 +41,7 @@ const Item = ({ route, navigation }) => {
       fetch(URLs.cn + "/product/" + product_category)
         .then((res) => res.json())
         .then((result) => {
-          // console.log(result);
           setMenuItems(result);
-          //   console.log(menuItems);
         });
     }
   };
@@ -53,7 +51,6 @@ const Item = ({ route, navigation }) => {
       fetch(URLs.cn + "/company/" + br_no)
         .then((res) => res.json())
         .then((result) => {
-          // console.log(result);
           setCompany(result);
         });
       setloading(false);
@@ -63,21 +60,24 @@ const Item = ({ route, navigation }) => {
   const getData = async () => {
     const email = await AsyncStorage.getItem("email");
     setEmail(email);
-  };
-
-  function getClientCart(userEmail) {
-    fetch(URLs.cn + "/cart/" + userEmail)
+    fetch(URLs.cn + "/cart/" + email)
       .then((res) => res.json())
       .then((result) => {
         setCart(result);
       });
-  }
+  };
 
   function addItemToCart() {
-    getClientCart(email);
+    // if (orderItems) {
+
+    // } else {
+
+    // }
+    console.log("awaaaaaaaaaa");
     console.log(product);
-    console.log(orderItems);
+
     console.log(cart);
+    console.log(orderItems);
     // cart.productList[cart.productList.length] =
   }
 
@@ -213,7 +213,14 @@ const Item = ({ route, navigation }) => {
         //   { useNativeDriver: false }
         // )}
       >
-        <Text style={{ ...FONTS.body2, textAlign: "center" }}>
+        <Text
+          style={{
+            ...FONTS.h2,
+            textAlign: "center",
+            marginTop: 15,
+            marginBottom: 15,
+          }}
+        >
           Similer Products
         </Text>
         {menuItems?.map((item, index) => {
@@ -450,7 +457,7 @@ const Item = ({ route, navigation }) => {
           >
             <Text style={{ color: COLORS.black, ...FONTS.body3 }}>Reviews</Text>
           </TouchableOpacity>
-          {renderDots()}
+          {/* {renderDots()} */}
         </View>
 
         {/*  })} */}
@@ -530,7 +537,7 @@ const Item = ({ route, navigation }) => {
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              paddingVertical: SIZES.padding * 2,
+              paddingVertical: SIZES.padding,
               paddingHorizontal: SIZES.padding * 3,
               borderBottomColor: COLORS.lightGray2,
               borderBottomWidth: 1,
@@ -560,7 +567,7 @@ const Item = ({ route, navigation }) => {
               justifyContent: "center",
             }}
           >
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", flex: 1 }}>
               <Image
                 source={icons.pin}
                 resizeMode="contain"
@@ -586,14 +593,14 @@ const Item = ({ route, navigation }) => {
 
             <TouchableOpacity
               style={{
-                padding: SIZES.padding,
+                padding: SIZES.padding * 0.2,
                 backgroundColor: COLORS.secondary,
                 alignItems: "center",
-                borderRadius: SIZES.radius,
-                marginBottom: SIZES.padding,
+                // borderRadius: SIZES.radius,
+                // marginBottom: SIZES.padding,
                 flex: 1,
               }}
-              onPress={addItemToCart()}
+              onPress={addItemToCart}
             >
               <Text style={{ color: COLORS.white, ...FONTS.h2 }}>
                 Add to cart
@@ -601,10 +608,10 @@ const Item = ({ route, navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                padding: SIZES.padding,
+                padding: SIZES.padding * 0.2,
                 backgroundColor: COLORS.primary,
                 alignItems: "center",
-                borderRadius: SIZES.radius,
+                // borderRadius: SIZES.radius,
                 flex: 1,
               }}
               onPress={() =>

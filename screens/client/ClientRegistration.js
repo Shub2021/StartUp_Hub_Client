@@ -28,36 +28,15 @@ export default function Register(props) {
   const abortController = new AbortController();
   const type = "client";
 
-  const submitData = () => {
+  function submitData() {
     if (password == repassword) {
-      console.log("aoffffaaaaaaaaa");
-      console.log(
-        JSON.stringify({
-          name,
-          email,
-          type,
-          password,
-        })
-      );
-      console.log(URLs.cn);
-      fetch(URLs.cn + "/users/signup", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          type,
-          password,
-        }),
-      });
-
-      Alert.alert("Registered Successfully");
-      props.navigation.navigate("Login");
+      console.log(password + " pwd");
+      props.navigation.navigate("postRegisterForm", { name, email, password });
     } else {
       Alert.alert("Password and re entered passwors does not match");
     }
-    abortController.abort();
-  };
+    // abortController.abort();
+  }
 
   return (
     <KeyboardAvoidingView
@@ -114,17 +93,10 @@ export default function Register(props) {
             onChangeText={(text) => setRePassword(text)}
           />
         </View>
+
         <TouchableOpacity
           style={[styles.inputContainer, styles.btn]}
           onPress={submitData}
-        >
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-            Register
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.inputContainer, styles.btn]}
-          onPress={() => props.navigation.navigate("postRegisterForm")}
         >
           <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
             Next
