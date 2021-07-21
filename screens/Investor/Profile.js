@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { Title, Card, Button, Badge } from "react-native-paper";
 import {
@@ -9,8 +9,25 @@ import {
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CompleteProfile from "./CompleteProfile";
+import { URLs } from "../../constants";
 
 const Profile = (props) => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const getData = () => {
+    fetch(URLs.cn + "/investor/")
+      .then((response) => response.json())
+      .then((json) => {
+        setData(json);
+      });
+  };
+
+  useEffect(() => {
+    // .catch((error) => console.error(error))
+    getData();
+    setLoading(false);
+    console.log(data);
+  }, []);
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("token");
@@ -30,7 +47,10 @@ const Profile = (props) => {
       <ScrollView>
         <Card style={styles.cardHeader}>
           <View>
-            <Image style={{ height: 150 }} />
+            <Image
+              source={require("../../assets/images/startup_logo_cover.png")}
+              style={{ height: 150, width: 425 }}
+            />
             <View style={{ alignItems: "center", marginTop: -50 }}>
               <Image
                 style={{ width: 140, height: 140, borderRadius: 70 }}
@@ -50,7 +70,7 @@ const Profile = (props) => {
                   marginBottom: 20,
                 }}
               >
-                Ravindu Perera
+                {data.cName}
               </Title>
               <MaterialIcons
                 style={{ marginTop: 7, marginLeft: 5 }}
@@ -72,7 +92,7 @@ const Profile = (props) => {
             />
             <View style={{ marginLeft: 20 }}>
               <Text style={styles.fieldTitle}>Investmont Filed</Text>
-              <Text style={styles.cardField}>Financial Investment</Text>
+              <Text style={styles.cardField}>{data.investArea}</Text>
             </View>
           </View>
         </Card>
@@ -86,7 +106,7 @@ const Profile = (props) => {
             />
             <View style={{ marginLeft: 20 }}>
               <Text style={styles.fieldTitle}>Contact Number</Text>
-              <Text style={styles.cardField}>076-6552441</Text>
+              <Text style={styles.cardField}>{data.cTel}</Text>
             </View>
           </View>
         </Card>
@@ -159,18 +179,11 @@ const Profile = (props) => {
             Logout
           </Button>
           <Button
+            style={{
+              borderRadius: 20,
+            }}
             onPress={() => props.navigation.navigate("CompleteProfile")}
-            style={
-              {
-                // width: "100%",
-                // padding: 3,
-                // marginTop: 20,
-                // marginLeft: 50,
-                // marginRight: 50,
-                // marginBottom: 20,
-              }
-            }
-            color="#cdeaff"
+            color="#a4c8ff"
             icon="autorenew"
             mode="contained"
           >

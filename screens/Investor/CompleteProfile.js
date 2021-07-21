@@ -1,13 +1,35 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { TextInput, Button } from "react-native-paper";
+import { URLs } from "../../constants";
 
-const CompleteProfile = () => {
-  const [bName, setbName] = useState("");
-  const [investArea, seInvestArea] = useState("");
-  const [bAddress, setbAddress] = useState("");
-  const [uNIC, setuNIC] = useState("");
-  const [bTelephone, setbTelephone] = useState("");
+const CompleteProfile = ({ navigation }) => {
+  const [cName, setcName] = useState("");
+  const [investArea, setinvestArea] = useState("");
+  const [cAddress, setcAddress] = useState("");
+  const [nic, setnic] = useState("");
+  const [cTel, setcTel] = useState("");
+
+  const submitData = () => {
+    fetch(URLs.cn + "/investor/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cName,
+        investArea,
+        cAddress,
+        nic,
+        cTel,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert("Profile Updated Succesfully");
+        navigation.navigate("Profile");
+      });
+  };
 
   return (
     <View style={styles.root}>
@@ -15,10 +37,10 @@ const CompleteProfile = () => {
         <TextInput
           style={styles.inputStyles}
           label="Business Name"
-          value={bName}
+          value={cName}
           theme={theme}
           mode="outlined"
-          onChangeText={(text) => setbName(text)}
+          onChangeText={(text) => setcName(text)}
         />
         <TextInput
           style={styles.inputStyles}
@@ -26,42 +48,41 @@ const CompleteProfile = () => {
           value={investArea}
           theme={theme}
           mode="outlined"
-          onChangeText={(text) => seInvestArea(text)}
+          onChangeText={(text) => setinvestArea(text)}
         />
         <TextInput
           style={styles.inputStyles}
           label="Business Address"
-          value={bAddress}
+          value={cAddress}
           theme={theme}
           mode="outlined"
-          onChangeText={(text) => setbAddress(text)}
+          onChangeText={(text) => setcAddress(text)}
         />
         <TextInput
           style={styles.inputStyles}
           label="Investor NIC"
-          value={uNIC}
+          value={nic}
           theme={theme}
           mode="outlined"
-          onChangeText={(text) => setuNIC(text)}
+          onChangeText={(text) => setnic(text)}
         />
 
         <TextInput
           style={styles.inputStyles}
           label="Business Telephone"
-          value={bTelephone}
+          value={cTel}
           theme={theme}
           mode="outlined"
-          onChangeText={(text) => setbTelephone(text)}
+          onChangeText={(text) => setcTel(text)}
         />
 
         <View>
           <Button
-            // onPress={() => navigation.navigate("ViewPlan")}
             style={{ margin: 50 }}
             color="#79c7ff"
             icon="content-save-outline"
             mode="contained"
-            // onPress={() => navigation.navigate("ViewPlan")}
+            onPress={() => submitData()}
           >
             Save
           </Button>

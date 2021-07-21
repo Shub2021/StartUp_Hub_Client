@@ -39,6 +39,7 @@ const ViewPlan = ({ navigation }) => {
       {!isLoading ? (
         <>
           <Card style={styles.investCard}>
+            <Text></Text>
             <Title>01) Investment Area</Title>
             <Text style={styles.filed}>{data.title}</Text>
 

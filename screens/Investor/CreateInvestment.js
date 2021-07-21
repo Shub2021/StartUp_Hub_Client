@@ -139,7 +139,6 @@ const CreateInvestment = ({ navigation }) => {
 
         <View style={{ alignItems: "center", marginTop: 30 }}>
           <Button
-            // onPress={()=>props.navigation.navigate('CreateInvestment')}
             style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
             icon=""
             mode="contained"
@@ -153,7 +152,6 @@ const CreateInvestment = ({ navigation }) => {
             color="#0396FF"
             icon="cursor-default-click-outline"
             mode="outlined"
-            // onPress={() => navigation.navigate("ViewPlan")}
           >
             View Plan
           </Button>
