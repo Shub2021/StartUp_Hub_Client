@@ -17,6 +17,7 @@ import {
   Picker,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Iconics from "react-native-vector-icons/MaterialCommunityIcons";
 import { URLs } from "../../constants";
 import { SIZES } from "../../constants/index";
 
@@ -25,6 +26,7 @@ export default function Register(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRePassword] = useState("");
+  const [notvisible, setVisible] = useState(true);
 
   const abortController = new AbortController();
   const type = "client";
@@ -83,16 +85,38 @@ export default function Register(props) {
             style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
             placeholder="Password"
             value={password}
+            secureTextEntry={notvisible}
             onChangeText={(text) => setPassword(text)}
           />
+          <TouchableOpacity
+            style={{ marginLeft: 280, top: 6, position: "absolute" }}
+            onPress={() => setVisible(!notvisible)}
+          >
+            {notvisible ? (
+              <Iconics name="eye-outline" color="#306bff" size={25} />
+            ) : (
+              <Iconics name="eye-off-outline" color="#306bff" size={25} />
+            )}
+          </TouchableOpacity>
         </View>
         <View style={styles.inputContainer}>
           <TextInput
             style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
             placeholder="Re Enter Password"
             value={repassword}
+            secureTextEntry={notvisible}
             onChangeText={(text) => setRePassword(text)}
           />
+          <TouchableOpacity
+            style={{ marginLeft: 280, top: 6, position: "absolute" }}
+            onPress={() => setVisible(!notvisible)}
+          >
+            {notvisible ? (
+              <Iconics name="eye-outline" color="#306bff" size={25} />
+            ) : (
+              <Iconics name="eye-off-outline" color="#306bff" size={25} />
+            )}
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity

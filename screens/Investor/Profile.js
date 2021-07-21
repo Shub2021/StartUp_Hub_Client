@@ -122,7 +122,7 @@ const Profile = (props) => {
 
             <View style={{ marginLeft: 20 }}>
               <Text style={styles.fieldTitle}>E-mail</Text>
-              <Text style={styles.cardField}>sample@gmail.com</Text>
+              <Text style={styles.cardField}>{data.email}</Text>
             </View>
           </View>
         </Card>

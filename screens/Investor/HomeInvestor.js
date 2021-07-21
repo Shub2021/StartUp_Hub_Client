@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
+import { StyleSheet, Text, View, Image, FlatList, Alert } from "react-native";
 import { Card, Button, Badge } from "react-native-paper";
 import { URLs } from "../../constants";
 
@@ -62,7 +62,7 @@ const HomeInvestor = (navigation) => {
                 <Button
                   style={{
                     borderRadius: 20,
-                    // backgroundColor: "#cee4f9",
+                    borderWidth: 2,
                     borderColor: "#cee4f9",
                     marginTop: 10,
                     width: 150,
@@ -81,15 +81,15 @@ const HomeInvestor = (navigation) => {
                     marginLeft: 25,
                     borderWidth: 1.25,
                     borderColor: "#cee4f9",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    // alignItems: "center",
+                    // justifyContent: "center",
                     backgroundColor: "#cee4f9",
                     borderRadius: 50,
                   }}
                   icon="send"
                   mode="outlined"
                   theme={theme}
-                  onPress={() => console.log("Pressed")}
+                  onPress={() => Alert.alert("Request Sent to")}
                 >
                   Send Request
                 </Button>
