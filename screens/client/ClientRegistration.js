@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { URLs } from "../../constants";
+import { SIZES } from "../../constants/index";
 
 export default function Register(props) {
   const [name, setName] = useState("");
@@ -57,10 +58,11 @@ export default function Register(props) {
               onPress={() => props.navigation.navigate("Login")}
             />
           </TouchableOpacity>
-          <Text style={styles.title}>Register</Text>
+          <Text style={styles.title}>User Registration</Text>
         </View>
       </ImageBackground>
       <ScrollView>
+        <Text style={styles.topictxt}>User details</Text>
         <View style={styles.inputContainer}>
           <TextInput
             style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
@@ -137,13 +139,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 35,
-    borderWidth: 2,
+    borderWidth: 1,
     marginTop: 24,
     paddingHorizontal: 10,
     borderColor: "#306bff",
-    borderRadius: 23,
+    borderRadius: 10,
     paddingVertical: 2,
     height: 45,
+  },
+  topictxt: {
+    fontSize: 30,
+    fontWeight: "bold",
+    // alignSelf: "center",
+    padding: SIZES.padding * 2,
+    marginTop: SIZES.body3,
+    // color: "#1255ff",
   },
   btn: {
     backgroundColor: "#306bff",
