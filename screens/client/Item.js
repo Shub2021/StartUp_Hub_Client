@@ -26,6 +26,7 @@ const Item = ({ route, navigation }) => {
   const [cart, setCart] = React.useState(null);
   const [email, setEmail] = React.useState(null);
   const [orderItems, setOrderItems] = React.useState([]);
+  const [cartArrayToUpdate, setCartArrayToUpdate] = React.useState([]);
 
   const [menuItems, setMenuItems] = React.useState([]);
   const [loading, setloading] = React.useState(true);
@@ -69,24 +70,37 @@ const Item = ({ route, navigation }) => {
   };
 
   function addItemToCart() {
-    // console.log(cart);
-
-    if (cart[0].productList.length > 0) {
-      for (let Object of cart[0].productList) {
-        console.log(Object.username + " neeeeeeeee");
+    console.log(cart);
+    console.log(cart.productList.length);
+    if (cart.productList.length > 0) {
+      for (let Object of cart.productList) {
         if (Object._id == product._id) {
-          Alert.alert("Product is already added to the cart");
           return;
         }
       }
     } else {
-      cart[0].productList = [product._id];
-      console.log(cart[0].productList);
-      console.log(cart);
-    }
-    // cart.productList.
+      cart.productList = [product._id];
+      let pid = product._id;
 
-    // cart.productList[cart.productList.length] =
+      pid = JSON.stringify({ pid });
+      let arrayproduct = pid;
+      console.log(cart.productList);
+
+      console.log(arrayproduct);
+      console.log(arrayproduct);
+
+      fetch(URLs.cn + "/cart/" + cart._id, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: arrayproduct,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          Alert.alert("Product added to the Cart Succesfully");
+        });
+    }
   }
 
   function editOrder(action, menuId, price) {
@@ -555,7 +569,7 @@ const Item = ({ route, navigation }) => {
               {/* {getBasketItemCount()} s */}
               Toatal Price
             </Text>
-            <Text style={{ ...FONTS.h3 }}> ${sumOrder()}</Text>
+            <Text style={{ ...FONTS.h3 }}> Rs. {sumOrder()}</Text>
           </View>
           <View
             style={{

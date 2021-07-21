@@ -359,10 +359,16 @@ const ItemReviews = ({ route, navigation }) => {
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.contentHeader}>
-            <Text style={styles.name}>{item._id}</Text>
-            <Text style={styles.time}>9:58 am</Text>
+            <Text style={styles.name}>{item.client}</Text>
           </View>
           <Text rkType="primary3 mediumLine">{item.comment}</Text>
+          <View
+            style={{
+              borderBottomColor: "black",
+              borderBottomWidth: 1,
+              marginTop: 5,
+            }}
+          />
         </View>
       </View>
     );

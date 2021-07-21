@@ -21,7 +21,7 @@ router.get("/", (req, res, next) => {
 
 router.get("/:userEmail", (req, res, next) => {
   const userEmail = req.params.userEmail;
-  Cart.find({ clientEmail: userEmail })
+  Cart.findOne({ clientEmail: userEmail })
     .exec()
     .then((docs) => {
       if (docs.length < 1) {
@@ -34,6 +34,7 @@ router.get("/:userEmail", (req, res, next) => {
           res.status(200).json(result);
         });
       } else {
+        console.log(docs);
         res.status(200).json(docs);
       }
     })
@@ -46,16 +47,12 @@ router.get("/:userEmail", (req, res, next) => {
 });
 
 router.patch("/:cartId", (req, res, next) => {
-  const id = req.params.userID;
-  User.findByIdAndUpdate(
+  console.log(req.body.arrayproduct);
+  const id = req.params.cartId;
+  Cart.findByIdAndUpdate(
     { _id: id },
     {
-      name: req.body.user_name,
-      email: req.body.email,
-      img: req.body.picture,
-      Address: req.body.address,
-      NIC: req.body.NIC,
-      mobile: req.body.mobile,
+      productList: req.body.arrayproduct,
     }
   )
     .exec()
