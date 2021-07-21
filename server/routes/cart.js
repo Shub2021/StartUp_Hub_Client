@@ -45,6 +45,30 @@ router.get("/:userEmail", (req, res, next) => {
     });
 });
 
+router.patch("/:cartId", (req, res, next) => {
+  const id = req.params.userID;
+  User.findByIdAndUpdate(
+    { _id: id },
+    {
+      name: req.body.user_name,
+      email: req.body.email,
+      img: req.body.picture,
+      Address: req.body.address,
+      NIC: req.body.NIC,
+      mobile: req.body.mobile,
+    }
+  )
+    .exec()
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+});
+
 // router.post("/", (req,res, next) => {
 //     _id: new mongoose.Types.ObjectId(),
 //     clientId: req.body.clientId,
