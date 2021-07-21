@@ -75,7 +75,6 @@ const Item = ({ route, navigation }) => {
     if (cart.productList.length > 0) {
       for (let Object of cart.productList) {
         if (Object._id == product._id) {
-          Alert.alert("Product is already added to the cart");
           return;
         }
       }
