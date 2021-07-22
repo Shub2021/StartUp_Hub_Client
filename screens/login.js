@@ -17,7 +17,7 @@ import Iconics from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icons from "@expo/vector-icons/AntDesign";
-import { URLs } from "../constants";
+import { FONTS, URLs } from "../constants";
 //import { useSelector, useDispatch } from "react-redux";
 
 export default function Login(props) {
@@ -126,7 +126,7 @@ export default function Login(props) {
         style={[styles.inputContainer, styles.btn]}
         onPress={signin}
       >
-        <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
+        <Text style={{ color: "white", fontSize: 20, fontWeight: "bold"}}>
           Log in
         </Text>
       </TouchableOpacity>

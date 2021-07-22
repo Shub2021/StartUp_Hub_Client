@@ -244,7 +244,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Excellent
             </Text>
             <View style={{ flex: 1 }}>
@@ -265,7 +265,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Good
             </Text>
             <View style={{ flex: 1 }}>
@@ -286,7 +286,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Average
             </Text>
             <View style={{ flex: 1 }}>
@@ -307,7 +307,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Below Average
             </Text>
             <View style={{ flex: 1 }}>
@@ -328,7 +328,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Poor
             </Text>
             <View style={{ flex: 1 }}>
@@ -361,7 +361,9 @@ const ItemReviews = ({ route, navigation }) => {
           <View style={styles.contentHeader}>
             <Text style={styles.name}>{item.client}</Text>
           </View>
-          <Text rkType="primary3 mediumLine">{item.comment}</Text>
+          <Text style={{ ...FONTS.body5 }} rkType="primary3 mediumLine">
+            {item.comment}
+          </Text>
           <View
             style={{
               borderBottomColor: "black",
@@ -446,7 +448,7 @@ const ItemReviews = ({ route, navigation }) => {
                 padding: SIZES.padding * 2,
               }}
             >
-              <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding }}>
+              <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding }}>
                 Rate the Product
               </Text>
               <StarRating
@@ -461,7 +463,7 @@ const ItemReviews = ({ route, navigation }) => {
                 }}
               />
               <View style={styles.separator} />
-              <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding }}>
+              <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding }}>
                 Add your comment
               </Text>
               <TextInput
@@ -474,6 +476,7 @@ const ItemReviews = ({ route, navigation }) => {
                   borderWidth: 4,
                   marginBottom: SIZES.padding,
                   textAlign: "center",
+                  ...FONTS.body3,
                 }}
                 // onChangeText="Enter the comment"
                 // value="Enter the comment"
@@ -560,8 +563,9 @@ const styles = StyleSheet.create({
     color: "#808080",
   },
   name: {
+    ...FONTS.body3,
     fontSize: SIZES.body3,
-    fontWeight: "bold",
+    // fontWeight: "bold",
   },
 });
 

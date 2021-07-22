@@ -250,7 +250,7 @@ const Item = ({ route, navigation }) => {
             <TouchableOpacity
               key={`menu-${index}`}
               style={{
-                marginBottom: SIZES.padding * 2,
+                margin: SIZES.padding * 2,
               }}
               // onPress={() => navigation.navigate("Item", { item, currentLocation })}
               onPress={() => navigation.navigate("Item", item)}
