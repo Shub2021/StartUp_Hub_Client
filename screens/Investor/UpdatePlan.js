@@ -70,7 +70,7 @@ const UpdatePlan = ({ navigation, route }) => {
             <TextInput
               style={styles.inputStyles}
               label="Minimum Investment"
-              value={minInvest}
+              value={minInvest.toString()}
               theme={theme}
               keyboardType="number-pad"
               mode="outlined"
@@ -81,7 +81,7 @@ const UpdatePlan = ({ navigation, route }) => {
             <TextInput
               style={styles.inputStyles}
               label="Maximum Investment"
-              value={maxInvest}
+              value={maxInvest.toString()}
               theme={theme}
               keyboardType="number-pad"
               mode="outlined"
@@ -109,7 +109,7 @@ const UpdatePlan = ({ navigation, route }) => {
             <TextInput
               style={styles.inputStyles}
               label="Growth Rate"
-              value={interestRate}
+              value={interestRate.toString()}
               theme={theme}
               mode="outlined"
               onChangeText={(Number) => setinterestRate(Number)}
