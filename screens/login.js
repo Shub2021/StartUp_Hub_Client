@@ -138,6 +138,17 @@ export default function Login(props) {
           Register
         </Text>
       </TouchableOpacity>
+      <Text
+        style={{
+          color: "blue",
+          fontSize: 16,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginTop: 15,
+        }}
+      >
+        Forget Login
+      </Text>
     </KeyboardAvoidingView>
   );
 }

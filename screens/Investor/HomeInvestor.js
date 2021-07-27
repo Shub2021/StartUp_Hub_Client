@@ -89,7 +89,7 @@ const HomeInvestor = (navigation) => {
                   icon="send"
                   mode="outlined"
                   theme={theme}
-                  onPress={() => Alert.alert("Request Sent to")}
+                  onPress={() => Alert.alert("Request Sent")}
                 >
                   Send Request
                 </Button>
