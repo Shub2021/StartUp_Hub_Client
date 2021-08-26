@@ -21,6 +21,7 @@ import HomeInvestor from "./screens/Investor/HomeInvestor";
 import CompleteProfile from "./screens/Investor/CompleteProfile";
 import InvestorRegistration from "./screens/Investor/InvesterRegistration";
 import UpdatePlan from "./screens/Investor/UpdatePlan";
+import Statistics from "./screens/Investor/Statistics";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
@@ -47,12 +48,11 @@ const RootHome = () => {
               iconName = "home";
             } else if (route.name === "Notifications") {
               iconName = "notifications-none";
-            } else if (route.name === "ViewPlan") {
-              iconName = "view-in-ar";
+            } else if (route.name === "Statistics") {
+              iconName = "stacked-line-chart";
             }
 
             return <MaterialIcons name={iconName} size={32} color={color} />;
-            // return <EvilIcons name={iconName} size={32} color={color} />;
           },
         })}
         tabBarOptions={{
@@ -63,7 +63,7 @@ const RootHome = () => {
         <Tabs.Screen name="Profile" component={Profile} />
         <Tabs.Screen name="HomeInvestor" component={HomeInvestor} />
         <Tabs.Screen name="Notifications" component={Notifications} />
-        <Tabs.Screen name="ViewPlan" component={ViewPlan} />
+        <Tabs.Screen name="Statistics" component={Statistics} />
       </Tabs.Navigator>
     </>
   );
@@ -98,7 +98,7 @@ function LoadInvestor() {
       <InvestorStack.Screen
         name="Profile"
         component={RootHome}
-        options={{ ...myOptions, title: "Profile" }}
+        options={{ ...myOptions, title: "Startup Hub" }}
       />
       <InvestorStack.Screen
         name="ViewPlan"
@@ -108,7 +108,7 @@ function LoadInvestor() {
       <InvestorStack.Screen
         name="CreateInvestment"
         component={CreateInvestment}
-        options={{ ...myOptions, title: "CreateInvestment" }}
+        options={{ ...myOptions, title: "Create Investment" }}
       />
       <InvestorStack.Screen
         name="Notifications"
@@ -118,12 +118,12 @@ function LoadInvestor() {
       <InvestorStack.Screen
         name="SubscribedStartups"
         component={SubscribedStartups}
-        options={{ ...myOptions, title: "SubscribedStartups" }}
+        options={{ ...myOptions, title: "Subscribed Startups" }}
       />
       <InvestorStack.Screen
         name="HomeInvestor"
         component={HomeInvestor}
-        options={{ ...myOptions, title: "HomeInvestor" }}
+        options={{ ...myOptions, title: "Hom" }}
       />
       <InvestorStack.Screen
         name="CompleteProfile"
@@ -134,6 +134,11 @@ function LoadInvestor() {
         name="UpdatePlan"
         component={UpdatePlan}
         options={{ ...myOptions, title: "Update Plan" }}
+      />
+      <InvestorStack.Screen
+        name="Statistics"
+        component={Statistics}
+        options={{ ...myOptions, title: "Statistics" }}
       />
     </InvestorStack.Navigator>
   );

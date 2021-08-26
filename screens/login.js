@@ -84,6 +84,7 @@ export default function Login(props) {
         <TextInput
           style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 18 }}
           placeholder="Email"
+          autoCapitalize="none"
           value={email}
           onChangeText={(text) => setEmail(text)}
         />

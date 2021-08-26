@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import {
-  Title,
-  Card,
-  Button,
-  Badge,
-  ActivityIndicator,
-} from "react-native-paper";
+import { Title, Card, Button, ActivityIndicator } from "react-native-paper";
 import { URLs } from "../../constants";
-
-import {
-  MaterialCommunityIcons,
-  Ionicons,
-  Fontisto,
-  MaterialIcons,
-} from "@expo/vector-icons";
 
 const ViewPlan = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
@@ -28,7 +15,6 @@ const ViewPlan = ({ navigation }) => {
   };
 
   useEffect(() => {
-    // .catch((error) => console.error(error))
     getData();
     setLoading(false);
     console.log(data);
@@ -36,7 +22,7 @@ const ViewPlan = ({ navigation }) => {
 
   return (
     <View style={styles.root}>
-      {!isLoading ? (
+      {data !== null ? (
         <>
           <Card style={styles.investCard}>
             <Text></Text>
@@ -90,7 +76,9 @@ const ViewPlan = ({ navigation }) => {
           </Button>
         </>
       ) : (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <View>
+          <Text>There are no data</Text>
+        </View>
       )}
     </View>
   );
