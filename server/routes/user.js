@@ -37,7 +37,6 @@ router.post("/signup", (req, res, next) => {
               error: err,
             });
           } else {
-
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               name: req.body.name,

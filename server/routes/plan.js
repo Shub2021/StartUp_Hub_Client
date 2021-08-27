@@ -13,11 +13,22 @@ router.get("/", (req, res) => {
       console.log(err);
     });
 });
+router.get("/:email", (req, res) => {
+  const email = req.params.email;
+  InvestmentPlan.find({ investorEmail: email })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 router.post("/send", (req, res) => {
   const investmentPlan = new InvestmentPlan({
     _id: new mongoose.Types.ObjectId(),
     title: req.body.title,
+    investorEmail: req.body.email,
     minInvest: req.body.minInvest,
     maxInvest: req.body.maxInvest,
     interestTime: req.body.interestTime,
