@@ -18,6 +18,22 @@ router.get("/", (req, res, next) => {
       });
     });
 });
+router.get("/br/:br", (req, res, next) => {
+  const br = req.params.br;
+  Product.find({ br_number: br })
+    .exec()
+    .then((docs) => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
 router.post("/", (req, res, next) => {
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),

@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { URLs } from "../../constants";
 
-const Profile = (props) => {
+const StartupProfile = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [planEmail, setPlanEmail] = useState("");
   const [planExist, setPlanExist] = useState(false);
@@ -240,4 +240,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+export default StartupProfile;

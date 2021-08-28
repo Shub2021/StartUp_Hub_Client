@@ -11,7 +11,6 @@ import {
 import { Card, Button } from "react-native-paper";
 import { URLs } from "../../constants";
 
-import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeInvestor = (props) => {
@@ -68,7 +67,7 @@ const HomeInvestor = (props) => {
       return (
         <TouchableWithoutFeedback
           onPress={async () => {
-            await AsyncStorage.setItem("br", br_number);
+            await AsyncStorage.setItem("br", item.br_number);
             props.navigation.navigate("StartupStatistics");
           }}
         >

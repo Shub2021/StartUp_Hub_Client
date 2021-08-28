@@ -19,6 +19,7 @@ const cartRoutes = require("./routes/cart");
 const investor_requestRoutes = require("./routes/investor_request");
 const startup_requestRoutes = require("./routes/startup_request");
 const subscribetRoutes = require("./routes/subscribe");
+const orderRoutes = require("./routes/orders");
 
 application.use(bodyParser.json());
 
@@ -57,6 +58,7 @@ application.use("/cart", cartRoutes);
 application.use("/investorrequest", investor_requestRoutes);
 application.use("/startuprequest", startup_requestRoutes);
 application.use("/subscribe", subscribetRoutes);
+application.use("/order", orderRoutes);
 
 application.listen(3000, () => {
   console.log("server running");

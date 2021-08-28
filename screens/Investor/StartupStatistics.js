@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
+
 import { Title, Card, Button } from "react-native-paper";
 import {
   MaterialCommunityIcons,
@@ -15,11 +16,68 @@ import {
   Fontisto,
   MaterialIcons,
 } from "@expo/vector-icons";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import Icons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
 
 import { URLs } from "../../constants";
 
-const Profile = (props) => {
+const StartupStatistics = (props) => {
+  const chartConfig = {
+    backgroundGradientFrom: "green",
+    backgroundGradientFromOpacity: 1,
+    backgroundGradientTo: "green",
+    backgroundGradientToOpacity: 0.7,
+    color: (opacity = 0.5) => `rgba(255, 255, 255, ${opacity})`,
+    strokeWidth: 1, // optional, default 3
+    barPercentage: 0.8,
+    useShadowColorFromDataset: false, // optional
+  };
+  const chartConfig2 = {
+    backgroundGradientFrom: "#00bd2c",
+    backgroundGradientFromOpacity: 1,
+    backgroundGradientTo: "#00bd2c",
+    backgroundGradientToOpacity: 0.7,
+    color: (opacity = 0.5) => `rgba(213, 239, 240, ${opacity})`,
+    strokeWidth: 1, // optional, default 3
+    barPercentage: 0.8,
+    useShadowColorFromDataset: false, // optional
+  };
+
+  const [email, setEmail] = useState("");
+  const [barlables, setbarlables] = useState([]);
+  const [bardata, setbardata] = useState([]);
+  const [income, setincome] = useState([]);
+  const [name, setName] = useState("");
+  const [ordercount, setOcount] = useState("0");
+  const [total, setTotal] = useState("0");
+  const [expence, setExpence] = useState("0");
+  const [profit, setProfit] = useState("0");
+  const [br, setBr] = useState("");
+  const [cmpcategory, setCategory] = useState("");
+  const [orderdata, setorderdata] = useState([]);
+  const [productdata, setproductdata] = useState([]);
+
+  const data1 = {
+    labels: barlables,
+    datasets: [
+      {
+        data: bardata,
+      },
+    ],
+  };
+  const data2 = {
+    labels: ["June", "July", "August", "September"],
+    datasets: [
+      {
+        data: income,
+      },
+    ],
+  };
+
   const [isLoading, setLoading] = useState(true);
   const [planEmail, setPlanEmail] = useState("");
   const [planExist, setPlanExist] = useState(false);
@@ -37,6 +95,66 @@ const Profile = (props) => {
         setData(result);
       });
     setPlanEmail(email);
+    let ll = 0;
+    let lables = [];
+    setBr(br_number);
+    fetch(URLs.cn + "/product/br/" + br_number)
+      .then((res) => res.json())
+      .then((result) => {
+        //console.log(result);
+        ll = result.length;
+
+        for (let i = 0; i < result.length; i++) {
+          //console.log(data[i].product_name);
+          lables.push(result[i].product_name);
+        }
+        setbarlables(lables);
+
+        fetch(URLs.cn + "/order/" + br_number)
+          .then((res) => res.json())
+          .then((result) => {
+            //console.log(result);
+            let l = result.length;
+            let c = 0;
+            let dat = [];
+            let totalinc = 0;
+            let totalexp = 0;
+            let incm = [0, 0, 0, 0];
+            for (let i = 0; i < ll; i++) {
+              dat[i] = 0;
+            }
+            for (let i = 0; i < l; i++) {
+              let indx = lables.indexOf(result[i].product_name);
+              dat[indx] = dat[indx] + result[i].quantity;
+              if (result[i].order_status === "placed") {
+                c = c + 1;
+              }
+              if (result[i].order_status === "completed") {
+                let d = result[i].req_date;
+                totalinc = totalinc + result[i].total;
+                totalexp = totalexp + result[i].expence * result[i].quantity;
+                let m = d.slice(5, 7);
+                console.log(m);
+                if (m === "06") {
+                  incm[0] = incm[0] + result[i].total;
+                } else if (m === "07") {
+                  incm[1] = incm[1] + result[i].total;
+                } else if (m === "08") {
+                  incm[2] = incm[2] + result[i].total;
+                } else if (m === "09") {
+                  incm[3] = incm[3] + result[i].total;
+                }
+              }
+            }
+            let totalpro = totalinc - totalexp;
+            setProfit(totalpro);
+            setExpence(totalexp);
+            setTotal(totalinc);
+            setincome(incm);
+            setOcount(c);
+            setbardata(dat);
+          });
+      });
     setLoading(false);
   };
   useEffect(() => {
@@ -45,19 +163,6 @@ const Profile = (props) => {
 
     console.log(data);
   }, []);
-  const logout = async () => {
-    try {
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("name");
-      await AsyncStorage.removeItem("email");
-      await AsyncStorage.removeItem("type");
-      props.navigation.navigate("Login");
-    } catch (e) {
-      console.log(e);
-    }
-
-    console.log("Done.");
-  };
 
   return (
     <View style={styles.container}>
@@ -146,33 +251,78 @@ const Profile = (props) => {
             </View>
           </Card>
 
+          <View style={{ marginBottom: 10 }}>
+            <BarChart
+              style={styles.card2}
+              data={data1}
+              width={330}
+              height={350}
+              yAxisLabel=""
+              chartConfig={chartConfig}
+              verticalLabelRotation={30}
+            />
+          </View>
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              marginBottom: 50,
-              marginTop: 50,
-            }}
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Button
-              onPress={logout}
-              color="#0396FF"
-              icon="logout"
-              mode="outlined"
+            <Card
+              style={styles.card3}
+              onPress={() => props.navigation.navigate("Orders")}
             >
-              Logout
-            </Button>
-            <Button
-              style={{
-                borderRadius: 20,
-              }}
-              onPress={() => props.navigation.navigate("CompleteProfile")}
-              color="#a4c8ff"
-              icon="autorenew"
-              mode="contained"
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
+                  paddingVertical: 15,
+                }}
+              >
+                <Text style={{ fontSize: 20 }}>Income</Text>
+                <Text style={{ fontSize: 15 }}>LKR {total}.00</Text>
+              </View>
+            </Card>
+            <Card
+              style={styles.card3}
+              onPress={() => props.navigation.navigate("Partners")}
             >
-              Update Profile
-            </Button>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
+                  paddingVertical: 15,
+                }}
+              >
+                <Text style={{ fontSize: 20 }}>Expence</Text>
+                <Text style={{ fontSize: 15 }}>LKR {expence}.00</Text>
+              </View>
+            </Card>
+            <Card
+              style={styles.card3}
+              onPress={() => props.navigation.navigate("Partners")}
+            >
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
+                  paddingVertical: 15,
+                }}
+              >
+                <Text style={{ fontSize: 20 }}>Profit</Text>
+                <Text style={{ fontSize: 15 }}>LKR {profit}.00</Text>
+              </View>
+            </Card>
+          </View>
+
+          <View style={{ marginBottom: 10 }}>
+            <LineChart
+              style={styles.card2}
+              data={data2}
+              width={330}
+              height={350}
+              yAxisLabel=""
+              chartConfig={chartConfig2}
+              verticalLabelRotation={30}
+              bezier
+            />
           </View>
         </ScrollView>
       ) : (
@@ -238,6 +388,36 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+  scrollcontainer: {
+    flex: 1,
+    marginTop: -22,
+    backgroundColor: "white",
+  },
+  card: {
+    borderRadius: 23,
+    height: 70,
+    width: 150,
+    marginHorizontal: 15,
+    backgroundColor: "white",
+    marginVertical: 10,
+  },
+  card3: {
+    borderRadius: 23,
+    height: 80,
+    width: 110,
+    marginHorizontal: 5,
+    backgroundColor: "white",
+    marginVertical: 10,
+  },
+  card2: {
+    borderRadius: 23,
+    height: 350,
+    width: 330,
+    marginHorizontal: 15,
+    backgroundColor: "white",
+    marginVertical: 0,
+    paddingHorizontal: 0,
+  },
 });
 
-export default Profile;
+export default StartupStatistics;
