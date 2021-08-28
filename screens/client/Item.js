@@ -11,6 +11,8 @@ import {
   Alert,
 } from "react-native";
 
+// import PayHere from "@payhere/payhere-mobilesdk-reactnative";
+
 import { icons, COLORS, SIZES, FONTS, URLs } from "../../constants";
 
 const Item = ({ route, navigation }) => {
@@ -30,6 +32,24 @@ const Item = ({ route, navigation }) => {
 
   const [menuItems, setMenuItems] = React.useState([]);
   const [loading, setloading] = React.useState(true);
+
+  // const paymentObject = {
+  //   sandbox: true, // true if using Sandbox Merchant ID
+  //   preapprove: true, // Required
+  //   merchant_id: "1214228", // Replace your Merchant ID
+  //   // "merchant_secret": "xyz",        // See step 4e
+  //   notify_url: "",
+  //   order_id: "ItemNo12345",
+  //   items: "Hello from React Native!",
+  //   currency: "LKR",
+  //   first_name: "Saman",
+  //   last_name: "Perera",
+  //   email: "samanp@gmail.com",
+  //   phone: "0771234567",
+  //   address: "No.1, Galle Road",
+  //   city: "Colombo",
+  //   country: "Sri Lanka",
+  // };
 
   React.useEffect(() => {
     fetchData();
@@ -538,6 +558,17 @@ const Item = ({ route, navigation }) => {
     );
   }
 
+  function PayHer(id) {
+    console.log("Payment Completed", paymentId);
+  }
+
+  function Error(id) {
+    Alert.alert("PayHere Error", errorData);
+  }
+  function Handler(id) {
+    console.log("Payment Dismissed");
+  }
+
   function renderOrder() {
     return (
       <View
@@ -636,12 +667,24 @@ const Item = ({ route, navigation }) => {
                 // borderRadius: SIZES.radius,
                 flex: 1,
               }}
-              onPress={() =>
-                navigation.navigate("ItemLocation", {
-                  product: product,
-                  currentLocation: currentLocation,
-                })
-              }
+              // onPress={() =>
+              //   navigation.navigate("ItemLocation", {
+              //     product: product,
+              //     currentLocation: currentLocation,
+              //   })
+              // }
+              // onPress={PayHere.startPayment(
+              //   paymentObject,
+              //   (paymentId) => {
+              //     console.log("Payment Completed", paymentId);
+              //   },
+              //   (errorData) => {
+              //     Alert.alert("PayHere Error", errorData);
+              //   },
+              //   () => {
+              //     console.log("Payment Dismissed");
+              //   }
+              // )}
             >
               <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Order</Text>
             </TouchableOpacity>

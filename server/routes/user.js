@@ -37,7 +37,6 @@ router.post("/signup", (req, res, next) => {
               error: err,
             });
           } else {
-
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               name: req.body.name,
@@ -108,6 +107,22 @@ router.post("/login", (req, res, next) => {
     .catch((err) => {
       console.log(err);
       res.status(500).json({ error: err });
+    });
+});
+
+router.get("/:userId", (req, res, next) => {
+  const userId = req.params.userId;
+  User.findOne({ _id: userId })
+    .exec()
+    .then((docs) => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
     });
 });
 

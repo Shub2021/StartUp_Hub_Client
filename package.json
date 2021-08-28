@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@payhere/payhere-mobilesdk-reactnative": "^1.2.1",
     "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.11",
@@ -19,6 +20,7 @@
     "expo-font": "~9.1.0",
     "expo-status-bar": "~1.0.4",
     "express": "^4.17.1",
+    "link": "^0.1.5",
     "mongoose": "^5.13.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",

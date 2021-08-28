@@ -17,6 +17,7 @@ import Modal from "react-native-modal";
 import StarRating from "react-native-star-rating";
 
 import { icons, COLORS, SIZES, FONTS, URLs } from "../../constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ItemReviews = ({ route, navigation }) => {
   const scrollX = new Animated.Value(0);
@@ -33,14 +34,20 @@ const ItemReviews = ({ route, navigation }) => {
   const [isModalVisible, setModalVisible] = React.useState(false);
   const [starCount, setstarCount] = React.useState(0);
 
+  const [addComment, setaddComment] = React.useState("");
+  const [userRate, setuseRate] = React.useState(0);
+  const [userId, setUserId] = React.useState(null);
+  const [user, setUser] = React.useState(null);
+
+  
+
   React.useEffect(() => {
     var rate = 0;
-    var rateCount = 0;
-    if (product.rating.length > 1) {
-      for (let i = 1; i < product.rating.length; i++) {
+    var rateCount = product.rating.length;
+    if (product.rating.length > 0) {
+      for (let i = 0; i < product.rating.length; i++) {
         const element = product.rating[i].rate;
         rate = rate + element;
-        rateCount = i;
         if (element == 5) {
           var count = ((exceletCount + 1) / rateCount) * 100;
           setexceletCount(count);
@@ -49,6 +56,7 @@ const ItemReviews = ({ route, navigation }) => {
           setgoodCount(count);
         } else if (element == 3) {
           var count = ((avgCount + 1) / rateCount) * 100;
+
           setavgCount(count);
         } else if (element == 2) {
           var count = ((lowAvgCount + 1) / rateCount) * 100;
@@ -63,11 +71,46 @@ const ItemReviews = ({ route, navigation }) => {
     }
     setRateCount(rateCount);
     setRating(parseInt(rate));
+    getData();
   }, []);
+
+  const getData = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    setUserId(userId);
+    fetch(URLs.cn + "/users/" + userId)
+      .then((res) => res.json())
+      .then((result) => {
+        setUser(result);
+      });
+  };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  function addCommenttoDB() {
+    let ratingarray = product.rating;
+    let newComent = {
+      rate: starCount,
+      comment: addComment,
+      clientId: userId,
+      client: user.name,
+    };
+
+    ratingarray.push(newComent);
+
+    fetch(URLs.cn + "/product/" + product._id, {
+      method: "patch",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        rating: ratingarray,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        toggleModal;
+      });
+  }
 
   function onStarRatingPress(rating) {
     setstarCount(rating);
@@ -82,29 +125,6 @@ const ItemReviews = ({ route, navigation }) => {
   ];
 
   const data = product.rating;
-  // [
-  //   {
-  //     id: 1,
-  //     image: "https://bootdey.com/img/Content/avatar/avatar1.png",
-  //     name: "Nimal Perera",
-  //     comment:
-  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-  //   },
-  //   {
-  //     id: 2,
-  //     image: "https://bootdey.com/img/Content/avatar/avatar6.png",
-  //     name: "Amal Perera",
-  //     comment:
-  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-  //   },
-  //   {
-  //     id: 3,
-  //     image: "https://bootdey.com/img/Content/avatar/avatar7.png",
-  //     name: "Kamal Perera",
-  //     comment:
-  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-  //   },
-  // ];
 
   function renderHeader() {
     return (
@@ -480,7 +500,7 @@ const ItemReviews = ({ route, navigation }) => {
                 }}
                 // onChangeText="Enter the comment"
                 // value="Enter the comment"
-                // onChangeText=""
+                onChangeText={setaddComment}
               />
               <TouchableOpacity
                 style={{
@@ -491,7 +511,7 @@ const ItemReviews = ({ route, navigation }) => {
                   borderRadius: SIZES.radius,
                   alignItems: "center",
                 }}
-                onPress={toggleModal}
+                onPress={addCommenttoDB}
               >
                 <Text style={{ ...FONTS.body3 }}>Submit</Text>
               </TouchableOpacity>
