@@ -22,7 +22,7 @@ import {
 const MyBezierLineChart = () => {
   return (
     <>
-      <Text style={styles.header}>Bezier Line Chart</Text>
+      <Text style={styles.header}> Line Chart</Text>
       <LineChart
         data={{
           labels: ["January", "February", "March", "April"],
@@ -273,7 +273,7 @@ const Statistics = (props) => {
               <Badge
                 style={{
                   marginLeft: 10,
-                  backgroundColor: "#7367F0",
+                  backgroundColor: "#20deb7",
                   fontSize: 12,
                   fontWeight: "bold",
                 }}
@@ -290,19 +290,19 @@ const Statistics = (props) => {
           >
             <Image
               style={styles.image}
-              source={require("../../assets/images/agreement.png")}
+              source={require("../../assets/images/pending.png")}
             />
             <View style={styles.cardIcon}>
-              <Text style={styles.fieldTitle}>SUBSCRIBED STARTUPS</Text>
+              <Text style={styles.fieldTitle}>PENDING REQUEST</Text>
               <Badge
                 style={{
                   marginLeft: 10,
-                  backgroundColor: "#7367F0",
+                  backgroundColor: "#ffdd4f",
                   fontSize: 12,
                   fontWeight: "bold",
                 }}
               >
-                5
+                3
               </Badge>
             </View>
           </Card>
