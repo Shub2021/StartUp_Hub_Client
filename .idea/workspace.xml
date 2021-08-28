@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
+  <component name="ChangeListManager">
+    <list default="true" id="f0517930-7459-4009-b53c-f152393e640e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/constants/keys.js" beforeDir="false" afterPath="$PROJECT_DIR$/constants/keys.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screens/client/Item.js" beforeDir="false" afterPath="$PROJECT_DIR$/screens/client/Item.js" afterDir="false" />
+=======
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
@@ -10,6 +18,7 @@
       <change beforePath="$PROJECT_DIR$/screens/Investor/CreateInvestment.js" beforeDir="false" afterPath="$PROJECT_DIR$/screens/Investor/CreateInvestment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screens/Investor/HomeInvestor.js" beforeDir="false" afterPath="$PROJECT_DIR$/screens/Investor/HomeInvestor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screens/Investor/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/screens/Investor/Profile.js" afterDir="false" />
+>>>>>>> e8b0d9b1c8050c4b7597f160cc1304334a98315d
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,13 +28,34 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+<<<<<<< HEAD
+  <component name="ProjectId" id="1xKE24JF4Mz0h61U82UPDURNYpU" />
+=======
   <component name="ProjectId" id="1ut3KmG6R6ukBa6SrUoTltTF23a" />
+>>>>>>> e8b0d9b1c8050c4b7597f160cc1304334a98315d
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+<<<<<<< HEAD
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f0517930-7459-4009-b53c-f152393e640e" name="Default Changelist" comment="" />
+      <created>1630095169874</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1630095169874</updated>
+=======
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -40,6 +70,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625470997038</updated>
+>>>>>>> e8b0d9b1c8050c4b7597f160cc1304334a98315d
     </task>
     <servers />
   </component>

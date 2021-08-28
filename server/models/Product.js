@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const RatingSchema = new mongoose.Schema({
   rate: Number,
   client: String,
+  clientId: String,
   comment: String,
 });
 

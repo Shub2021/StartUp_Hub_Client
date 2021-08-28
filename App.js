@@ -29,6 +29,7 @@ import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
 import postRegisterForm from "./screens/postRegisterForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFonts } from "expo-font";
 
 const Stack = createStackNavigator();
 const ClientStack = createStackNavigator();
@@ -162,9 +163,9 @@ export default function App() {
   const [data, setData] = React.useState("");
   const [type, setType] = React.useState("");
 
-  React.useEffect(() => {
-    getData();
-  });
+  // React.useEffect(() => {
+  //   getData();
+  // });
 
   const getData = async () => {
     try {
@@ -192,6 +193,15 @@ export default function App() {
   React.useEffect(() => {
     getData();
   });
+  const [loaded] = useFonts({
+    "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
+    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+  });
+
+  if (!loaded) {
+    return null;
+  }
   return (
     <NavigationContainer>
       {loading ? (

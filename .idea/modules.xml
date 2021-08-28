@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
+      <module fileurl="file://$PROJECT_DIR$/.idea/Startup_Hub_Client.iml" filepath="$PROJECT_DIR$/.idea/Startup_Hub_Client.iml" />
+=======
       <module fileurl="file://$PROJECT_DIR$/.idea/StartUp_Hub_Client.iml" filepath="$PROJECT_DIR$/.idea/StartUp_Hub_Client.iml" />
+>>>>>>> e8b0d9b1c8050c4b7597f160cc1304334a98315d
     </modules>
   </component>
 </project>
