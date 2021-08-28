@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
-import { Card, Button, Badge } from "react-native-paper";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  Alert,
+} from "react-native";
+import { Card, Button } from "react-native-paper";
 import { URLs } from "../../constants";
 
 import { MaterialIcons } from "@expo/vector-icons";
@@ -60,13 +67,7 @@ const HomeInvestor = (navigation) => {
                   Business Category
                 </Text>
                 <Button
-                  style={{
-                    borderRadius: 20,
-                    // backgroundColor: "#cee4f9",
-                    borderColor: "#cee4f9",
-                    marginTop: 10,
-                    width: 150,
-                  }}
+                  style={styles.categoryBtn}
                   mode="outlined"
                   theme={theme}
                 >
@@ -76,20 +77,11 @@ const HomeInvestor = (navigation) => {
 
               <View>
                 <Button
-                  style={{
-                    marginTop: 43,
-                    marginLeft: 25,
-                    borderWidth: 1.25,
-                    borderColor: "#cee4f9",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#cee4f9",
-                    borderRadius: 50,
-                  }}
+                  style={styles.sendBtn}
                   icon="send"
                   mode="outlined"
                   theme={theme}
-                  onPress={() => console.log("Pressed")}
+                  onPress={() => Alert.alert("Request Sent")}
                 >
                   Send Request
                 </Button>
@@ -102,7 +94,11 @@ const HomeInvestor = (navigation) => {
   };
 
   return (
-    <View>
+    <View style={{ marginBottom: 100 }}>
+      <View style={styles.searchBar}>
+        <MaterialIcons style={styles.icon} name="search" size={25} />
+        <TextInput style={styles.input} placeholder="Search" />
+      </View>
       <FlatList
         data={data}
         renderItem={({ item }) => {
@@ -124,7 +120,7 @@ const styles = StyleSheet.create({
   comDetails: {
     margin: 5,
     marginLeft: 10,
-    marginRight: 20,
+    marginRight: 10,
     borderRadius: 10,
     shadowColor: "#000",
     backgroundColor: "#fcfcfc",
@@ -134,7 +130,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
   },
 
@@ -146,12 +141,49 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 15,
     marginTop: 5,
-    marginLeft: 85,
+    marginLeft: 100,
     fontWeight: "bold",
   },
+  categoryBtn: {
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "#ffc211",
+    marginTop: 10,
+    width: 150,
+  },
+  icon: {
+    color: "dodgerblue",
+    marginVertical: 20,
+  },
+  input: {
+    color: "black",
+    fontSize: 18,
+    borderRadius: 20,
+  },
   result: {
-    marginLeft: 85,
+    marginLeft: 100,
     fontSize: 20,
+  },
+  sendBtn: {
+    marginTop: 43,
+    marginLeft: 25,
+    borderWidth: 1.25,
+    borderColor: "#cee4f9",
+    backgroundColor: "#cee4f9",
+    borderRadius: 50,
+  },
+
+  searchBar: {
+    alignItems: "center",
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "dodgerblue",
+    marginTop: 24,
+    marginBottom: 20,
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    borderRadius: 35,
+    height: 50,
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,19 +6,18 @@ import {
   View,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { URLs } from "../../constants";
 
-import {
-  MaterialCommunityIcons,
-  Ionicons,
-  Fontisto,
-  MaterialIcons,
-} from "@expo/vector-icons";
+const CreateInvestment = (props) => {
+  const [isLoading, setLoading] = useState(true);
 
-const CreateInvestment = ({ navigation }) => {
   const [title, setTitle] = useState("");
+  const [email, setEmail] = useState("");
   const [minInvest, setminInvest] = useState("");
   const [maxInvest, setmaxInvest] = useState("");
   const [interestTime, setinterestTime] = useState("");
@@ -26,7 +25,18 @@ const CreateInvestment = ({ navigation }) => {
   const [description, setDescription] = useState("");
   const [condition, setCondition] = useState("");
 
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    const userId = await AsyncStorage.getItem("userId");
+    setEmail(email);
+    setLoading(false);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
   const submitData = () => {
+    console.log(email);
     fetch(URLs.cn + "/plan/send", {
       method: "POST",
       headers: {
@@ -34,6 +44,7 @@ const CreateInvestment = ({ navigation }) => {
       },
       body: JSON.stringify({
         title,
+        email,
         minInvest,
         maxInvest,
         interestTime,
@@ -43,117 +54,126 @@ const CreateInvestment = ({ navigation }) => {
       }),
     }).then((res) => res.json());
     Alert.alert("Investment Plan Created Succesfully");
-    navigation.navigate("ViewPlan");
+    props.navigation.navigate("ViewPlan");
   };
 
   return (
     <View style={styles.root}>
-      <ScrollView>
-        <TextInput
-          style={styles.inputStyles}
-          label="Business Title"
-          value={title}
-          theme={theme}
-          mode="outlined"
-          onChangeText={(text) => setTitle(text)}
-        />
-
-        <View style={{ flexDirection: "row" }}>
-          <View style={{ width: 200 }}>
-            <TextInput
-              style={styles.inputStyles}
-              label="Minimum Investment"
-              value={minInvest}
-              theme={theme}
-              keyboardType="number-pad"
-              mode="outlined"
-              onChangeText={(Number) => setminInvest(Number)}
-            />
-          </View>
-          <View style={{ width: 210 }}>
-            <TextInput
-              style={styles.inputStyles}
-              label="Maximum Investment"
-              value={maxInvest}
-              theme={theme}
-              keyboardType="number-pad"
-              mode="outlined"
-              onChangeText={(Number) => setmaxInvest(Number)}
-            />
-          </View>
-        </View>
-
-        <Text style={styles.inputStyles}>Growth Calculation Data</Text>
-
-        <View style={{ flexDirection: "row" }}>
-          <Card style={{ margin: 10 }}>
-            <View style={styles.card}>
-              <Picker
-                selectedValue={interestTime}
-                style={{ height: 30, width: 150 }}
-                onValueChange={(value) => setinterestTime(value)}
-              >
-                <Picker.Item label="Annual" value="Annual" />
-                <Picker.Item label="Monthly" value="Monthly" />
-              </Picker>
-            </View>
-          </Card>
-          <View style={{ width: 210 }}>
-            <TextInput
-              style={styles.inputStyles}
-              label="Growth Rate"
-              value={interestRate}
-              theme={theme}
-              mode="outlined"
-              onChangeText={(Number) => setinterestRate(Number)}
-            />
-          </View>
-        </View>
-
-        <TextInput
-          style={{ margin: 10 }}
-          label="Description"
-          value={description}
-          theme={theme}
-          mode="outlined"
-          multiline={true}
-          numberOfLines={6}
-          maxLength={600}
-          onChangeText={(text) => setDescription(text)}
-        />
-
-        <TextInput
-          style={{ margin: 10 }}
-          label="Terms and Conditions"
-          value={condition}
-          theme={theme}
-          mode="outlined"
-          multiline={true}
-          numberOfLines={8}
-          maxLength={300}
-          onChangeText={(text) => setCondition(text)}
-        />
-
-        <View style={{ alignItems: "center", marginTop: 30 }}>
-          <Button
-            style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
-            icon=""
-            mode="contained"
-            onPress={() => submitData()}
-          >
-            Publish
-          </Button>
-          <Button
-            onPress={() => navigation.navigate("ViewPlan")}
-            style={{ width: 300, padding: 3, marginTop: 50, marginBottom: 50 }}
-            color="#0396FF"
-            icon="cursor-default-click-outline"
+      {!isLoading ? (
+        <ScrollView>
+          <TextInput
+            style={styles.inputStyles}
+            label="Business Title"
+            value={title}
+            theme={theme}
             mode="outlined"
-          >
-            View Plan
-          </Button>
-        </View>
-      </ScrollView>
+            onChangeText={(text) => setTitle(text)}
+          />
+
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ width: 200 }}>
+              <TextInput
+                style={styles.inputStyles}
+                label="Minimum Investment"
+                value={minInvest}
+                theme={theme}
+                keyboardType="number-pad"
+                mode="outlined"
+                onChangeText={(Number) => setminInvest(Number)}
+              />
+            </View>
+            <View style={{ width: 210 }}>
+              <TextInput
+                style={styles.inputStyles}
+                label="Maximum Investment"
+                value={maxInvest}
+                theme={theme}
+                keyboardType="number-pad"
+                mode="outlined"
+                onChangeText={(Number) => setmaxInvest(Number)}
+              />
+            </View>
+          </View>
+
+          <Text style={styles.inputStyles}>Growth Calculation Data</Text>
+
+          <View style={{ flexDirection: "row" }}>
+            <Card style={{ margin: 10 }}>
+              <View style={styles.card}>
+                <Picker
+                  selectedValue={interestTime}
+                  style={{ height: 30, width: 150 }}
+                  onValueChange={(value) => setinterestTime(value)}
+                >
+                  <Picker.Item label="Annual" value="Annual" />
+                  <Picker.Item label="Monthly" value="Monthly" />
+                </Picker>
+              </View>
+            </Card>
+            <View style={{ width: 210 }}>
+              <TextInput
+                style={styles.inputStyles}
+                label="Growth Rate"
+                value={interestRate}
+                theme={theme}
+                mode="outlined"
+                onChangeText={(Number) => setinterestRate(Number)}
+              />
+            </View>
+          </View>
+
+          <TextInput
+            style={{ margin: 10 }}
+            label="Description"
+            value={description}
+            theme={theme}
+            mode="outlined"
+            multiline={true}
+            numberOfLines={6}
+            maxLength={600}
+            onChangeText={(text) => setDescription(text)}
+          />
+
+          <TextInput
+            style={{ margin: 10 }}
+            label="Terms and Conditions"
+            value={condition}
+            theme={theme}
+            mode="outlined"
+            multiline={true}
+            numberOfLines={8}
+            maxLength={300}
+            onChangeText={(text) => setCondition(text)}
+          />
+
+          <View style={{ alignItems: "center", marginTop: 30 }}>
+            <Button
+              style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
+              icon=""
+              mode="contained"
+              onPress={() => submitData()}
+            >
+              Publish
+            </Button>
+            <Button
+              onPress={() => props.navigation.navigate("ViewPlan")}
+              style={{
+                width: 300,
+                padding: 3,
+                marginTop: 50,
+                marginBottom: 50,
+              }}
+              color="#0396FF"
+              icon="cursor-default-click-outline"
+              mode="outlined"
+            >
+              View Plan
+            </Button>
+          </View>
+        </ScrollView>
+      ) : (
+        <ActivityIndicator size="large" color="#0000ff" />
+      )}
     </View>
   );
 };

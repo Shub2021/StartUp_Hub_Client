@@ -5,12 +5,28 @@ const constants = require("../../constants/keys");
 const Investors = require("../models/Investors");
 
 router.get("/", (req, res) => {
-  Investors.findOne({})
+  Investors.find({})
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       console.log(err);
+    });
+});
+
+router.get("/:email", (req, res, next) => {
+  const email = req.params.email;
+  Investors.findOne({ email: email })
+    .exec()
+    .then((docs) => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
     });
 });
 
@@ -22,7 +38,7 @@ router.post("/send", (req, res) => {
     cAddress: req.body.cAddress,
     nic: req.body.nic,
     cTel: req.body.cTel,
-    email:req.body.email,
+    email: req.body.email,
   });
   investors
     .save()

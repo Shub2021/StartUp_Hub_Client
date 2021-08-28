@@ -1,43 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import {
-  Title,
-  Card,
-  Button,
-  Badge,
-  ActivityIndicator,
-} from "react-native-paper";
-import { URLs } from "../../constants";
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
+import { Title, Card, Button, ActivityIndicator } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import {
-  MaterialCommunityIcons,
-  Ionicons,
-  Fontisto,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { URLs } from "../../constants";
 
 const ViewPlan = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const getData = () => {
-    fetch(URLs.cn + "/plan/")
+  const [email, setEmail] = useState("");
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    const userId = await AsyncStorage.getItem("userId");
+    setEmail(email);
+
+    fetch(URLs.cn + "/plan/" + email)
       .then((response) => response.json())
       .then((json) => {
-        setData(json);
+        setData(json[0]);
       });
+    setLoading(false);
   };
 
   useEffect(() => {
-    // .catch((error) => console.error(error))
     getData();
-    setLoading(false);
     console.log(data);
   }, []);
 
   return (
     <View style={styles.root}>
       {!isLoading ? (
-        <>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={() => getData()}
+              refreshing={isLoading}
+            />
+          }
+        >
           <Card style={styles.investCard}>
             <Text></Text>
             <Title>01) Investment Area</Title>
@@ -88,7 +94,7 @@ const ViewPlan = ({ navigation }) => {
           >
             Edit Plan
           </Button>
-        </>
+        </ScrollView>
       ) : (
         <ActivityIndicator size="large" color="#0000ff" />
       )}
