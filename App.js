@@ -22,6 +22,8 @@ import CompleteProfile from "./screens/Investor/CompleteProfile";
 import InvestorRegistration from "./screens/Investor/InvesterRegistration";
 import UpdatePlan from "./screens/Investor/UpdatePlan";
 import Statistics from "./screens/Investor/Statistics";
+import StartupProfile from "./screens/Investor/StartupProfile";
+import StartupStatistics from "./screens/Investor/StartupStatistics";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
@@ -139,6 +141,16 @@ function LoadInvestor() {
         name="Statistics"
         component={Statistics}
         options={{ ...myOptions, title: "Statistics" }}
+      />
+      <InvestorStack.Screen
+        name="StartupProfile"
+        component={StartupProfile}
+        options={{ ...myOptions, title: "Startup Company" }}
+      />
+      <InvestorStack.Screen
+        name="StartupStatistics"
+        component={StartupStatistics}
+        options={{ ...myOptions, title: "Startup Statistics" }}
       />
     </InvestorStack.Navigator>
   );

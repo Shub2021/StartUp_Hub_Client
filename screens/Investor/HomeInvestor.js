@@ -6,90 +6,165 @@ import {
   TextInput,
   FlatList,
   Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Card, Button } from "react-native-paper";
 import { URLs } from "../../constants";
 
 import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const HomeInvestor = (navigation) => {
+const HomeInvestor = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const getData = () => {
+  const [email, setEmail] = useState("");
+  const [sentdata, setsentdata] = useState([]);
+  const [subscribedata, setsubscribedata] = useState([]);
+  const [recieveddata, setrecieveddata] = useState([]);
+
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    const userId = await AsyncStorage.getItem("userId");
+    setEmail(email);
+    setLoading(false);
     fetch(URLs.cn + "/company/")
       .then((response) => response.json())
       .then((json) => {
         setData(json);
+      });
+    fetch(URLs.cn + "/investorrequest/sent/" + email)
+      .then((res) => res.json())
+      .then((result) => {
+        //console.log(result);
+        setsentdata(result);
       });
   };
 
   useEffect(() => {
     // .catch((error) => console.error(error))
     getData();
-    setLoading(false);
     console.log(data);
   }, []);
 
+  function sendRequest(item) {
+    const investorEmail = email;
+    const startupId = item.br_number;
+    console.log(investorEmail);
+    fetch(URLs.cn + "/investorrequest/", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        investorEmail,
+        startupId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        //console.log(data);
+        if (data.message === "Request exists") {
+          Alert.alert("Request exists");
+        } else {
+          Alert.alert("Request Sent to the " + item.company_name);
+        }
+      });
+  }
+  function cancleRequest(item) {
+    fetch(URLs.cn + "/investorrequest/" + item.br_number + "/" + email, {
+      method: "delete",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert("successfuly deleted " + item.company_name);
+      });
+  }
   const startupList = (item) => {
+    let sflag = false;
+    let br_number = item.br_number;
+    for (let i = 0; i < sentdata.length; i++) {
+      const element = sentdata[i];
+      if (item.br_number === element.startupId) {
+        sflag = true;
+      }
+    }
     return (
-      <Card style={styles.comDetails}>
-        <View style={styles.allCards}>
-          <View>
-            <View style={{ flexDirection: "row" }}>
-              <View>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    marginTop: 5,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Startup Name
-                </Text>
-                <Text style={{ fontSize: 20 }}>{item.company_name}</Text>
+      <TouchableWithoutFeedback
+        onPress={async () => {
+          await AsyncStorage.setItem("br", br_number);
+          props.navigation.navigate("StartupProfile");
+        }}
+      >
+        <Card style={styles.comDetails}>
+          <View style={styles.allCards}>
+            <View>
+              <View style={{ flexDirection: "row" }}>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      marginTop: 5,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Startup Name
+                  </Text>
+                  <Text style={{ fontSize: 20 }}>{item.company_name}</Text>
+                </View>
+
+                <View>
+                  <Text style={styles.cardTitle}>Business Category</Text>
+                  <Text style={styles.result}>{item.category}</Text>
+                </View>
               </View>
 
-              <View>
-                <Text style={styles.cardTitle}>Startup Type</Text>
-                <Text style={styles.result}>{item.type}</Text>
-              </View>
-            </View>
-
-            <View style={{ flexDirection: "row" }}>
-              <View>
-                <Text
-                  style={{
-                    fontSize: 17,
-                    marginTop: 15,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Business Category
-                </Text>
-                <Button
-                  style={styles.categoryBtn}
-                  mode="outlined"
-                  theme={theme}
-                >
-                  {item.category}
-                </Button>
-              </View>
-
-              <View>
-                <Button
-                  style={styles.sendBtn}
-                  icon="send"
-                  mode="outlined"
-                  theme={theme}
-                  onPress={() => Alert.alert("Request Sent")}
-                >
-                  Send Request
-                </Button>
+              <View style={{ flexDirection: "row" }}>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      marginTop: 15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Startup Type
+                  </Text>
+                  <Text
+                    style={styles.categoryBtn}
+                    mode="outlined"
+                    theme={theme}
+                  >
+                    {item.type}
+                  </Text>
+                </View>
+                {sflag ? (
+                  <View>
+                    <Button
+                      style={styles.sendBtn}
+                      icon="close"
+                      mode="outlined"
+                      theme={theme}
+                      onPress={() => cancleRequest(item)}
+                    >
+                      Cancel Request
+                    </Button>
+                  </View>
+                ) : (
+                  <View>
+                    <Button
+                      style={styles.sendBtn}
+                      icon="send"
+                      mode="outlined"
+                      theme={theme}
+                      onPress={() => sendRequest(item)}
+                    >
+                      Send Request
+                    </Button>
+                  </View>
+                )}
               </View>
             </View>
           </View>
-        </View>
-      </Card>
+        </Card>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -105,6 +180,8 @@ const HomeInvestor = (navigation) => {
           return startupList(item);
         }}
         keyExtractor={(item) => `${item._id}`}
+        onRefresh={() => getData()}
+        refreshing={isLoading}
       />
     </View>
   );
@@ -145,11 +222,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   categoryBtn: {
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "#ffc211",
+    fontSize: 20,
     marginTop: 10,
-    width: 150,
+    width: 100,
   },
   icon: {
     color: "dodgerblue",
@@ -165,8 +240,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   sendBtn: {
-    marginTop: 43,
-    marginLeft: 25,
+    marginTop: 35,
+    marginLeft: 75,
     borderWidth: 1.25,
     borderColor: "#cee4f9",
     backgroundColor: "#cee4f9",

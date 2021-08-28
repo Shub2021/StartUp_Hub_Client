@@ -11,6 +11,9 @@ const Startup_CompanySchema = new mongoose.Schema({
   br_number: String,
   admin: String,
   password: String,
+  image: String,
+  location: { lat: String, long: String },
+  partners: [],
 });
 
 module.exports = mongoose.model("Startup_Company", Startup_CompanySchema);

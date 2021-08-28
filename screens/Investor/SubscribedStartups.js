@@ -1,85 +1,170 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
-import { Card } from "react-native-paper";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  Alert,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { Card, Button } from "react-native-paper";
+import { URLs } from "../../constants";
 
-const SubscribedStartups = (props) => {
-  const data = [
-    { id: 1, addedDate: "2021-10-12", cType: "Retail Business" },
-    { id: 2, addedDate: "2021-10-12", cType: "Retail Business" },
-    { id: 3, addedDate: "2021-10-12", cType: "Retail Business" },
-  ];
+import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const HomeInvestor = (props) => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [email, setEmail] = useState("");
+  const [sentdata, setsentdata] = useState([]);
+  const [subscribedata, setsubscribedata] = useState([]);
+  const [recieveddata, setrecieveddata] = useState([]);
+
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    const userId = await AsyncStorage.getItem("userId");
+    setEmail(email);
+    setLoading(false);
+    fetch(URLs.cn + "/company/")
+      .then((response) => response.json())
+      .then((json) => {
+        setData(json);
+      });
+    fetch(URLs.cn + "/subscribe/recieved/" + email)
+      .then((res) => res.json())
+      .then((result) => {
+        //console.log(result);
+        setsubscribedata(result);
+      });
+  };
+
+  useEffect(() => {
+    // .catch((error) => console.error(error))
+    getData();
+    console.log(data);
+  }, []);
+
+  function unsubscribeRequest(item) {
+    fetch(URLs.cn + "/subscribe/" + item.br_number + "/" + email, {
+      method: "delete",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert("successfuly unsubscribed " + item.company_name);
+      });
+  }
+
   const startupList = (item) => {
-    return (
-      <TouchableHighlight
-        underlayColor="white"
-        onPress={() => props.navigation.navigate("Notifications")}
-      >
-        <Card style={styles.comDetails} kety={item.id}>
-          <View style={styles.allCards}>
-            <Image
-              style={styles.image}
-              source={{
-                uri: "https://images.pexels.com/photos/3748221/pexels-photo-3748221.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-              }}
-            />
-
-            <View style={{ flexDirection: "row" }}>
+    let sflag = false;
+    for (let i = 0; i < subscribedata.length; i++) {
+      const element = subscribedata[i];
+      if (item.br_number === element.startupId) {
+        sflag = true;
+      }
+    }
+    if (sflag) {
+      return (
+        <TouchableWithoutFeedback
+          onPress={async () => {
+            await AsyncStorage.setItem("br", br_number);
+            props.navigation.navigate("StartupStatistics");
+          }}
+        >
+          <Card style={styles.comDetails}>
+            <View style={styles.allCards}>
               <View>
-                <Text style={styles.cardTitle}>Added Date</Text>
-                <Text style={{ marginLeft: 35, fontSize: 16 }}>
-                  {item.addedDate}
-                </Text>
-              </View>
+                <View style={{ flexDirection: "row" }}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        marginTop: 5,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Startup Name
+                    </Text>
+                    <Text style={{ fontSize: 20 }}>{item.company_name}</Text>
+                  </View>
 
-              <View>
-                <Text style={styles.cardTitle}>Startup Type</Text>
-                <Text style={{ marginLeft: 35, fontSize: 16 }}>
-                  {item.cType}
-                </Text>
+                  <View>
+                    <Text style={styles.cardTitle}>Startup Type</Text>
+                    <Text style={styles.result}>{item.type}</Text>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: "row" }}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        marginTop: 15,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Business Category
+                    </Text>
+                    <Button
+                      style={styles.categoryBtn}
+                      mode="outlined"
+                      theme={theme}
+                    >
+                      {item.category}
+                    </Button>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <View>
+                      <Button
+                        style={styles.sendBtn}
+                        icon="checkbox-marked-circle-outline"
+                        mode="outlined"
+                        theme={theme}
+                        onPress={() => unsubscribeRequest(item)}
+                      >
+                        UNSUBSCRIBE
+                      </Button>
+                    </View>
+                  </View>
+                </View>
               </View>
             </View>
-          </View>
-        </Card>
-      </TouchableHighlight>
-    );
+          </Card>
+        </TouchableWithoutFeedback>
+      );
+    }
   };
 
   return (
-    <View>
+    <View style={{ marginBottom: 100 }}>
       <FlatList
         data={data}
         renderItem={({ item }) => {
           return startupList(item);
         }}
-        keyExtractor={(item) => `${item.id}`}
+        keyExtractor={(item) => `${item._id}`}
+        onRefresh={() => getData()}
+        refreshing={isLoading}
       />
     </View>
   );
 };
 
-const dtheme = {
+const theme = {
   colors: {
-    primary: "#658eff",
-  },
-};
-const atheme = {
-  colors: {
-    primary: "green",
+    primary: "#313cfb",
   },
 };
 
 const styles = StyleSheet.create({
-  allCards: {
-    flexDirection: "row",
-    padding: 10,
-  },
   comDetails: {
-    margin: 3,
-    marginLeft: 5,
-    marginRight: 5,
-    borderRadius: 7,
+    margin: 5,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 10,
     shadowColor: "#000",
+    backgroundColor: "#fcfcfc",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -89,18 +174,36 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
+  allCards: {
+    padding: 15,
+  },
+
   cardTitle: {
+    fontSize: 15,
     marginTop: 5,
-    marginLeft: 30,
-    padding: 5,
-    fontSize: 17,
+    marginLeft: 100,
     fontWeight: "bold",
   },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  categoryBtn: {
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "#ffc211",
+    marginTop: 10,
+    width: 130,
+  },
+
+  result: {
+    marginLeft: 100,
+    fontSize: 20,
+  },
+  sendBtn: {
+    marginTop: 43,
+    marginLeft: 30,
+    borderWidth: 1.25,
+    borderColor: "#cee4f9",
+    backgroundColor: "#cee4f9",
+    borderRadius: 50,
   },
 });
 
-export default SubscribedStartups;
+export default HomeInvestor;
