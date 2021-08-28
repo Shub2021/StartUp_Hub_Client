@@ -20,11 +20,8 @@
     "expo-font": "~9.1.0",
     "expo-status-bar": "~1.0.4",
     "express": "^4.17.1",
-<<<<<<< HEAD
     "link": "^0.1.5",
-=======
     "formik": "^2.1.4",
->>>>>>> e8b0d9b1c8050c4b7597f160cc1304334a98315d
     "mongoose": "^5.13.2",
     "prop-types": "^15.7.2",
     "react": "16.13.1",

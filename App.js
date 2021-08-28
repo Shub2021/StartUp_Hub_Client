@@ -30,6 +30,7 @@ import Register from "./screens/client/ClientRegistration";
 import postRegisterForm from "./screens/postRegisterForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
+import Cart from "./screens/client/Cart";
 
 const Stack = createStackNavigator();
 const ClientStack = createStackNavigator();
@@ -91,6 +92,7 @@ function LoadClientScreens() {
       <ClientStack.Screen name="Item" component={Item} />
       <ClientStack.Screen name="ItemLocation" component={ItemLocation} />
       <ClientStack.Screen name="ItemReviews" component={ItemReviews} />
+      <ClientStack.Screen name="Cart" component={Cart} />
     </ClientStack.Navigator>
   );
 }
