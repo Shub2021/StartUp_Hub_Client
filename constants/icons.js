@@ -1,5 +1,6 @@
 export const back = require("../assets/icons/back.png");
 export const car = require("../assets/icons/car.png");
+export const cart = require("../assets/icons/cart.png");
 export const cutlery = require("../assets/icons/cutlery.png");
 export const donut = require("../assets/icons/donut.png");
 export const drink = require("../assets/icons/drink.png");
@@ -27,6 +28,7 @@ export const user = require("../assets/icons/user.png");
 export default {
     back,
     car,
+    cart,
     cutlery,
     donut,
     drink,

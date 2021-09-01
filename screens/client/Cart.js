@@ -66,7 +66,7 @@ const Cart = ({ navigation }) => {
                 paddingRight: SIZES.padding * 2,
                 justifyContent: "center",
               }}
-              onPress={logout}
+              
             >
               <Image
                 source={icons.basket}
@@ -88,5 +88,22 @@ const Cart = ({ navigation }) => {
       );
 
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.lightGray4,
+  },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+});
 
 export default Cart;
