@@ -26,14 +26,10 @@ const investor_requestRoutes = require("./routes/investor_request");
 const startup_requestRoutes = require("./routes/startup_request");
 const subscribetRoutes = require("./routes/subscribe");
 const orderRoutes = require("./routes/orders");
-<<<<<<< HEAD
 const paymentRoutes = require("./routes/payment");
 const serviceRoutes = require("./routes/service");
-const jobeRoutes = require("./routes/job");
-=======
 const postPlanRoutes = require("./routes/post_plan");
 const jobsRoutes = require("./routes/jobs");
->>>>>>> d80977e611f8267e92d04af53444f22c9520e6c5
 
 application.use(bodyParser.json());
 
@@ -75,13 +71,9 @@ application.use("/startuprequest", startup_requestRoutes);
 application.use("/postplan", postPlanRoutes);
 application.use("/subscribe", subscribetRoutes);
 application.use("/order", orderRoutes);
-<<<<<<< HEAD
 application.use("/payment", paymentRoutes);
 application.use("/services", serviceRoutes);
-application.use("/jobs", jobeRoutes);
-=======
 application.use("/jobs", jobsRoutes);
->>>>>>> d80977e611f8267e92d04af53444f22c9520e6c5
 
 application.listen(3000, () => {
   console.log("server running");
