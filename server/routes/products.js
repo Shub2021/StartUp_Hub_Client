@@ -73,6 +73,23 @@ router.get("/:category", (req, res, next) => {
       });
     });
 });
+
+router.get("/getProductbyID/:productID", (req, res, next) => {
+  const productID = req.params.productID;
+  Product.findOne({ _id: productID })
+    .exec()
+    .then((docs) => {
+      // console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
 router.patch("/:productID", (req, res, next) => {
   const productID = req.params.productID;
   Product.findByIdAndUpdate(

@@ -39,8 +39,6 @@ const ItemReviews = ({ route, navigation }) => {
   const [userId, setUserId] = React.useState(null);
   const [user, setUser] = React.useState(null);
 
-  
-
   React.useEffect(() => {
     var rate = 0;
     var rateCount = product.rating.length;
@@ -457,6 +455,7 @@ const ItemReviews = ({ route, navigation }) => {
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
+              backgroundColor: COLORS.transparentBlack7,
             }}
           >
             <View

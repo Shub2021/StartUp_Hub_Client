@@ -21,10 +21,11 @@ router.get("/", (req, res, next) => {
 
 router.get("/:userEmail", (req, res, next) => {
   const userEmail = req.params.userEmail;
+  console.log(userEmail + " email");
   Cart.findOne({ clientEmail: userEmail })
     .exec()
     .then((docs) => {
-      if (docs.length < 1) {
+      if (docs === null) {
         const cart = new Cart({
           _id: new mongoose.Types.ObjectId(),
           clientEmail: userEmail,
@@ -57,7 +58,7 @@ router.patch("/:cartId", (req, res, next) => {
   )
     .exec()
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       res.status(200).json(result);
     })
     .catch((err) => {

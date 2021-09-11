@@ -6,7 +6,9 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { COLORS, icons } from "../constants";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Svg, { Path } from "react-native-svg";
-import Cart from "../screens/client/Cart";
+import UserCart from "../screens/client/UserCart";
+import ServicesHome from "../screens/client/ServicesHome";
+import UserOrders from "../screens/client/UserOrders";
 
 const Tab = createBottomTabNavigator();
 
@@ -94,8 +96,8 @@ class Tabs extends Component {
         />
 
         <Tab.Screen
-          name="Search"
-          component={Home}
+          name="ServicesHome"
+          component={ServicesHome}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
@@ -113,12 +115,31 @@ class Tabs extends Component {
         />
 
         <Tab.Screen
-          name="Cart"
-          component={Cart}
+          name="Order"
+          component={UserOrders}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
-                source={icons.cart}
+                source={icons.user}
+                resizeMode="contain"
+                style={{
+                  width: 25,
+                  height: 25,
+                  tintColor: focused ? COLORS.primary : COLORS.secondary,
+                }}
+              />
+            ),
+            tabBarButton: (props) => <TabBarCustomButton {...props} />,
+          }}
+        />
+
+        <Tab.Screen
+          name="UserCart"
+          component={UserCart}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={icons.like}
                 resizeMode="contain"
                 style={{
                   width: 25,

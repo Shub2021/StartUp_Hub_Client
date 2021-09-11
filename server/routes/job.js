@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const Orders = require("../models/Order");
-const Order = require("../models/Order");
+const Jobs = require("../models/Job");
 
 router.get("/", (req, res, next) => {
-  Orders.find()
+  Jobs.find()
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -19,10 +18,9 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.get("/userorders/:userrEmail", (req, res, next) => {
-  const client_id = req.params.userrEmail;
-  console.log(client_id);
-  Order.find({ client_id: client_id })
+router.get("/:brnumber", (req, res, next) => {
+  const brnumber = req.params.brnumber;
+  Jobs.find({ br_number: brnumber })
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -37,28 +35,28 @@ router.get("/userorders/:userrEmail", (req, res, next) => {
 });
 
 router.post("/", (req, res, next) => {
-  const arr = [{ rate: 0, client: "none", comment: " " }];
-  const order = new Orders({
+  const arr = [];
+  const jobs = new Jobs({
     _id: new mongoose.Types.ObjectId(),
-    product_name: req.body.product_name,
-    product_id: req.body.product_id,
+    date: req.body.date,
+    description: req.body.description,
+    serviceid: req.body.serviceid,
+    client_email: req.body.client_email,
     br_number: req.body.br_number,
-    order_status: req.body.order_status,
-    req_date: req.body.req_date,
-    unitprice: req.body.unitprice,
-    expence: req.body.expence,
-    quantity: req.body.quantity,
-    total: req.body.total,
-    payment_status: req.body.payment_status,
-    client_id: req.body.client_id,
+    job_status: req.body.job_status,
+    service_name: req.body.service_name,
+    package_id: req.body.package_id,
+    price: req.body.price,
+    package_name: req.body.package_name,
+    taskarray: arr,
   });
-  order
+  jobs
     .save()
     .then((result) => {
       console.log(result);
       res.status(201).json({
-        message: "Handling POST request to /order",
-        createorder: order,
+        message: "Handling POST request to /Jobs",
+        createJobs: jobs,
       });
     })
     .catch((err) => {
@@ -66,9 +64,15 @@ router.post("/", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
-router.delete("/:ordertId", (req, res, next) => {
-  const id = req.params.ordertId;
-  Order.remove({ _id: id })
+router.patch("/:jobId", (req, res, next) => {
+  const id = req.params.jobId;
+  Jobs.findByIdAndUpdate(
+    { _id: id },
+    {
+      taskarray: req.body.taskarray,
+      job_status: req.body.job_status,
+    }
+  )
     .exec()
     .then((result) => {
       console.log(result);
@@ -79,24 +83,9 @@ router.delete("/:ordertId", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
-router.get("/:brnumber", (req, res, next) => {
-  const brnumber = req.params.brnumber;
-  Order.find({ br_number: brnumber })
-    .exec()
-    .then((docs) => {
-      console.log(docs);
-      res.status(200).json(docs);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
-    });
-});
-router.get("/orderId/:orderId", (req, res, next) => {
-  const id = req.params.orderId;
-  Order.findById(id)
+router.get("/byID/:jobID", (req, res, next) => {
+  const id = req.params.jobID;
+  Jobs.findById({ _id: id })
     .exec()
     .then((doc) => {
       console.log(doc);
@@ -112,15 +101,10 @@ router.get("/orderId/:orderId", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
-router.patch("/:orderId", (req, res, next) => {
-  const id = req.params.orderId;
-  Order.findByIdAndUpdate(
-    { _id: id },
-    {
-      order_status: req.body.order_status,
-      payment_status: req.body.payment_status,
-    }
-  )
+/*
+router.delete("/:productId", (req, res, next) => {
+  const id = req.params.productId;
+  Product.remove({ _id: id })
     .exec()
     .then((result) => {
       console.log(result);
@@ -131,4 +115,22 @@ router.patch("/:orderId", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
+router.get("/:category", (req, res, next) => {
+  const category = req.params.category;
+  Product.find({ product_category: category })
+    .exec()
+    .then((docs) => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
+
+*/
 module.exports = router;
