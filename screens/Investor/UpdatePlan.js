@@ -148,16 +148,7 @@ const UpdatePlan = ({ navigation, route }) => {
             mode="contained"
             onPress={() => submitData()}
           >
-            Publish
-          </Button>
-          <Button
-            onPress={() => navigation.navigate("ViewPlan")}
-            style={{ width: 300, padding: 3, marginTop: 50, marginBottom: 50 }}
-            color="#0396FF"
-            icon="cursor-default-click-outline"
-            mode="outlined"
-          >
-            View Plan
+            Save
           </Button>
         </View>
       </ScrollView>

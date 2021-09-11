@@ -9,6 +9,8 @@ require("./models/InvestmentPlan");
 require("./models/Users");
 require("./models/Cart");
 require("./models/Investors");
+require("./models/PostPlan");
+require("./models/jobs");
 
 const userRoutes = require("./routes/user");
 const companyRoutes = require("./routes/company");
@@ -20,6 +22,8 @@ const investor_requestRoutes = require("./routes/investor_request");
 const startup_requestRoutes = require("./routes/startup_request");
 const subscribetRoutes = require("./routes/subscribe");
 const orderRoutes = require("./routes/orders");
+const postPlanRoutes = require("./routes/post_plan");
+const jobsRoutes = require("./routes/jobs");
 
 application.use(bodyParser.json());
 
@@ -29,6 +33,7 @@ const Product = mongoose.model("Product");
 const InvestmentPlan = mongoose.model("InvestmentPlan");
 const Investors = mongoose.model("Investors");
 const UserAuthentication = mongoose.model("Users");
+
 const Cart = mongoose.model("Cart");
 
 const mongoUri =
@@ -57,8 +62,10 @@ application.use("/investor", InvestorRegRoutes);
 application.use("/cart", cartRoutes);
 application.use("/investorrequest", investor_requestRoutes);
 application.use("/startuprequest", startup_requestRoutes);
+application.use("/postplan", postPlanRoutes);
 application.use("/subscribe", subscribetRoutes);
 application.use("/order", orderRoutes);
+application.use("/jobs", jobsRoutes);
 
 application.listen(3000, () => {
   console.log("server running");

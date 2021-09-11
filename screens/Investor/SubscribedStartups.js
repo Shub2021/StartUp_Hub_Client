@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   },
   sendBtn: {
     marginTop: 43,
-    marginLeft: 30,
+    marginLeft: 50,
     borderWidth: 1.25,
     borderColor: "#cee4f9",
     backgroundColor: "#cee4f9",

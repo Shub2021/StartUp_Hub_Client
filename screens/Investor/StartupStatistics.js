@@ -18,18 +18,15 @@ import {
 } from "@expo/vector-icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import Icons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
 
 import { URLs } from "../../constants";
 
 const StartupStatistics = (props) => {
   const chartConfig = {
-    backgroundGradientFrom: "green",
+    backgroundGradientFrom: "dodgerblue",
     backgroundGradientFromOpacity: 1,
-    backgroundGradientTo: "green",
+    backgroundGradientTo: "dodgerblue",
     backgroundGradientToOpacity: 0.7,
     color: (opacity = 0.5) => `rgba(255, 255, 255, ${opacity})`,
     strokeWidth: 1, // optional, default 3
@@ -82,6 +79,7 @@ const StartupStatistics = (props) => {
   const [planEmail, setPlanEmail] = useState("");
   const [planExist, setPlanExist] = useState(false);
   const [data, setData] = useState([]);
+  const [startupName, setStartupName] = useState("");
 
   const getData = async () => {
     const email = await AsyncStorage.getItem("email");
@@ -89,79 +87,151 @@ const StartupStatistics = (props) => {
     const br_number = await AsyncStorage.getItem("br");
     await AsyncStorage.removeItem("br");
     console.log(br_number);
+    fetch(URLs.cn + "/postplan/" + email + "/" + br_number)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.length > 0) {
+          setPlanExist(true);
+        }
+      });
+    setBr(br_number);
     fetch(URLs.cn + "/company/" + br_number)
       .then((res) => res.json())
-      .then((result) => {
-        setData(result);
-      });
-    setPlanEmail(email);
-    let ll = 0;
-    let lables = [];
-    setBr(br_number);
-    fetch(URLs.cn + "/product/br/" + br_number)
-      .then((res) => res.json())
-      .then((result) => {
-        //console.log(result);
-        ll = result.length;
+      .then((rst) => {
+        setData(rst);
+        setStartupName(rst.company_name);
 
-        for (let i = 0; i < result.length; i++) {
-          //console.log(data[i].product_name);
-          lables.push(result[i].product_name);
+        setPlanEmail(email);
+        let ll = 0;
+        let lables = [];
+        setBr(br_number);
+        if (rst.type === "product") {
+          fetch(URLs.cn + "/product/br/" + br_number)
+            .then((res) => res.json())
+            .then((result) => {
+              //console.log(result);
+              ll = result.length;
+
+              for (let i = 0; i < result.length; i++) {
+                //console.log(data[i].product_name);
+                lables.push(result[i].product_name);
+              }
+              setbarlables(lables);
+
+              fetch(URLs.cn + "/order/" + br_number)
+                .then((res) => res.json())
+                .then((result) => {
+                  //console.log(result);
+                  let l = result.length;
+                  let c = 0;
+                  let dat = [];
+                  let totalinc = 0;
+                  let totalexp = 0;
+                  let incm = [0, 0, 0, 0];
+                  for (let i = 0; i < ll; i++) {
+                    dat[i] = 0;
+                  }
+                  for (let i = 0; i < l; i++) {
+                    let indx = lables.indexOf(result[i].product_name);
+                    dat[indx] = dat[indx] + result[i].quantity;
+                    if (result[i].order_status === "placed") {
+                      c = c + 1;
+                    }
+                    if (result[i].order_status === "completed") {
+                      let d = result[i].req_date;
+                      totalinc = totalinc + result[i].total;
+                      totalexp =
+                        totalexp + result[i].expence * result[i].quantity;
+                      let m = d.slice(5, 7);
+                      console.log(m);
+                      if (m === "06") {
+                        incm[0] = incm[0] + result[i].total;
+                      } else if (m === "07") {
+                        incm[1] = incm[1] + result[i].total;
+                      } else if (m === "08") {
+                        incm[2] = incm[2] + result[i].total;
+                      } else if (m === "09") {
+                        incm[3] = incm[3] + result[i].total;
+                      }
+                    }
+                  }
+                  let totalpro = totalinc - totalexp;
+                  setProfit(totalpro);
+                  setExpence(totalexp);
+                  setTotal(totalinc);
+                  setincome(incm);
+                  setOcount(c);
+                  setbardata(dat);
+                });
+            });
+        } else {
+          fetch(URLs.cn + "/service/br/" + br_number)
+            .then((res) => res.json())
+            .then((result) => {
+              //console.log(result);
+              ll = result.length;
+
+              for (let i = 0; i < result.length; i++) {
+                //console.log(data[i].product_name);
+                lables.push(result[i].service_name);
+              }
+              setbarlables(lables);
+
+              fetch(URLs.cn + "/jobs/" + br_number)
+                .then((res) => res.json())
+                .then((result) => {
+                  //console.log(result);
+                  let l = result.length;
+                  let c = 0;
+                  let dat = [];
+                  let totalinc = 0;
+                  let totalexp = 0;
+                  let incm = [0, 0, 0, 0];
+                  for (let i = 0; i < ll; i++) {
+                    dat[i] = 0;
+                  }
+                  for (let i = 0; i < l; i++) {
+                    let indx = lables.indexOf(result[i].service_name);
+                    dat[indx] = dat[indx] + 1;
+                    if (result[i].job_status === "placed") {
+                      c = c + 1;
+                    }
+                    if (result[i].job_status === "Completed") {
+                      let d = result[i].date;
+                      totalinc = totalinc + result[i].price;
+
+                      let m = d.slice(5, 7);
+                      console.log(m);
+                      if (m === "06") {
+                        incm[0] = incm[0] + result[i].price;
+                      } else if (m === "07") {
+                        incm[1] = incm[1] + result[i].price;
+                      } else if (m === "08") {
+                        incm[2] = incm[2] + result[i].price;
+                      } else if (m === "09") {
+                        incm[3] = incm[3] + result[i].price;
+                      }
+                    }
+                  }
+                  let totalpro = totalinc - totalexp;
+                  setProfit(totalpro);
+                  setExpence(totalexp);
+                  setTotal(totalinc);
+                  setincome(incm);
+                  setOcount(c);
+                  setbardata(dat);
+                });
+            });
         }
-        setbarlables(lables);
 
-        fetch(URLs.cn + "/order/" + br_number)
-          .then((res) => res.json())
-          .then((result) => {
-            //console.log(result);
-            let l = result.length;
-            let c = 0;
-            let dat = [];
-            let totalinc = 0;
-            let totalexp = 0;
-            let incm = [0, 0, 0, 0];
-            for (let i = 0; i < ll; i++) {
-              dat[i] = 0;
-            }
-            for (let i = 0; i < l; i++) {
-              let indx = lables.indexOf(result[i].product_name);
-              dat[indx] = dat[indx] + result[i].quantity;
-              if (result[i].order_status === "placed") {
-                c = c + 1;
-              }
-              if (result[i].order_status === "completed") {
-                let d = result[i].req_date;
-                totalinc = totalinc + result[i].total;
-                totalexp = totalexp + result[i].expence * result[i].quantity;
-                let m = d.slice(5, 7);
-                console.log(m);
-                if (m === "06") {
-                  incm[0] = incm[0] + result[i].total;
-                } else if (m === "07") {
-                  incm[1] = incm[1] + result[i].total;
-                } else if (m === "08") {
-                  incm[2] = incm[2] + result[i].total;
-                } else if (m === "09") {
-                  incm[3] = incm[3] + result[i].total;
-                }
-              }
-            }
-            let totalpro = totalinc - totalexp;
-            setProfit(totalpro);
-            setExpence(totalexp);
-            setTotal(totalinc);
-            setincome(incm);
-            setOcount(c);
-            setbardata(dat);
-          });
+        setLoading(false);
       });
-    setLoading(false);
   };
   useEffect(() => {
     // .catch((error) => console.error(error))
     getData();
 
-    console.log(data);
+    // console.log(data);
   }, []);
 
   return (
@@ -251,12 +321,12 @@ const StartupStatistics = (props) => {
             </View>
           </Card>
 
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, marginTop: 20 }}>
             <BarChart
               style={styles.card2}
               data={data1}
-              width={330}
-              height={350}
+              width={380}
+              height={420}
               yAxisLabel=""
               chartConfig={chartConfig}
               verticalLabelRotation={30}
@@ -312,17 +382,41 @@ const StartupStatistics = (props) => {
             </Card>
           </View>
 
-          <View style={{ marginBottom: 10 }}>
-            <LineChart
-              style={styles.card2}
-              data={data2}
-              width={330}
-              height={350}
-              yAxisLabel=""
-              chartConfig={chartConfig2}
-              verticalLabelRotation={30}
-              bezier
-            />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              padding: 10,
+              marginTop: 50,
+              marginBottom: 50,
+            }}
+          >
+            {planExist ? (
+              <Button
+                style={styles.button}
+                onPress={async () => {
+                  await AsyncStorage.setItem("br", br);
+                  props.navigation.navigate("ViewPostPlan");
+                }}
+                color="#5972fe"
+                mode="contained"
+              >
+                View
+              </Button>
+            ) : (
+              <Button
+                style={styles.button}
+                onPress={async () => {
+                  await AsyncStorage.setItem("br", br);
+                  await AsyncStorage.setItem("startupName", startupName);
+                  props.navigation.navigate("PostAgreement");
+                }}
+                color="#5972fe"
+                mode="contained"
+              >
+                Agreement
+              </Button>
+            )}
           </View>
         </ScrollView>
       ) : (
@@ -336,6 +430,14 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     backgroundColor: "#faf8f7",
+  },
+  button: {
+    width: 150,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#5972fe",
+    borderWidth: 2,
   },
   btn: {
     padding: 3,
@@ -410,13 +512,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   card2: {
-    borderRadius: 23,
-    height: 350,
-    width: 330,
+    borderRadius: 20,
     marginHorizontal: 15,
-    backgroundColor: "white",
-    marginVertical: 0,
-    paddingHorizontal: 0,
   },
 });
 
