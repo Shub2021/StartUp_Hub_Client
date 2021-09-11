@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   SafeAreaView,
@@ -18,244 +18,69 @@ import {
   ContributionGraph,
   StackedBarChart,
 } from "react-native-chart-kit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { URLs } from "../../constants";
 
 const MyBezierLineChart = () => {
-  return (
-    <>
-      <Text style={styles.header}> Line Chart</Text>
-      <LineChart
-        data={{
-          labels: ["January", "February", "March", "April"],
-          datasets: [
-            {
-              data: [
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-              ],
-            },
-          ],
-        }}
-        width={Dimensions.get("window").width - 16} // from react-native
-        height={270}
-        yAxisLabel={"Rs"}
-        chartConfig={{
-          backgroundColor: "#1cc910",
-          backgroundGradientFrom: "#0093E9",
-          backgroundGradientTo: "#80D0C7",
-          decimalPlaces: 2, // optional, defaults to 2dp
-          color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
-          style: {
-            borderRadius: 16,
-          },
-        }}
-        bezier
-        style={{
-          marginVertical: 8,
-          borderRadius: 10,
-        }}
-      />
-    </>
-  );
+  return <></>;
 };
 
-// const MyProgressChart = () => {
-//   return (
-//     <>
-//       <Text style={styles.header}>Progress Chart</Text>
-//       <ProgressChart
-//         data={[0.4, 0.5, 0.8]}
-//         width={Dimensions.get("window").width - 16}
-//         height={220}
-//         chartConfig={{
-//           backgroundColor: "#1cc910",
-//           backgroundGradientFrom: "#eff3ff",
-//           backgroundGradientTo: "#efefef",
-//           decimalPlaces: 2,
-//           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-//           style: {
-//             borderRadius: 16,
-//           },
-//         }}
-//         style={{
-//           marginVertical: 8,
-//           borderRadius: 16,
-//         }}
-//       />
-//     </>
-//   );
-// };
-
-// const MyBarChart = () => {
-//   return (
-//     <>
-//       <Text style={styles.header}>Bar Chart</Text>
-//       <BarChart
-//         data={{
-//           labels: ["January", "February", "March", "April", "May", "June"],
-//           datasets: [
-//             {
-//               data: [20, 45, 28, 80, 99, 43],
-//             },
-//           ],
-//         }}
-//         width={Dimensions.get("window").width - 16}
-//         height={220}
-//         yAxisLabel={"Rs"}
-//         chartConfig={{
-//           backgroundColor: "#1cc910",
-//           backgroundGradientFrom: "#eff3ff",
-//           backgroundGradientTo: "#efefef",
-//           decimalPlaces: 2,
-//           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-//           style: {
-//             borderRadius: 16,
-//           },
-//         }}
-//         style={{
-//           marginVertical: 8,
-//           borderRadius: 16,
-//         }}
-//       />
-//     </>
-//   );
-// };
-// const MyStackedBarChart = () => {
-//   return (
-//     <>
-//       <Text style={styles.header}>Stacked Bar Chart</Text>
-//       <StackedBarChart
-//         data={{
-//           labels: ["Test1", "Test2"],
-//           legend: ["L1", "L2", "L3"],
-//           data: [
-//             [60, 60, 60],
-//             [30, 30, 60],
-//           ],
-//           barColors: ["#dfe4ea", "#ced6e0", "#a4b0be"],
-//         }}
-//         width={Dimensions.get("window").width - 16}
-//         height={220}
-//         chartConfig={{
-//           backgroundColor: "#1cc910",
-//           backgroundGradientFrom: "#eff3ff",
-//           backgroundGradientTo: "#efefef",
-//           decimalPlaces: 2,
-//           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-//           style: {
-//             borderRadius: 16,
-//           },
-//         }}
-//         style={{
-//           marginVertical: 8,
-//           borderRadius: 16,
-//         }}
-//       />
-//     </>
-//   );
-// };
-
-// const MyPieChart = () => {
-//   return (
-//     <>
-//       <Text style={styles.header}>Pie Chart</Text>
-//       <PieChart
-//         data={[
-//           {
-//             name: "Seoul",
-//             population: 21500000,
-//             color: "rgba(131, 167, 234, 1)",
-//             legendFontColor: "#7F7F7F",
-//             legendFontSize: 15,
-//           },
-//           {
-//             name: "Toronto",
-//             population: 2800000,
-//             color: "#F00",
-//             legendFontColor: "#7F7F7F",
-//             legendFontSize: 15,
-//           },
-//           {
-//             name: "New York",
-//             population: 8538000,
-//             color: "#ffffff",
-//             legendFontColor: "#7F7F7F",
-//             legendFontSize: 15,
-//           },
-//           {
-//             name: "Moscow",
-//             population: 11920000,
-//             color: "rgb(0, 0, 255)",
-//             legendFontColor: "#7F7F7F",
-//             legendFontSize: 15,
-//           },
-//         ]}
-//         width={Dimensions.get("window").width - 16}
-//         height={220}
-//         chartConfig={{
-//           backgroundColor: "#1cc910",
-//           backgroundGradientFrom: "#eff3ff",
-//           backgroundGradientTo: "#efefef",
-//           decimalPlaces: 2,
-//           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-//           style: {
-//             borderRadius: 16,
-//           },
-//         }}
-//         style={{
-//           marginVertical: 8,
-//           borderRadius: 16,
-//         }}
-//         accessor="population"
-//         backgroundColor="transparent"
-//         paddingLeft="15"
-//         absolute //for the absolute number remove if you want percentage
-//       />
-//     </>
-//   );
-// };
-
-// const MyContributionGraph = () => {
-//   return (
-//     <>
-//       <Text style={styles.header}>Contribution Graph</Text>
-//       <ContributionGraph
-//         values={[
-//           { date: "2019-01-02", count: 1 },
-//           { date: "2019-01-03", count: 2 },
-//           { date: "2019-01-04", count: 3 },
-//           { date: "2019-01-05", count: 4 },
-//           { date: "2019-01-06", count: 5 },
-//           { date: "2019-01-30", count: 2 },
-//           { date: "2019-01-31", count: 3 },
-//           { date: "2019-03-01", count: 2 },
-//           { date: "2019-04-02", count: 4 },
-//           { date: "2019-03-05", count: 2 },
-//           { date: "2019-02-30", count: 4 },
-//         ]}
-//         endDate={new Date("2019-04-01")}
-//         numDays={105}
-//         width={Dimensions.get("window").width - 16}
-//         height={220}
-//         chartConfig={{
-//           backgroundColor: "#1cc910",
-//           backgroundGradientFrom: "#eff3ff",
-//           backgroundGradientTo: "#efefef",
-//           decimalPlaces: 2,
-//           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-//           style: {
-//             borderRadius: 16,
-//           },
-//         }}
-//       />
-//     </>
-//   );
-// };
-
 const Statistics = (props) => {
+  const [barlables, setbarlables] = useState([]);
+  const [bardata, setbardata] = useState([]);
+  const [lineData, setLineData] = useState([]);
+  const data1 = {
+    labels: barlables,
+    datasets: [
+      {
+        data: bardata,
+      },
+    ],
+  };
+  const data2 = {
+    labels: ["July", "August", "September", "October"],
+    datasets: [
+      {
+        data: lineData,
+      },
+    ],
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    let labels = [];
+    let values = [];
+    fetch(URLs.cn + "/postplan/" + email)
+      .then((response) => response.json())
+      .then((json) => {
+        let incm = [0, 0, 0, 0];
+        for (let i = 0; i < json.length; i++) {
+          labels.push(json[i].startupName);
+          let x = (json[i].amount * json[i].interestRate) / 100;
+          values.push(x);
+          let d = json[i].Startdate;
+          let m = d.slice(5, 7);
+          if (m === "06") {
+            incm[0] = incm[0] + x;
+          } else if (m === "07") {
+            incm[1] = incm[1] + x;
+          } else if (m === "08") {
+            incm[2] = incm[2] + x;
+          } else if (m === "09") {
+            incm[3] = incm[3] + x;
+          }
+        }
+        setbarlables(labels);
+        setbardata(values);
+        setLineData(incm);
+        console.log(incm[0]);
+        console.log(incm[1]);
+        console.log(incm[2]);
+        console.log(incm[3]);
+      });
+  };
   return (
     <ScrollView>
       <View style={{ flexDirection: "row", marginLeft: 15 }}>
@@ -270,60 +95,60 @@ const Statistics = (props) => {
             />
             <View style={styles.cardIcon}>
               <Text style={styles.fieldTitle}>SUBSCRIBED STARTUPS</Text>
-              <Badge
-                style={{
-                  marginLeft: 10,
-                  backgroundColor: "#20deb7",
-                  fontSize: 12,
-                  fontWeight: "bold",
-                }}
-              >
-                5
-              </Badge>
-            </View>
-          </Card>
-        </View>
-        <View>
-          <Card
-            style={styles.card}
-            onPress={() => props.navigation.navigate("SubscribedStartups")}
-          >
-            <Image
-              style={styles.image}
-              source={require("../../assets/images/pending.png")}
-            />
-            <View style={styles.cardIcon}>
-              <Text style={styles.fieldTitle}>PENDING REQUEST</Text>
-              <Badge
-                style={{
-                  marginLeft: 10,
-                  backgroundColor: "#ffdd4f",
-                  fontSize: 12,
-                  fontWeight: "bold",
-                }}
-              >
-                3
-              </Badge>
             </View>
           </Card>
         </View>
       </View>
       <View style={styles.container}>
         <View>
-          {/*Example of Bezier LineChart*/}
-          <MyBezierLineChart />
-          {/*Example of LineChart*/}
-          {/* <MyLineChart /> */}
-          {/*Example of Progress Chart*/}
-          {/* <MyProgressChart /> */}
-          {/*Example of Bar Chart*/}
-          {/* <MyBarChart /> */}
-          {/*Example of StackedBar Chart*/}
-          {/* <MyStackedBarChart /> */}
-          {/*Example of Pie Chart*/}
-          {/* <MyPieChart /> */}
-          {/*Example of Contribution Chart*/}
-          {/* <MyContributionGraph /> */}
+          <Text style={styles.header}>Bar Chart</Text>
+          <View>
+            <BarChart
+              data={data1}
+              width={Dimensions.get("window").width - 16}
+              height={220}
+              yAxisLabel={"Rs"}
+              fromZero={true}
+              chartConfig={{
+                backgroundColor: "#1cc910",
+                backgroundGradientFrom: "#eff3ff",
+                backgroundGradientTo: "#efefef",
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+              }}
+              style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+            />
+          </View>
+          {/* <Text style={styles.header}> Line Chart</Text> */}
+          {/* <View>
+            <LineChart
+              data={data2}
+              width={Dimensions.get("window").width - 16} // from react-native
+              height={270}
+              yAxisLabel={"Rs"}
+              chartConfig={{
+                backgroundColor: "#1cc910",
+                backgroundGradientFrom: "#0093E9",
+                backgroundGradientTo: "#80D0C7",
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+              }}
+              // bezier
+              // style={{
+              //   marginVertical: 8,
+              //   borderRadius: 10,
+              // }}
+            />
+          </View> */}
         </View>
       </View>
     </ScrollView>
@@ -349,7 +174,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     borderRadius: 10,
     shadowColor: "#000",
-    width: 185,
+    width: 380,
     height: 140,
     shadowOffset: {
       width: 0,

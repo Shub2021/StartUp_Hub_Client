@@ -12,6 +12,7 @@ import { URLs } from "../../constants";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import filter from "lodash.filter";
 
 const HomeInvestor = (navigation) => {
   const [isLoading, setLoading] = useState(true);
@@ -20,6 +21,9 @@ const HomeInvestor = (navigation) => {
   const [sentdata, setsentdata] = useState([]);
   const [subscribedata, setsubscribedata] = useState([]);
   const [recieveddata, setrecieveddata] = useState([]);
+
+  const [fulldata, setfulldata] = useState([]);
+  const [query, setQuery] = useState("");
 
   const getData = async () => {
     const email = await AsyncStorage.getItem("email");
@@ -30,6 +34,7 @@ const HomeInvestor = (navigation) => {
       .then((response) => response.json())
       .then((json) => {
         setData(json);
+        setfulldata(json);
       });
     fetch(URLs.cn + "/startuprequest/recieved/" + email)
       .then((res) => res.json())
@@ -44,6 +49,41 @@ const HomeInvestor = (navigation) => {
     getData();
     console.log(data);
   }, []);
+
+  const handleSearch = (text) => {
+    const formattedQuery = text;
+    const filteredData = filter(fulldata, (user) => {
+      return contains(user, formattedQuery);
+    });
+    setData(filteredData);
+    setQuery(text);
+  };
+
+  const contains = (name, query) => {
+    if (name.company_name.includes(query) || name.category.includes(query)) {
+      return true;
+    }
+    return false;
+  };
+  function renderHeader() {
+    return (
+      <View
+        style={[
+          styles.inputContainer,
+          { marginBottom: 15, marginTop: 20, width: 380 },
+        ]}
+      >
+        <TextInput
+          autoCorrect={false}
+          // clearButtonMode="always"
+          value={query}
+          onChangeText={(queryText) => handleSearch(queryText)}
+          placeholder="Search"
+          style={{ paddingHorizontal: 20, width: 100 }}
+        />
+      </View>
+    );
+  }
 
   function rejectRequest(item) {
     fetch(URLs.cn + "/startuprequest/" + item.br_number + "/" + email, {
@@ -116,46 +156,40 @@ const HomeInvestor = (navigation) => {
                 </View>
               </View>
 
-              <View style={{ flexDirection: "row" }}>
+              <Text style={styles.businessCategory}>
+                Business Category:{" "}
+                <Text style={{ fontSize: 18, fontWeight: "normal" }}>
+                  {item.category}
+                </Text>
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
                 <View>
-                  <Text
-                    style={{
-                      fontSize: 17,
-                      marginTop: 15,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Business Category
-                  </Text>
                   <Button
-                    style={styles.categoryBtn}
+                    style={styles.deleteBtn}
+                    icon="delete"
                     mode="outlined"
-                    theme={theme}
+                    theme={deletetheme}
+                    onPress={() => rejectRequest(item)}
                   >
-                    {item.category}
+                    Reject
                   </Button>
                 </View>
-                <View style={{ flexDirection: "row" }}>
-                  <View>
-                    <Button
-                      style={styles.sendBtn}
-                      icon="checkbox-marked-circle-outline"
-                      mode="outlined"
-                      theme={theme}
-                      onPress={() => acceptInvestment(item)}
-                    >
-                      Accept Request
-                    </Button>
-                  </View>
-
-                  <View>
-                    <MaterialIcons
-                      name="delete"
-                      color="tomato"
-                      size={24}
-                      onPress={() => rejectRequest(item)}
-                    />
-                  </View>
+                <View>
+                  <Button
+                    style={styles.sendBtn}
+                    icon="checkbox-marked-circle-outline"
+                    mode="outlined"
+                    theme={theme}
+                    onPress={() => acceptInvestment(item)}
+                  >
+                    Accept Request
+                  </Button>
                 </View>
               </View>
             </View>
@@ -166,12 +200,9 @@ const HomeInvestor = (navigation) => {
   };
 
   return (
-    <View style={{ marginBottom: 100 }}>
-      <View style={styles.searchBar}>
-        <MaterialIcons style={styles.icon} name="search" size={25} />
-        <TextInput style={styles.input} placeholder="Search" />
-      </View>
+    <View>
       <FlatList
+        ListHeaderComponent={renderHeader}
         data={data}
         renderItem={({ item }) => {
           return startupList(item);
@@ -187,6 +218,11 @@ const HomeInvestor = (navigation) => {
 const theme = {
   colors: {
     primary: "#313cfb",
+  },
+};
+const deletetheme = {
+  colors: {
+    primary: "tomato",
   },
 };
 
@@ -220,7 +256,7 @@ const styles = StyleSheet.create({
   categoryBtn: {
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: "#ffc211",
+    borderColor: "#a9f3e4",
     marginTop: 10,
     width: 130,
   },
@@ -235,25 +271,34 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   sendBtn: {
-    marginTop: 43,
-    marginLeft: 10,
+    marginTop: 20,
     borderWidth: 1.25,
-    borderColor: "#cee4f9",
-    backgroundColor: "#cee4f9",
-    borderRadius: 50,
+    borderColor: "#a9f3e4",
+    backgroundColor: "#a9f3e4",
+    borderRadius: 10,
+    width: 150,
+  },
+  deleteBtn: {
+    marginTop: 20,
+    borderWidth: 1.25,
+    borderColor: "tomato",
+    borderRadius: 10,
+    width: 150,
   },
 
-  searchBar: {
-    alignItems: "center",
+  businessCategory: {
+    fontSize: 17,
+    marginTop: 15,
+    fontWeight: "bold",
+  },
+  inputContainer: {
     flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 20,
     borderWidth: 1,
     borderColor: "dodgerblue",
-    marginTop: 24,
-    marginBottom: 20,
-    marginHorizontal: 10,
-    paddingHorizontal: 10,
-    borderRadius: 35,
-    height: 50,
+    borderRadius: 20,
+    height: 45,
   },
 });
 

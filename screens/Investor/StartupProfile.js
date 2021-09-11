@@ -7,6 +7,8 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  Platform,
+  Linking,
 } from "react-native";
 import { Title, Card, Button } from "react-native-paper";
 import {
@@ -20,6 +22,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { URLs } from "../../constants";
 
 const StartupProfile = (props) => {
+  const openDial = () => {
+    if (Platform.OS === "android") {
+      Linking.openURL("tel:");
+    } else {
+      Linking.openURL("telprompt:");
+    }
+  };
+
   const [isLoading, setLoading] = useState(true);
   const [planEmail, setPlanEmail] = useState("");
   const [planExist, setPlanExist] = useState(false);
@@ -146,32 +156,15 @@ const StartupProfile = (props) => {
             </View>
           </Card>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              marginBottom: 50,
-              marginTop: 50,
-            }}
-          >
+          <View style={styles.callBtn}>
             <Button
-              onPress={logout}
-              color="#0396FF"
-              icon="logout"
-              mode="outlined"
-            >
-              Logout
-            </Button>
-            <Button
-              style={{
-                borderRadius: 20,
-              }}
-              onPress={() => props.navigation.navigate("CompleteProfile")}
-              color="#a4c8ff"
-              icon="autorenew"
+              onPress={() => openDial()}
+              style={styles.btn}
+              color="#5972fe"
+              icon="phone-outline"
               mode="contained"
             >
-              Update Profile
+              Call to Company
             </Button>
           </View>
         </ScrollView>
@@ -237,6 +230,12 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginTop: 20,
     marginBottom: 20,
+  },
+  callBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 50,
+    marginTop: 50,
   },
 });
 

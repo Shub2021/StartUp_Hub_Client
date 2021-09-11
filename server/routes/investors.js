@@ -52,8 +52,7 @@ router.post("/send", (req, res) => {
 });
 
 router.post("/delete", (req, res) => {
-  investors
-    .findByIdAndRemove(req.body.id)
+  Investors.findByIdAndRemove(req.body.id)
     .then((data) => {
       console.log(data);
       res.send(data);
@@ -63,16 +62,15 @@ router.post("/delete", (req, res) => {
     });
 });
 
-router.post("/update", (req, res) => {
-  investors
-    .findByIdAndUpdate(req.body.id, {
-      _id: new mongoose.Types.ObjectId(),
-      cName: req.body.cName,
-      investArea: req.body.investArea,
-      cAddress: req.body.cAddress,
-      nic: req.body.nic,
-      cTel: req.body.cTel,
-    })
+router.patch("/update/:id", (req, res) => {
+  const id = req.params.id;
+  Investors.findByIdAndUpdate(id, {
+    cName: req.body.cName,
+    investArea: req.body.investArea,
+    cAddress: req.body.cAddress,
+    nic: req.body.nic,
+    cTel: req.body.cTel,
+  })
     .then((data) => {
       console.log(data);
       res.send(data);

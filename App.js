@@ -19,11 +19,14 @@ import ViewPlan from "./screens/Investor/ViewPlan";
 import Notifications from "./screens/Investor/Notifications";
 import HomeInvestor from "./screens/Investor/HomeInvestor";
 import CompleteProfile from "./screens/Investor/CompleteProfile";
+import UpdateProfile from "./screens/Investor/UpdateProfile";
 import InvestorRegistration from "./screens/Investor/InvesterRegistration";
 import UpdatePlan from "./screens/Investor/UpdatePlan";
 import Statistics from "./screens/Investor/Statistics";
 import StartupProfile from "./screens/Investor/StartupProfile";
 import StartupStatistics from "./screens/Investor/StartupStatistics";
+import PostAgreement from "./screens/Investor/PostAgreement";
+import ViewPostPlan from "./screens/Investor/ViewPostPlan";
 import ItemReviews from "./screens/client/ItemReviews";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
@@ -173,6 +176,21 @@ function LoadInvestor() {
         name="StartupStatistics"
         component={StartupStatistics}
         options={{ ...myOptions, title: "Startup Statistics" }}
+      />
+      <InvestorStack.Screen
+        name="PostAgreement"
+        component={PostAgreement}
+        options={{ ...myOptions, title: "Post Agreement" }}
+      />
+      <InvestorStack.Screen
+        name="ViewPostPlan"
+        component={ViewPostPlan}
+        options={{ ...myOptions, title: "Post Plan" }}
+      />
+      <InvestorStack.Screen
+        name="UpdateProfile"
+        component={UpdateProfile}
+        options={{ ...myOptions, title: "Update Profile" }}
       />
     </InvestorStack.Navigator>
   );

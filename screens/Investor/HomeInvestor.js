@@ -13,6 +13,7 @@ import { URLs } from "../../constants";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import filter from "lodash.filter";
 
 const HomeInvestor = (props) => {
   const [isLoading, setLoading] = useState(true);
@@ -21,6 +22,9 @@ const HomeInvestor = (props) => {
   const [sentdata, setsentdata] = useState([]);
   const [subscribedata, setsubscribedata] = useState([]);
   const [recieveddata, setrecieveddata] = useState([]);
+
+  const [fulldata, setfulldata] = useState([]);
+  const [query, setQuery] = useState("");
 
   const getData = async () => {
     const email = await AsyncStorage.getItem("email");
@@ -31,6 +35,7 @@ const HomeInvestor = (props) => {
       .then((response) => response.json())
       .then((json) => {
         setData(json);
+        setfulldata(json);
       });
     fetch(URLs.cn + "/investorrequest/sent/" + email)
       .then((res) => res.json())
@@ -45,6 +50,40 @@ const HomeInvestor = (props) => {
     getData();
     console.log(data);
   }, []);
+
+  const handleSearch = (text) => {
+    const formattedQuery = text;
+    const filteredData = filter(fulldata, (user) => {
+      return contains(user, formattedQuery);
+    });
+    setData(filteredData);
+    setQuery(text);
+  };
+
+  const contains = (name, query) => {
+    if (name.company_name.includes(query) || name.category.includes(query)) {
+      return true;
+    }
+    return false;
+  };
+  function renderHeader() {
+    return (
+      <View
+        style={[
+          styles.inputContainer,
+          { marginBottom: 15, marginTop: 20, width: 380 },
+        ]}
+      >
+        <TextInput
+          autoCorrect={false}
+          value={query}
+          onChangeText={(queryText) => handleSearch(queryText)}
+          placeholder="Search"
+          style={{ paddingHorizontal: 20, width: 100 }}
+        />
+      </View>
+    );
+  }
 
   function sendRequest(item) {
     const investorEmail = email;
@@ -169,12 +208,9 @@ const HomeInvestor = (props) => {
   };
 
   return (
-    <View style={{ marginBottom: 100 }}>
-      <View style={styles.searchBar}>
-        <MaterialIcons style={styles.icon} name="search" size={25} />
-        <TextInput style={styles.input} placeholder="Search" />
-      </View>
+    <View>
       <FlatList
+        ListHeaderComponent={renderHeader}
         data={data}
         renderItem={({ item }) => {
           return startupList(item);
@@ -254,11 +290,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "dodgerblue",
     marginTop: 24,
-    marginBottom: 20,
+
     marginHorizontal: 10,
     paddingHorizontal: 10,
     borderRadius: 35,
     height: 50,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 20,
+    borderWidth: 1,
+    borderColor: "dodgerblue",
+    borderRadius: 20,
+    height: 45,
   },
 });
 

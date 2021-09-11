@@ -185,7 +185,7 @@ const Profile = (props) => {
               style={{
                 borderRadius: 20,
               }}
-              onPress={() => props.navigation.navigate("CompleteProfile")}
+              onPress={() => props.navigation.navigate("UpdateProfile")}
               color="#a4c8ff"
               icon="autorenew"
               mode="contained"
