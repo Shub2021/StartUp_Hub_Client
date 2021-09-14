@@ -24,7 +24,9 @@ const Item = ({ route, navigation }) => {
   const [br_no, setBr_no] = React.useState(route.params.br_number);
 
   const [company, setCompany] = React.useState(null);
-  const [currentLocation, setCurrentLocation] = React.useState(null);
+  const [currentLocation, setCurrentLocation] = React.useState(
+    initialCurrentLocation
+  );
   const [cart, setCart] = React.useState(null);
   const [email, setEmail] = React.useState(null);
   const [orderItems, setOrderItems] = React.useState([]);
@@ -32,7 +34,9 @@ const Item = ({ route, navigation }) => {
 
   const [menuItems, setMenuItems] = React.useState([]);
   const [loading, setloading] = React.useState(true);
+  const [totalPrice, setTotalPrice] = React.useState(0.0);
 
+  let total;
   // const paymentObject = {
   //   sandbox: true, // true if using Sandbox Merchant ID
   //   preapprove: true, // Required
@@ -57,6 +61,14 @@ const Item = ({ route, navigation }) => {
     getData();
     setloading(false);
   }, []);
+
+  const initialCurrentLocation = {
+    streetName: "Colombo",
+    gps: {
+      latitude: 6.927079,
+      longitude: 79.861244,
+    },
+  };
 
   const fetchData = () => {
     if (product !== null) {
@@ -85,36 +97,52 @@ const Item = ({ route, navigation }) => {
     fetch(URLs.cn + "/cart/" + email)
       .then((res) => res.json())
       .then((result) => {
+        // console.log(result);
         setCart(result);
       });
   };
 
   function addItemToCart() {
-    console.log(cart);
-    console.log(cart.productList.length);
+    // console.log(cart);
     if (cart.productList.length > 0) {
+      let alreadyAdded = false;
       for (let Object of cart.productList) {
         if (Object._id == product._id) {
+          alreadyAdded = true;
+          Alert.alert("Product already added to the Cart!");
           return;
         }
       }
+      if (!alreadyAdded) {
+        let arrayproduct = cart.productList;
+        let pid = product;
+        arrayproduct.push(pid);
+
+        fetch(URLs.cn + "/cart/" + cart._id, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ arrayproduct }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            Alert.alert("Product added to the Cart Succesfully");
+          });
+      }
     } else {
-      cart.productList = [product._id];
-      let pid = product._id;
+      let pid = product;
 
-      pid = JSON.stringify({ pid });
-      let arrayproduct = pid;
-      console.log(cart.productList);
-
-      console.log(arrayproduct);
-      console.log(arrayproduct);
+      let arrayproduct = cart.productList;
+      arrayproduct.push(pid);
+      // console.log(arrayproduct[0]);
 
       fetch(URLs.cn + "/cart/" + cart._id, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: arrayproduct,
+        body: JSON.stringify({ arrayproduct }),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -175,8 +203,8 @@ const Item = ({ route, navigation }) => {
   // }
 
   function sumOrder() {
-    let total = orderItems.reduce((a, b) => a + (b.total || 0), 0);
-
+    total = orderItems.reduce((a, b) => a + (b.total || 0), 0);
+    // setTotalPrice(total.toFixed(2));
     return total.toFixed(2);
   }
 
@@ -242,6 +270,15 @@ const Item = ({ route, navigation }) => {
     );
   }
 
+  function loadNewProduct(item) {
+    setProduct(item);
+    setProduct_category(item.product_category);
+    setBr_no(item.br_number);
+    fetchData();
+    fetchCompanyData();
+    getData();
+  }
+
   function renderOtherProducts() {
     return (
       <Animated.ScrollView
@@ -273,7 +310,7 @@ const Item = ({ route, navigation }) => {
                 margin: SIZES.padding * 2,
               }}
               // onPress={() => navigation.navigate("Item", { item, currentLocation })}
-              onPress={() => navigation.navigate("Item", item)}
+              onPress={() => loadNewProduct(item)}
             >
               <View
                 style={{
@@ -429,7 +466,9 @@ const Item = ({ route, navigation }) => {
                   borderTopLeftRadius: 25,
                   borderBottomLeftRadius: 25,
                 }}
-                onPress={() => editOrder("-", product._id, product.unitprice)}
+                onPress={() => {
+                  editOrder("-", product._id, product.unitprice);
+                }}
               >
                 <Text style={{ ...FONTS.body1 }}>-</Text>
               </TouchableOpacity>
@@ -453,7 +492,9 @@ const Item = ({ route, navigation }) => {
                   borderTopRightRadius: 25,
                   borderBottomRightRadius: 25,
                 }}
-                onPress={() => editOrder("+", product._id, product.unitprice)}
+                onPress={() => {
+                  editOrder("+", product._id, product.unitprice);
+                }}
               >
                 <Text style={{ ...FONTS.body1 }}>+</Text>
               </TouchableOpacity>
@@ -558,17 +599,6 @@ const Item = ({ route, navigation }) => {
     );
   }
 
-  function PayHer(id) {
-    console.log("Payment Completed", paymentId);
-  }
-
-  function Error(id) {
-    Alert.alert("PayHere Error", errorData);
-  }
-  function Handler(id) {
-    console.log("Payment Dismissed");
-  }
-
   function renderOrder() {
     return (
       <View
@@ -598,7 +628,7 @@ const Item = ({ route, navigation }) => {
           >
             <Text style={{ ...FONTS.h3 }}>
               {/* {getBasketItemCount()} s */}
-              Toatal Price
+              Total Price
             </Text>
             <Text style={{ ...FONTS.h3 }}> Rs. {sumOrder()}</Text>
           </View>
@@ -631,12 +661,12 @@ const Item = ({ route, navigation }) => {
                 }}
               />
               <TouchableOpacity
-              // onPress={() =>
-              //   navigation.navigate("ItemLocation", {
-              //     product: product,
-              //     currentLocation: currentLocation
-              //   })
-              // }
+                onPress={() =>
+                  navigation.navigate("ItemLocation", {
+                    product: company.location,
+                    currentLocation: currentLocation,
+                  })
+                }
               >
                 <Text style={{ marginLeft: SIZES.padding, ...FONTS.h4 }}>
                   Location
@@ -667,24 +697,9 @@ const Item = ({ route, navigation }) => {
                 // borderRadius: SIZES.radius,
                 flex: 1,
               }}
-              // onPress={() =>
-              //   navigation.navigate("ItemLocation", {
-              //     product: product,
-              //     currentLocation: currentLocation,
-              //   })
-              // }
-              // onPress={PayHere.startPayment(
-              //   paymentObject,
-              //   (paymentId) => {
-              //     console.log("Payment Completed", paymentId);
-              //   },
-              //   (errorData) => {
-              //     Alert.alert("PayHere Error", errorData);
-              //   },
-              //   () => {
-              //     console.log("Payment Dismissed");
-              //   }
-              // )}
+              onPress={() =>
+                navigation.navigate("StripeApp", { total, product, email })
+              }
             >
               <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Order</Text>
             </TouchableOpacity>

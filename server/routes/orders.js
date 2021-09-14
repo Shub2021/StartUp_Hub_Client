@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Orders = require("../models/Order");
-const constants = require("../../constants/keys");
 const Order = require("../models/Order");
 
 router.get("/", (req, res, next) => {
@@ -19,6 +18,24 @@ router.get("/", (req, res, next) => {
       });
     });
 });
+
+router.get("/userorders/:userrEmail", (req, res, next) => {
+  const client_id = req.params.userrEmail;
+  console.log(client_id);
+  Order.find({ client_id: client_id })
+    .exec()
+    .then((docs) => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
 router.post("/", (req, res, next) => {
   const arr = [{ rate: 0, client: "none", comment: " " }];
   const order = new Orders({

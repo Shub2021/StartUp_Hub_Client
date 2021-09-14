@@ -6,11 +6,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ScrollView,
   FlatList,
   Animated,
-  Button,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import ProgressBar from "../components/ProgressBar";
 import Modal from "react-native-modal";
@@ -23,7 +22,8 @@ const ItemReviews = ({ route, navigation }) => {
   const scrollX = new Animated.Value(0);
 
   const [product, setProduct] = React.useState(route.params);
-  const [rating, setRating] = React.useState(0);
+  const [rating, setRating] = React.useState(route.params.avg_rate);
+  const [data, setData] = React.useState(null);
   const [rateCount, setRateCount] = React.useState(0);
   const [exceletCount, setexceletCount] = React.useState(0);
   const [goodCount, setgoodCount] = React.useState(0);
@@ -38,41 +38,59 @@ const ItemReviews = ({ route, navigation }) => {
   const [userRate, setuseRate] = React.useState(0);
   const [userId, setUserId] = React.useState(null);
   const [user, setUser] = React.useState(null);
-
-  
+  const [loading, setloading] = React.useState(true);
 
   React.useEffect(() => {
-    var rate = 0;
-    var rateCount = product.rating.length;
+    let allRateCount = product.rating.length;
+    setRateCount(allRateCount);
+
     if (product.rating.length > 0) {
+      let fiveStarCount = 0;
+      let fourStarCount = 0;
+      let threeStarCount = 0;
+      let twoStarCount = 0;
+      let oneStarCount = 0;
+
       for (let i = 0; i < product.rating.length; i++) {
         const element = product.rating[i].rate;
-        rate = rate + element;
-        if (element == 5) {
-          var count = ((exceletCount + 1) / rateCount) * 100;
-          setexceletCount(count);
-        } else if (element == 4) {
-          var count = ((goodCount + 1) / rateCount) * 100;
-          setgoodCount(count);
-        } else if (element == 3) {
-          var count = ((avgCount + 1) / rateCount) * 100;
 
-          setavgCount(count);
+        if (element == 5) {
+          fiveStarCount++;
+        } else if (element == 4) {
+          fourStarCount++;
+        } else if (element == 3) {
+          threeStarCount++;
         } else if (element == 2) {
-          var count = ((lowAvgCount + 1) / rateCount) * 100;
-          setlowAvgCount(count);
+          twoStarCount++;
         } else if (element == 1) {
-          var count = ((poorCount + 1) / rateCount) * 100;
-          setlowAvgCount(count);
+          oneStarCount++;
         }
       }
 
-      rate = rate / rateCount;
+      setexceletCount((fiveStarCount / allRateCount) * 100);
+
+      setgoodCount((fourStarCount / allRateCount) * 100);
+
+      setavgCount((threeStarCount / allRateCount) * 100);
+
+      setlowAvgCount((twoStarCount / allRateCount) * 100);
+
+      setlowAvgCount((oneStarCount / allRateCount) * 100);
     }
-    setRateCount(rateCount);
-    setRating(parseInt(rate));
+    loadProduct();
     getData();
+    setloading(false);
   }, []);
+
+  const loadProduct = () => {
+    fetch(URLs.cn + "/product/getProductbyID/" + product._id)
+      .then((res) => res.json())
+      .then((result) => {
+        // console.log(result);
+        setData(result.rating);
+        setProduct(result);
+      });
+  };
 
   const getData = async () => {
     const userId = await AsyncStorage.getItem("userId");
@@ -89,7 +107,18 @@ const ItemReviews = ({ route, navigation }) => {
   };
 
   function addCommenttoDB() {
-    let ratingarray = product.rating;
+    let avgRate = parseInt((starCount + rating * rateCount) / (rateCount + 1));
+    setRateCount(rateCount + 1);
+    setRating(avgRate);
+
+    console.log(avgRate);
+
+    let ratingarray = [];
+
+    for (let i = 0; i < product.rating.length; i++) {
+      ratingarray.push(product.rating[i]);
+    }
+
     let newComent = {
       rate: starCount,
       comment: addComment,
@@ -98,17 +127,21 @@ const ItemReviews = ({ route, navigation }) => {
     };
 
     ratingarray.push(newComent);
+    console.log(data);
 
     fetch(URLs.cn + "/product/" + product._id, {
       method: "patch",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        avg_rate: avgRate,
         rating: ratingarray,
       }),
     })
       .then((res) => res.json())
       .then((result) => {
+        loadProduct;
         toggleModal;
+        console.log(data);
       });
   }
 
@@ -123,8 +156,6 @@ const ItemReviews = ({ route, navigation }) => {
     { bgcolor: "#F5A523", completed: lowAvgCount },
     { bgcolor: "#EC3A12", completed: poorCount },
   ];
-
-  const data = product.rating;
 
   function renderHeader() {
     return (
@@ -374,23 +405,40 @@ const ItemReviews = ({ route, navigation }) => {
   function renderComments() {
     const renderItem = ({ item }) => (
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => {}}>
-          {/* <Image style={styles.image} source={{ uri: item.image }} /> */}
+        <TouchableOpacity>
+          <Image style={styles.image} source={icons.user} />
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.contentHeader}>
             <Text style={styles.name}>{item.client}</Text>
           </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ ...FONTS.body3, marginRight : 5 }}>{item.rate}.0</Text>
+            <Image
+              source={icons.star}
+              style={{
+                height: 15,
+                width: 15,
+                tintColor: COLORS.primary,
+                marginRight: 10,
+              }}
+            />
+          </View>
           <Text style={{ ...FONTS.body5 }} rkType="primary3 mediumLine">
             {item.comment}
           </Text>
-          <View
+          {/* <View
             style={{
               borderBottomColor: "black",
               borderBottomWidth: 1,
               marginTop: 5,
             }}
-          />
+          /> */}
         </View>
       </View>
     );
@@ -405,6 +453,8 @@ const ItemReviews = ({ route, navigation }) => {
         keyExtractor={(item) => {
           return item._id.toString();
         }}
+        onRefresh={() => loadProduct()}
+        refreshing={loading}
         renderItem={renderItem}
         contentContainerStyle={{
           paddingHorizontal: SIZES.padding,
@@ -419,14 +469,15 @@ const ItemReviews = ({ route, navigation }) => {
       <View
         style={{
           position: "absolute",
-          height: 100,
+          // height: 100,
           bottom: 0,
-          left: 0,
+          // left: 0,
           width: "100%",
           // backgroundColor: "red",
           justifyContent: "center",
           alignItems: "center",
-
+          padding: SIZES.padding * 2,
+          marginBottom: 0,
           backgroundColor: "rgba(205,205,210, 0.8)",
         }}
       >
@@ -457,6 +508,7 @@ const ItemReviews = ({ route, navigation }) => {
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
+              backgroundColor: COLORS.transparentBlack7,
             }}
           >
             <View
@@ -538,9 +590,14 @@ const ItemReviews = ({ route, navigation }) => {
   return (
     <SafeAreaView style={{ height: "100%" }}>
       {renderHeader()}
-      {renderRatings()}
-
-      {renderComments()}
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <>
+          {renderRatings()}
+          {renderComments()}
+        </>
+      )}
       {renderBottom()}
       {popupReview()}
     </SafeAreaView>
@@ -573,10 +630,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#CCCCCC",
   },
   image: {
-    width: 45,
-    height: 45,
+    width: 20,
+    height: 20,
     borderRadius: 20,
-    marginLeft: 20,
+    marginLeft: 0,
   },
   time: {
     fontSize: 11,

@@ -28,11 +28,19 @@ import StartupStatistics from "./screens/Investor/StartupStatistics";
 import PostAgreement from "./screens/Investor/PostAgreement";
 import ViewPostPlan from "./screens/Investor/ViewPostPlan";
 import ItemReviews from "./screens/client/ItemReviews";
+import ClientProfile from "./screens/client/Profile";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
 import postRegisterForm from "./screens/postRegisterForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
+import UserCart from "./screens/client/UserCart";
+import ServicesHome from "./screens/client/ServicesHome";
+import UserOrders from "./screens/client/UserOrders";
+import SelectetService from "./screens/client/SelectedService";
+import UserRequestedServices from "./screens/client/UserRequestedServices";
+import StripeApp from "./screens/client/StripeApp";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const Stack = createStackNavigator();
 const ClientStack = createStackNavigator();
@@ -85,16 +93,31 @@ const myOptions = {
 
 function LoadClientScreens() {
   return (
-    <ClientStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <ClientStack.Screen name="Home" component={Tabss} />
-      <ClientStack.Screen name="Item" component={Item} />
-      <ClientStack.Screen name="ItemLocation" component={ItemLocation} />
-      <ClientStack.Screen name="ItemReviews" component={ItemReviews} />
-    </ClientStack.Navigator>
+    <StripeProvider publishableKey="pk_test_51JU5UCKmGZodwyxaN1Q24PTRnjRGzL7ePprbwfx9Nf2yiSu5sPvBKhdoyjJjhCgNT6heMbpZiEKBxHW3t5A2FEIT00B6Dg98nj">
+      <ClientStack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <ClientStack.Screen name="Home" component={Tabss} />
+        <ClientStack.Screen name="Item" component={Item} />
+        <ClientStack.Screen name="ItemLocation" component={ItemLocation} />
+        <ClientStack.Screen name="ItemReviews" component={ItemReviews} />
+        <ClientStack.Screen name="UserCart" component={UserCart} />
+        <ClientStack.Screen name="ServicesHome" component={ServicesHome} />
+        <ClientStack.Screen
+          name="SelectetService"
+          component={SelectetService}
+        />
+        <ClientStack.Screen name="UserOrders" component={UserOrders} />
+        <ClientStack.Screen name="StripeApp" component={StripeApp} />
+        <ClientStack.Screen name="ClientProfile" component={ClientProfile} />
+        <ClientStack.Screen
+          name="UserRequestedServices"
+          component={UserRequestedServices}
+        />
+      </ClientStack.Navigator>
+    </StripeProvider>
   );
 }
 

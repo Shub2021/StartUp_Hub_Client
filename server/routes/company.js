@@ -29,8 +29,6 @@ router.get("/:br_number", (req, res, next) => {
   Company.findOne({ br_number: br })
     .exec()
     .then((doc) => {
-      console.log(doc);
-
       if (doc) {
         return res.status(200).json(doc);
       } else {
