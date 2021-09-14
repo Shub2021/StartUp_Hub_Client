@@ -146,7 +146,9 @@ const HomeInvestor = (props) => {
                   >
                     Startup Name
                   </Text>
-                  <Text style={{ fontSize: 20 }}>{item.company_name}</Text>
+                  <Text style={{ fontSize: 17, textTransform: "uppercase" }}>
+                    {item.company_name}
+                  </Text>
                 </View>
 
                 <View>
@@ -177,7 +179,7 @@ const HomeInvestor = (props) => {
                 {sflag ? (
                   <View>
                     <Button
-                      style={styles.sendBtn}
+                      style={styles.cancelBtn}
                       icon="close"
                       mode="outlined"
                       theme={theme}
@@ -231,12 +233,12 @@ const theme = {
 
 const styles = StyleSheet.create({
   comDetails: {
+    backgroundColor: "#fcfcfc",
+    borderRadius: 10,
     margin: 5,
     marginLeft: 10,
     marginRight: 10,
-    borderRadius: 10,
     shadowColor: "#000",
-    backgroundColor: "#fcfcfc",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -283,27 +285,34 @@ const styles = StyleSheet.create({
     backgroundColor: "#cee4f9",
     borderRadius: 50,
   },
+  cancelBtn: {
+    marginTop: 35,
+    marginLeft: 75,
+    borderWidth: 1.25,
+    borderColor: "#fff19d",
+    backgroundColor: "#fff19d",
+    borderRadius: 50,
+  },
 
   searchBar: {
     alignItems: "center",
-    flexDirection: "row",
-    borderWidth: 1,
     borderColor: "dodgerblue",
-    marginTop: 24,
-
-    marginHorizontal: 10,
-    paddingHorizontal: 10,
     borderRadius: 35,
+    borderWidth: 1,
+    flexDirection: "row",
     height: 50,
+    marginHorizontal: 10,
+    marginTop: 24,
+    paddingHorizontal: 10,
   },
   inputContainer: {
-    flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 20,
-    borderWidth: 1,
     borderColor: "dodgerblue",
     borderRadius: 20,
+    borderWidth: 1,
+    flexDirection: "row",
     height: 45,
+    marginHorizontal: 20,
   },
 });
 

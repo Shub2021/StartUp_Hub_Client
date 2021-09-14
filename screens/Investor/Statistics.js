@@ -8,16 +8,11 @@ import {
   Dimensions,
   ScrollView,
   Image,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
-import { Card, Badge } from "react-native-paper";
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from "react-native-chart-kit";
+
+import { BarChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { URLs } from "../../constants";
 
@@ -26,6 +21,7 @@ const MyBezierLineChart = () => {
 };
 
 const Statistics = (props) => {
+  const [isLoading, setLoading] = useState(true);
   const [barlables, setbarlables] = useState([]);
   const [bardata, setbardata] = useState([]);
   const [lineData, setLineData] = useState([]);
@@ -50,108 +46,138 @@ const Statistics = (props) => {
   }, []);
   const getData = async () => {
     const email = await AsyncStorage.getItem("email");
+    const date = new Date();
+    var month = date.getMonth().toString();
+    if (month.length == 1) {
+      month = "0" + month;
+    }
+    var year = date.getFullYear().toString();
     let labels = [];
     let values = [];
+
     fetch(URLs.cn + "/postplan/" + email)
       .then((response) => response.json())
       .then((json) => {
-        let incm = [0, 0, 0, 0];
         for (let i = 0; i < json.length; i++) {
-          labels.push(json[i].startupName);
-          let x = (json[i].amount * json[i].interestRate) / 100;
-          values.push(x);
-          let d = json[i].Startdate;
-          let m = d.slice(5, 7);
-          if (m === "06") {
-            incm[0] = incm[0] + x;
-          } else if (m === "07") {
-            incm[1] = incm[1] + x;
-          } else if (m === "08") {
-            incm[2] = incm[2] + x;
-          } else if (m === "09") {
-            incm[3] = incm[3] + x;
+          const flag = false;
+          console.log(month);
+          console.log(year);
+          if (year !== json[i].Startdate.slice(0, 4)) {
+            flag = true;
+          } else {
+            if (month !== json[i].Startdate.slice(5, 7)) {
+              flag = true;
+            }
+          }
+          if (flag === true) {
+            fetch(URLs.cn + "/company/" + json[i].br_number)
+              .then((res) => res.json())
+              .then((rst) => {
+                if (rst.type === "product") {
+                  const rate = json[i].interestRate;
+                  labels.push(json[i].startupName);
+                  var profit = 0;
+                  fetch(URLs.cn + "/order/" + json[i].br_number)
+                    .then((res) => res.json())
+                    .then((result) => {
+                      for (let j = 0; j < result.length; j++) {
+                        const element = result[j];
+                        const orderDate = result[j].req_date;
+                        var orderMonth = parseInt(orderDate.slice(5, 6));
+                        var currentMonth = parseInt(month);
+                        if (orderMonth === currentMonth) {
+                          profit =
+                            profit +
+                            result[j].total -
+                            result[j].expence * result[j].quantity;
+                        }
+                      }
+                      const x = (profit * rate) / 100;
+                      values.push(x);
+                    });
+                } else {
+                  const rate = json[i].interestRate;
+                  labels.push(json[i].startupName);
+                  var profit = 0;
+                  fetch(URLs.cn + "/jobs/" + json[i].br_number)
+                    .then((res) => res.json())
+                    .then((result) => {
+                      for (let j = 0; j < result.length; j++) {
+                        const element = result[j];
+                        const jobDate = result[j].date;
+                        var jobMonth = parseInt(jobDate.slice(5, 7));
+                        var currentMonth = parseInt(month);
+                        if (jobMonth === currentMonth) {
+                          profit = profit + result[j].price;
+                        }
+                      }
+                      console.log(profit);
+                      const x = (profit * rate) / 100;
+                      values.push(x);
+                      console.log(values[0]);
+                      console.log(values[1]);
+                      setbardata(values);
+                    });
+                }
+              });
           }
         }
         setbarlables(labels);
-        setbardata(values);
-        setLineData(incm);
-        console.log(incm[0]);
-        console.log(incm[1]);
-        console.log(incm[2]);
-        console.log(incm[3]);
+        setLoading(false);
+
+        console.log(labels);
       });
   };
   return (
-    <ScrollView>
-      <View style={{ flexDirection: "row", marginLeft: 15 }}>
-        <View>
-          <Card
-            style={styles.card}
+    <View>
+      {!isLoading ? (
+        <ScrollView>
+          <TouchableWithoutFeedback
             onPress={() => props.navigation.navigate("SubscribedStartups")}
           >
-            <Image
-              style={styles.image}
-              source={require("../../assets/images/agreement.png")}
-            />
-            <View style={styles.cardIcon}>
+            <View style={styles.subscribedStartups}>
+              <Image
+                style={styles.image}
+                source={require("../../assets/images/agreement.png")}
+              />
               <Text style={styles.fieldTitle}>SUBSCRIBED STARTUPS</Text>
             </View>
-          </Card>
-        </View>
-      </View>
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.header}>Bar Chart</Text>
-          <View>
-            <BarChart
-              data={data1}
-              width={Dimensions.get("window").width - 16}
-              height={220}
-              yAxisLabel={"Rs"}
-              fromZero={true}
-              chartConfig={{
-                backgroundColor: "#1cc910",
-                backgroundGradientFrom: "#eff3ff",
-                backgroundGradientTo: "#efefef",
-                decimalPlaces: 2,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              style={{
-                marginVertical: 8,
-                borderRadius: 16,
-              }}
-            />
+          </TouchableWithoutFeedback>
+
+          <View style={styles.container}>
+            <View>
+              <Text style={styles.header}>INTEREST ON LAST MONTH PROFIT</Text>
+              <View>
+                <BarChart
+                  data={data1}
+                  width={Dimensions.get("window").width - 16}
+                  height={250}
+                  yAxisLabel={"Rs"}
+                  fromZero={true}
+                  chartConfig={{
+                    backgroundColor: "#1cc910",
+                    backgroundGradientFrom: "#8ad1fd",
+                    backgroundGradientTo: "#c5e8fe",
+                    decimalPlaces: 2,
+                    labelColor: (opacity = 1) => `rgba(1,40,64, ${opacity})`,
+                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                    style: {
+                      borderRadius: 16,
+                    },
+                  }}
+                  style={{
+                    marginVertical: 8,
+                    borderRadius: 10,
+                  }}
+                />
+              </View>
+            </View>
           </View>
-          {/* <Text style={styles.header}> Line Chart</Text> */}
-          {/* <View>
-            <LineChart
-              data={data2}
-              width={Dimensions.get("window").width - 16} // from react-native
-              height={270}
-              yAxisLabel={"Rs"}
-              chartConfig={{
-                backgroundColor: "#1cc910",
-                backgroundGradientFrom: "#0093E9",
-                backgroundGradientTo: "#80D0C7",
-                decimalPlaces: 2, // optional, defaults to 2dp
-                color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              // bezier
-              // style={{
-              //   marginVertical: 8,
-              //   borderRadius: 10,
-              // }}
-            />
-          </View> */}
-        </View>
-      </View>
-    </ScrollView>
+        </ScrollView>
+      ) : (
+        <ActivityIndicator size="large" color="#0000ff" />
+      )}
+    </View>
   );
 };
 
@@ -159,48 +185,45 @@ export default Statistics;
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
     padding: 10,
+    textAlign: "center",
+    backgroundColor: "#f4f4f4",
   },
 
-  card: {
-    padding: 15,
-    marginTop: 30,
-    marginBottom: 20,
-    // marginLeft: 15,
-    marginRight: 15,
-    borderRadius: 10,
-    shadowColor: "#000",
-    width: 380,
-    height: 140,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  cardIcon: {
-    flexDirection: "row",
-  },
   fieldTitle: {
     fontWeight: "bold",
-    marginTop: 20,
+    marginLeft: 40,
+    marginTop: 18,
+    fontSize: 18,
+    color: "#025f98",
   },
   header: {
-    textAlign: "center",
+    color: "#025f98",
+    fontSize: 20,
     fontSize: 20,
     fontWeight: "bold",
-    padding: 16,
+    letterSpacing: 1,
     marginTop: 16,
+    padding: 16,
+    textAlign: "center",
   },
   image: {
-    width: 70,
-    height: 70,
-    marginLeft: 40,
+    height: 55,
+    marginLeft: 30,
+    width: 55,
+  },
+  subscribedStartups: {
+    backgroundColor: "#d4e0ff",
+    borderColor: "#628cff",
+    borderRadius: 8,
+    borderWidth: 1.5,
+    flexDirection: "row",
+    marginHorizontal: 10,
+    marginVertical: 50,
+    marginTop: 20,
+    padding: 13,
   },
 });

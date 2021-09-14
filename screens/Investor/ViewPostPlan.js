@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   RefreshControl,
+  Image,
 } from "react-native";
 import { Title, Card, Button, ActivityIndicator } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,21 +50,25 @@ const ViewPostPlan = ({ navigation }) => {
         >
           <Card style={styles.investCard}>
             <Text></Text>
-            <Title>01) Investment Amount</Title>
+            <Title>i) Investment Amount</Title>
             <Text style={styles.filed}>{data.amount}</Text>
 
-            <Title>02) Investment Date</Title>
+            <Title>ii) Investment Date</Title>
             <Text style={styles.filed}>{data.Startdate}</Text>
 
-            <Title>03) Payback Period</Title>
+            <Title>iii) Payback Period</Title>
             <Text style={styles.filed}>{data.time}</Text>
 
-            <Title>04) Investment Rate</Title>
-            <Text style={styles.filed}>{data.interestRate}</Text>
+            <Title>iv) Investment Rate</Title>
+            <Text style={styles.filed}>{data.interestRate}%</Text>
 
-            <Title>05) Investment Information</Title>
+            <Title>v) Investment Information</Title>
             <Text style={styles.filed}>{data.information}</Text>
           </Card>
+          <Image
+            style={styles.image}
+            source={require("../../assets/images/post_agreement.png")}
+          />
         </ScrollView>
       ) : (
         <ActivityIndicator size="large" color="#0000ff" />
@@ -75,15 +80,18 @@ const ViewPostPlan = ({ navigation }) => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#faf8f7",
+    backgroundColor: "#fff",
   },
 
   investCard: {
-    padding: 15,
-    marginTop: 10,
-    marginLeft: 15,
-    marginRight: 15,
     borderRadius: 10,
+    marginBottom: 30,
+    marginHorizontal: 8,
+    marginTop: 40,
+    padding: 15,
+    borderWidth: 1.25,
+    borderColor: "#3857fd",
+    backgroundColor: "#f1f3ff",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -94,21 +102,22 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
-  // title: {
-  //   marginRight: 150,
-  //   fontWeight: "bold",
-  // },
-
   filed: {
     fontSize: 17,
     lineHeight: 25,
-    marginBottom: 10,
+    marginBottom: 20,
+    marginLeft: 15,
   },
 
   descriptionStyle: {
     fontSize: 17,
     lineHeight: 23,
     marginBottom: 15,
+  },
+  image: {
+    width: 315,
+    height: 315,
+    alignSelf: "center",
   },
 });
 

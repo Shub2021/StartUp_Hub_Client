@@ -65,13 +65,7 @@ const ViewPlan = ({ navigation }) => {
             <Title>03) Interest Rate</Title>
             <View style={{ flexDirection: "row" }}>
               <View>
-                <Text style={styles.title}>Annual</Text>
-                <Text style={styles.filed}>{data.interestTime}</Text>
-              </View>
-              <View>
-                <Text style={{ fontWeight: "bold", marginTop: 3 }}>
-                  Growth Rate
-                </Text>
+                <Text style={{ fontWeight: "bold", marginTop: 3 }}>Return</Text>
                 <Text style={styles.filed}>{data.interestRate}%</Text>
               </View>
             </View>
@@ -132,13 +126,13 @@ const styles = StyleSheet.create({
   filed: {
     fontSize: 17,
     lineHeight: 25,
-    marginBottom: 10,
+    marginBottom: 25,
   },
 
   descriptionStyle: {
     fontSize: 17,
     lineHeight: 23,
-    marginBottom: 15,
+    marginBottom: 25,
   },
 });
 

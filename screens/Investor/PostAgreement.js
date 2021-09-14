@@ -12,14 +12,19 @@ import { TextInput, Button, Card } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { URLs } from "../../constants";
+import Input from "../components/Input";
 
 const PostAgreement = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [amount, setAmount] = useState("");
+  const [amountValid, setAmountValid] = useState(false);
   const [email, setEmail] = useState("");
   const [time, setTime] = useState("");
+  const [timeValid, setTimeValid] = useState(false);
   const [interestRate, setInterestRate] = useState("");
+  const [interestRateValid, setInterestRateValid] = useState(false);
   const [information, setInformation] = useState("");
+  const [informationValid, setInformationValid] = useState(false);
   const [br_number, setBrNumber] = useState("");
   const [startupName, setStartupName] = useState("");
 
@@ -38,71 +43,118 @@ const PostAgreement = (props) => {
   }, []);
 
   const submitData = () => {
-    let Startdate = new Date().toISOString().slice(0, 10);
-    console.log(email);
-    fetch(URLs.cn + "/postplan/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        amount,
-        interestRate,
-        time,
-        information,
-        email,
-        Startdate,
-        br_number,
-        startupName,
-      }),
-    }).then((res) => res.json());
-    Alert.alert("Post Agreement Created Succesfully");
-    // props.navigation.navigate("ViewPlan");
+    if (amountValid && timeValid && interestRateValid && informationValid) {
+      let Startdate = new Date().toISOString().slice(0, 10);
+      console.log(email);
+      fetch(URLs.cn + "/postplan/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount,
+          interestRate,
+          time,
+          information,
+          email,
+          Startdate,
+          br_number,
+          startupName,
+        }),
+      }).then((res) => res.json());
+      Alert.alert("Post Agreement Created Succesfully");
+    } else {
+      Alert.alert("Please fill the required feilds");
+    }
   };
 
   return (
     <View style={styles.root}>
       {!isLoading ? (
         <ScrollView>
-          <TextInput
-            style={styles.inputStyles}
-            label="Investment Amount"
-            value={amount}
-            theme={theme}
-            keyboardType="number-pad"
-            mode="outlined"
-            onChangeText={(Number) => setAmount(Number)}
-          />
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Investment Amount"
+              value={amount}
+              theme={theme}
+              keyboardType="number-pad"
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setAmountValid(isValid)}
+              onChangeText={(Number) => setAmount(Number)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!amountValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-          <TextInput
-            style={styles.inputStyles}
-            label="Investment Rate"
-            value={interestRate}
-            theme={theme}
-            keyboardType="number-pad"
-            mode="outlined"
-            onChangeText={(Number) => setInterestRate(Number)}
-          />
-          <TextInput
-            style={styles.inputStyles}
-            label="Payback Period"
-            value={time}
-            theme={theme}
-            mode="outlined"
-            onChangeText={(text) => setTime(text)}
-          />
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Investment Rate"
+              value={interestRate}
+              theme={theme}
+              keyboardType="number-pad"
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setInterestRateValid(isValid)}
+              onChangeText={(Number) => setInterestRate(Number)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!interestRateValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Payback Period"
+              value={time}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setTimeValid(isValid)}
+              onChangeText={(text) => setTime(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!timeValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-          <TextInput
-            style={{ margin: 10 }}
-            label="Additional Information"
-            value={information}
-            theme={theme}
-            mode="outlined"
-            multiline={true}
-            numberOfLines={6}
-            maxLength={600}
-            onChangeText={(text) => setInformation(text)}
-          />
+          <View>
+            <Input
+              style={{ margin: 10 }}
+              label="Additional Information"
+              value={information}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setInformationValid(isValid)}
+              multiline={true}
+              numberOfLines={6}
+              maxLength={600}
+              onChangeText={(text) => setInformation(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!informationValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
           <View style={{ alignItems: "center", marginTop: 30 }}>
             <Button

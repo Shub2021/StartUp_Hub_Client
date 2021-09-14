@@ -20,12 +20,17 @@ import { Ionicons } from "@expo/vector-icons";
 import Iconics from "react-native-vector-icons/MaterialCommunityIcons";
 import { URLs } from "../../constants";
 import { SIZES } from "../../constants/index";
+import Input_2 from "../components/Input_2";
 
 export default function Register(props) {
   const [name, setName] = useState("");
+  const [nameValid, setNameValid] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailValid, setEmailValid] = useState(false);
   const [password, setPassword] = useState("");
+  const [passwordValid, setPasswordValid] = useState(false);
   const [repassword, setRePassword] = useState("");
+  const [repasswordValid, setRePasswordValid] = useState(false);
   const [notvisible, setVisible] = useState(true);
 
   const abortController = new AbortController();
@@ -65,29 +70,62 @@ export default function Register(props) {
       <ScrollView>
         <Text style={styles.topictxt}>User details</Text>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
-            placeholder="Name"
-            value={name}
-            onChangeText={(text) => setName(text)}
-          />
+          <View>
+            <Input_2
+              style={styles.inputField}
+              placeholder="Name"
+              value={name}
+              pattern={"[^s]"}
+              onValidation={(isValid) => setNameValid(isValid)}
+              onChangeText={(text) => setName(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!nameValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
         </View>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
+          <View>
+            <Input_2
+              style={styles.inputField}
+              placeholder="Email"
+              value={email}
+              pattern={"[^s]"}
+              onValidation={(isValid) => setEmailValid(isValid)}
+              onChangeText={(text) => setEmail(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!emailValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
         </View>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
-            placeholder="Password"
-            value={password}
-            secureTextEntry={notvisible}
-            onChangeText={(text) => setPassword(text)}
-          />
+          <View>
+            <Input_2
+              style={styles.inputField}
+              placeholder="Password"
+              value={password}
+              pattern={"[^s]"}
+              onValidation={(isValid) => setPasswordValid(isValid)}
+              secureTextEntry={notvisible}
+              onChangeText={(text) => setPassword(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!passwordValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
           <TouchableOpacity
             style={{ marginLeft: 280, top: 6, position: "absolute" }}
             onPress={() => setVisible(!notvisible)}
@@ -100,13 +138,24 @@ export default function Register(props) {
           </TouchableOpacity>
         </View>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
-            placeholder="Re Enter Password"
-            value={repassword}
-            secureTextEntry={notvisible}
-            onChangeText={(text) => setRePassword(text)}
-          />
+          <View>
+            <Input_2
+              style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
+              placeholder="Re Enter Password"
+              value={repassword}
+              pattern={"[^s]"}
+              onValidation={(isValid) => setRePasswordValid(isValid)}
+              secureTextEntry={notvisible}
+              onChangeText={(text) => setRePassword(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!setRePassword ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
           <TouchableOpacity
             style={{ marginLeft: 280, top: 6, position: "absolute" }}
             onPress={() => setVisible(!notvisible)}
@@ -187,5 +236,10 @@ const styles = StyleSheet.create({
   registerbtn: {
     backgroundColor: "#fff",
     justifyContent: "center",
+  },
+  inputField: {
+    paddingHorizontal: 10,
+    color: "#306bff",
+    fontSize: 20,
   },
 });
