@@ -8,12 +8,18 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  StatusBar,
+  Animated,
   TextInput,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Modal,
 } from "react-native";
-import { COLORS, icons, images, FONTS, SIZES, URLs } from "../../constants";
+import { COLORS, icons, FONTS, SIZES, URLs, constants } from "../../constants";
 import FilterModel from "../components/FilterModel";
 import filter from "lodash.filter";
+import IconButton from "../components/IconButton";
+import TextIconButton from "../components/TextIconButton";
+import TwoPointSlider from "../components/TwoPointSlider";
 
 const Home = ({ navigation }) => {
   // Dummy Datas
@@ -29,7 +35,11 @@ const Home = ({ navigation }) => {
   );
   const [showFilterModel, setShowFilterModel] = React.useState(false);
   const [minPrice, setMinPrice] = React.useState(0);
+  const [minBarPrice, setMinBarPrice] = React.useState(0);
+  const [maxBarPrice, setMaxBarPrice] = React.useState(0);
   const [maxPrice, setMaxPrice] = React.useState(5000);
+  const modelAnimatedValue = React.useRef(new Animated.Value(0)).current;
+  const [ratings, setRatings] = React.useState("");
 
   useEffect(() => {
     fetchData();
@@ -67,6 +77,7 @@ const Home = ({ navigation }) => {
       selectedProducts[0].unitprice
     );
     setMinPrice(minValue);
+    setMinBarPrice(minValue);
   }
   function getMaxPrice() {
     const maxValue = data.reduce(
@@ -74,6 +85,7 @@ const Home = ({ navigation }) => {
       selectedProducts[0].unitprice
     );
     setMaxPrice(maxValue);
+    setMaxBarPrice(maxValue);
   }
 
   const contains = (name, query) => {
@@ -84,25 +96,25 @@ const Home = ({ navigation }) => {
     return false;
   };
 
-  const logout = async () => {
-    try {
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("name");
-      await AsyncStorage.removeItem("email");
-      await AsyncStorage.removeItem("type");
-      navigation.navigate("Login");
-    } catch (e) {
-      console.log(e);
-    }
+  // const logout = async () => {
+  //   try {
+  //     await AsyncStorage.removeItem("token");
+  //     await AsyncStorage.removeItem("name");
+  //     await AsyncStorage.removeItem("email");
+  //     await AsyncStorage.removeItem("type");
+  //     navigation.navigate("Login");
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
 
-    console.log("Done.");
-  };
+  //   console.log("Done.");
+  // };
 
   const initialCurrentLocation = {
-    streetName: "Kuching",
+    streetName: "Colombo",
     gps: {
-      latitude: 1.5496614931250685,
-      longitude: 110.36381866919922,
+      latitude: 6.927079,
+      longitude: 79.861244,
     },
   };
 
@@ -176,14 +188,6 @@ const Home = ({ navigation }) => {
     }
 
     setSelectedCategory(category);
-  }
-
-  function getCategoryNameById(id) {
-    let category = categories.filter((a) => a.id == id);
-    if (category.length > 0) {
-      return category[0].name;
-    }
-    return "";
   }
 
   function renderFavouriteCategories() {
@@ -310,7 +314,7 @@ const Home = ({ navigation }) => {
             paddingRight: SIZES.padding * 2,
             justifyContent: "center",
           }}
-          onPress={logout}
+          onPress={() => navigation.navigate("UserOrders")}
         >
           <Image
             source={icons.basket}
@@ -382,71 +386,81 @@ const Home = ({ navigation }) => {
 
   function renderProductsList() {
     const renderItem = ({ item }) => (
-      <TouchableOpacity
-        style={{
-          marginBottom: SIZES.padding * 2,
-        }}
-        // onPress={() => navigation.navigate("Item", { item, currentLocation })}
-        onPress={() => navigation.navigate("Item", item)}
-      >
-        <View
+      <View>
+        <TouchableOpacity
           style={{
-            marginBottom: SIZES.padding,
+            marginBottom: SIZES.padding * 2,
           }}
+          // onPress={() => navigation.navigate("Item", { item, currentLocation })}
+          onPress={() => navigation.navigate("Item", item)}
         >
-          <Image
-            source={{ uri: item.picture }}
-            resizeMode="cover"
-            style={{
-              width: "100%",
-              height: 200,
-              borderRadius: SIZES.radius,
-            }}
-          />
-
           <View
             style={{
-              position: "absolute",
-              bottom: 0,
-              height: 50,
-              width: SIZES.width * 0.3,
-              backgroundColor: COLORS.white,
-              borderTopRightRadius: SIZES.radius,
-              borderBottomLeftRadius: SIZES.radius,
-              alignItems: "center",
-              justifyContent: "center",
-              ...styles.shadow,
+              marginBottom: SIZES.padding,
             }}
           >
-            <Text style={{ ...FONTS.h4 }}>Rs. {item.unitprice} /=</Text>
-          </View>
-        </View>
+            <Image
+              source={{ uri: item.picture }}
+              resizeMode="cover"
+              style={{
+                width: "100%",
+                height: 200,
+                borderRadius: SIZES.radius * 0.5,
+              }}
+            />
 
-        {/* resturent Infromation */}
-        <Text style={{ ...FONTS.body2 }}>{item.product_name}</Text>
-        <View
-          style={{
-            marginTop: SIZES.padding,
-            flexDirection: "row",
-          }}
-        >
-          {/* rating */}
-          <Image
-            source={icons.star}
-            style={{
-              height: 20,
-              width: 20,
-              tintColor: COLORS.primary,
-              marginRight: 10,
-            }}
-          />
-          {/* <Text style={{ ...FONTS.body3 }}>{item.rating}</Text> */}
+            <View
+              style={{
+                position: "absolute",
+                bottom: 0,
+                height: 50,
+                width: SIZES.width * 0.3,
+                backgroundColor: COLORS.white,
+                borderTopRightRadius: SIZES.radius,
+                borderBottomLeftRadius: SIZES.radius * 0.5,
+                alignItems: "center",
+                justifyContent: "center",
+                ...styles.shadow,
+              }}
+            >
+              <Text style={{ ...FONTS.h4 }}>Rs. {item.unitprice} /=</Text>
+            </View>
+          </View>
+
+          {/* resturent Infromation */}
           <View
+            style={{
+              marginTop: SIZES.padding * 0.5,
+              marginBottom: SIZES.padding * 0.5,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ ...FONTS.body2 }}>{item.product_name}</Text>
+
+            {/* rating */}
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <Image
+                source={icons.star}
+                style={{
+                  height: 25,
+                  width: 25,
+                  tintColor: COLORS.primary,
+                  marginRight: 10,
+                }}
+              />
+              <Text style={{ ...FONTS.body2 }}>{item.avg_rate}</Text>
+            </View>
+            {/* <View
             style={{
               flexDirection: "row",
               marginLeft: 10,
             }}
-          >
+          > */}
             {/* {item.categories.map((categoryId) => {
               return (
                 <View
@@ -485,9 +499,17 @@ const Home = ({ navigation }) => {
                 $
               </Text>
             ))} */}
+            {/* </View> */}
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+        <View
+          style={{
+            marginBottom: SIZES.padding,
+            borderBottomColor: COLORS.secondary,
+            borderBottomWidth: 1,
+          }}
+        />
+      </View>
     );
 
     return (
@@ -503,19 +525,222 @@ const Home = ({ navigation }) => {
     );
   }
 
+  const Section = ({ containerStyle, title, children }) => {
+    return (
+      <View
+        style={{
+          marginTop: SIZES.padding * 2,
+          ...containerStyle,
+        }}
+      >
+        <Text style={{ ...FONTS.h3 }}>{title}</Text>
+        {children}
+      </View>
+    );
+  };
+
+  const FilterModel = ({ isVisible, onClose, min, max }) => {
+    if (showFilterModel) {
+      Animated.timing(modelAnimatedValue, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(modelAnimatedValue, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: false,
+      }).start(() => onClose());
+    }
+
+    const modelY = modelAnimatedValue.interpolate({
+      inputRange: [0, 1],
+      //cange popup height
+      outputRange: [SIZES.height, SIZES.height - 340],
+    });
+
+    const filterByPrice = () => {
+      let productlist = selectedProducts.filter(
+        (a) => a.unitprice > minBarPrice && a.unitprice < maxBarPrice
+      );
+      setselectedProducts(productlist);
+    };
+
+    const filterByRate = () => {
+      let productlist = selectedProducts.filter((a) => a.avg_rate >= ratings);
+      setselectedProducts(productlist);
+    };
+
+    function renderPriceRange() {
+      let lowprice = 0;
+      if (minPrice - 100 > 0) {
+        lowprice = minPrice - 100;
+      }
+      return (
+        <Section title="Price Range">
+          <View
+            style={{
+              alignItems: "center",
+            }}
+          >
+            <TwoPointSlider
+              values={[minBarPrice, maxBarPrice]}
+              min={lowprice}
+              max={maxPrice + 100}
+              prefix="Rs. "
+              postfix=""
+              onValuesChangeFinish={(values) => {
+                setMinBarPrice(values[0]),
+                  setMaxBarPrice(values[1]),
+                  filterByPrice();
+              }}
+            />
+          </View>
+        </Section>
+      );
+    }
+
+    function renderRatings() {
+      return (
+        <Section
+          title="Ratings"
+          containerStyle={{
+            marginTop: 40,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            {constants.ratings.map((item, index) => {
+              return (
+                <TextIconButton
+                  key={`Ratings-${index}`}
+                  containerStyle={{
+                    flex: 1,
+                    height: 50,
+                    margin: 5,
+                    alignItems: "center",
+                    borderRadius: SIZES.base,
+                    backgroundColor:
+                      item.id == ratings ? COLORS.primary : COLORS.lightGray2,
+                  }}
+                  label={item.label}
+                  labelStyle={{
+                    color: item.id == ratings ? COLORS.white : COLORS.gray,
+                  }}
+                  icon={icons.star}
+                  iconStyle={{
+                    tintColor: item.id == ratings ? COLORS.white : COLORS.gray,
+                  }}
+                  onPress={() => {
+                    setRatings(item.id), filterByRate();
+                  }}
+                />
+              );
+            })}
+          </View>
+        </Section>
+      );
+    }
+
+    return (
+      <Modal animationType="fade" transparent={true} visible={isVisible}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: COLORS.transparentBlack7,
+          }}
+        >
+          {/* Transparent */}
+          <TouchableWithoutFeedback onPress={() => setShowFilterModel(false)}>
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            ></View>
+          </TouchableWithoutFeedback>
+
+          <Animated.View
+            style={{
+              position: "absolute",
+              left: 0,
+              top: modelY,
+              width: "100%",
+              height: "100%",
+              padding: SIZES.padding * 2,
+              borderTopRightRadius: SIZES.padding * 2,
+              borderTopLeftRadius: SIZES.padding * 2,
+              backgroundColor: COLORS.white,
+            }}
+          >
+            {/* Header */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  flex: 1,
+                  ...FONTS.h3,
+                }}
+              >
+                Filter Your Search
+              </Text>
+              <IconButton
+                containerStyle={{
+                  borderWidth: 2,
+                  borderRadius: 10,
+                  borderColor: COLORS.gray2,
+                }}
+                icon={icons.cross}
+                iconStyle={{
+                  tintColor: COLORS.gray2,
+                }}
+                onPress={() => setShowFilterModel(false)}
+              />
+            </View>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingBottom: 250,
+              }}
+            >
+              {/* Distance */}
+              {renderPriceRange()}
+
+              {/* Rating */}
+              {renderRatings()}
+            </ScrollView>
+          </Animated.View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {renderHeader()}
       {renderSearch()}
 
-      {showFilterModel && (
-        <FilterModel
-          isVisible={showFilterModel}
-          min={minPrice}
-          max={maxPrice}
-          onClose={() => setShowFilterModel(false)}
-        />
-      )}
+      {
+        showFilterModel && FilterModel(showFilterModel, minPrice, maxPrice)
+        // <FilterModel
+        //   isVisible={showFilterModel}
+        //   min={minPrice}
+        //   max={maxPrice}
+        //   onClose={() => setShowFilterModel(false)}
+        // />
+      }
       {renderFavouriteCategories()}
       {renderProductsList()}
     </SafeAreaView>

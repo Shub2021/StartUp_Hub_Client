@@ -102,6 +102,25 @@ router.get("/byID/:jobID", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
+
+router.get("/userservices/:userrEmail", (req, res, next) => {
+  const client_email = req.params.userrEmail;
+  console.log(client_email);
+  Jobs.find({ client_email: client_email })
+    .exec()
+    .then((docs) => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
+
 /*
 router.delete("/:productId", (req, res, next) => {
   const id = req.params.productId;

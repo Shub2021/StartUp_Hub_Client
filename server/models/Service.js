@@ -6,9 +6,10 @@ const serviceSchema = new mongoose.Schema({
   picture: String,
   service_type: String,
   br_number: String,
-//   quantity: Number,
-   Description: String,
-   package: [package],
+  //   quantity: Number,
+  Description: String,
+  company_status: String,
+  package: [package],
   
 });
 

@@ -11,15 +11,17 @@ import {
   StatusBar,
   ActivityIndicator,
   Button,
+  Alert,
 } from "react-native";
 import { COLORS, icons, images, FONTS, SIZES, URLs } from "../../constants";
 import { cart } from "../../constants/icons";
 
 const UserCart = ({ navigation }) => {
   const [email, setEmail] = React.useState(null);
-  const [cartProducts, setCartProducts] = React.useState(null);
+  const [cartProducts, setCartProducts] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [cartItsemsExist, srtcartItsemsExist] = React.useState(false);
+  const [cartID, setCartId] = React.useState(null);
 
   useEffect(() => {
     //  AsyncStorage.getItem("email").then((token) => {
@@ -35,15 +37,16 @@ const UserCart = ({ navigation }) => {
   };
 
   const setDatatoState = (userEmail) => {
-    console.log(userEmail);
     fetch(URLs.cn + "/cart/" + userEmail)
       .then((res) => res.json())
       .then((result) => {
         if (result.productList.length > 0) {
+          setCartId(result._id);
           setCartProducts(result.productList);
           srtcartItsemsExist(true);
           setIsLoading(false);
         } else {
+          setIsLoading(false);
           srtcartItsemsExist(false);
           //no cart items
         }
@@ -117,8 +120,41 @@ const UserCart = ({ navigation }) => {
     );
   }
 
+  const createTwoButtonAlert = (item) =>
+    Alert.alert(
+      "Product Remove From Cart",
+      "Do you want to remove the product from the cart?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => removeItemFromCart(item) },
+      ],
+      { cancelable: false }
+    );
+
+  const removeItemFromCart = (item) => {
+    let cartArray = cartProducts.filter(function (ele) {
+      return ele._id != item._id;
+    });
+
+    fetch(URLs.cn + "/cart/" + cartID, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ arrayproduct: cartArray }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCartProducts(cartArray);
+        setIsLoading(false);
+      });
+  };
+
   function renderProductsList() {
-    console.log(cartProducts);
     const renderItem = ({ item }) => (
       <TouchableOpacity
         style={{
@@ -181,6 +217,7 @@ const UserCart = ({ navigation }) => {
                 alignItems: "center",
                 borderRadius: SIZES.radius,
               }}
+              onPress={() => createTwoButtonAlert(item)}
             >
               <Text style={{ ...FONTS.h4 }}>Remove</Text>
             </TouchableOpacity>
@@ -202,7 +239,7 @@ const UserCart = ({ navigation }) => {
               marginRight: 10,
             }}
           />
-          {/* <Text style={{ ...FONTS.body3 }}>{item.rating}</Text> */}
+          <Text style={{ ...FONTS.body3 }}>{item.avg_rate}</Text>
           <View
             style={{
               flexDirection: "row",

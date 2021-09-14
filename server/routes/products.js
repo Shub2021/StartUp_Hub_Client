@@ -5,7 +5,7 @@ const Product = require("../models/Product");
 const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
-  Product.find()
+  Product.find({ company_status: "active" })
     .exec()
     .then((docs) => {
       // console.log(docs);
@@ -20,7 +20,7 @@ router.get("/", (req, res, next) => {
 });
 router.get("/br/:br", (req, res, next) => {
   const br = req.params.br;
-  Product.find({ br_number: br })
+  Product.find({ br_number: br, company_status: "active"})
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -60,7 +60,7 @@ router.post("/", (req, res, next) => {
 });
 router.get("/:category", (req, res, next) => {
   const category = req.params.category;
-  Product.find({ product_category: category })
+  Product.find({ product_category: category, company_status: "active"})
     .exec()
     .then((docs) => {
       // console.log(docs);
@@ -76,7 +76,7 @@ router.get("/:category", (req, res, next) => {
 
 router.get("/getProductbyID/:productID", (req, res, next) => {
   const productID = req.params.productID;
-  Product.findOne({ _id: productID })
+  Product.findOne({ _id: productID, company_status: "active"})
     .exec()
     .then((docs) => {
       // console.log(docs);
@@ -96,6 +96,7 @@ router.patch("/:productID", (req, res, next) => {
     { _id: productID },
     {
       rating: req.body.rating,
+      avg_rate: req.body.avg_rate,
     }
   )
     .exec()

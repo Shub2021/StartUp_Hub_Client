@@ -3,9 +3,11 @@ import React from "react";
 import {
   FlatList,
   Image,
+  Modal,
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -27,11 +29,15 @@ const listTabs = [
   },
 ];
 
-const UserOrders = () => {
+const UserOrders = ({navigation}) => {
   const [status, setStatus] = React.useState("Ordered");
   const [email, setEmail] = React.useState(null);
   const [orders, setOrders] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isModalVisible, setModalVisible] = React.useState(false);
+  const [addComment, setaddComment] = React.useState("");
+  const [brNumber, setBrNumber] = React.useState("");
+  const [productId, setProductId] = React.useState("");
 
   React.useEffect(() => {
     setData();
@@ -44,12 +50,10 @@ const UserOrders = () => {
   };
 
   const setDatatoState = (userEmail) => {
-    console.log(userEmail);
     fetch(URLs.cn + "/order/userorders/" + userEmail)
       .then((res) => res.json())
       .then((result) => {
         setOrders(result);
-        console.log(result);
         setIsLoading(false);
       });
   };
@@ -69,9 +73,10 @@ const UserOrders = () => {
             paddingLeft: SIZES.padding * 2,
             justifyContent: "center",
           }}
+          onPress={() => navigation.goBack()}
         >
           <Image
-            source={icons.nearby}
+            source={icons.back}
             resizeMode="contain"
             style={{
               width: 30,
@@ -160,37 +165,109 @@ const UserOrders = () => {
     );
   }
 
-  const showAlert4 = (item) => {
-    let user = "";
-    console.log(item.client_id);
-    fetch(Urls.cn + "/client/" + item.client_id)
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result);
-        user = result;
-      });
-    //console.log(user);
-    Alert.alert(
-      item.product_name,
-      "Quantity : " +
-        item.quantity +
-        "\nRequired Date : " +
-        item.req_date +
-        "\nClient Name : " +
-        user.name +
-        "\nEmail : " +
-        user.email,
-      [
-        {
-          text: "Ok",
-          style: "cancel",
-        },
-      ],
-      {
-        cancelable: true,
-      }
-    );
+  const toggleModal = (br_number, product_id) => {
+    setBrNumber(br_number);
+    setProductId(product_id);
+    setModalVisible(!isModalVisible);
   };
+
+  function reportOrder() {
+    let placed_date = new Date();
+    fetch(URLs.cn + "/complains", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        client_email: email,
+        br_number: brNumber,
+        item_id: productId,
+        description: addComment,
+        placed_date: new Date(),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert("Report Successful");
+        toggleModal(brNumber, productId);
+      });
+  }
+
+  function popupReview() {
+    return (
+      <View style={{ flex: 1 }}>
+        <Modal animationType="fade" transparent={true} visible={isModalVisible}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: COLORS.transparentBlack7,
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                width: SIZES.width,
+                // backgroundColor: "red",
+                padding: SIZES.padding * 2,
+              }}
+            >
+              <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding }}>
+                Report the Order
+              </Text>
+
+              <View style={styles.separator} />
+              <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding }}>
+                Add your comment
+              </Text>
+              <TextInput
+                multiline={true}
+                numberOfLines={4}
+                style={{
+                  height: 100,
+                  width: "100%",
+                  borderColor: COLORS.lightGray,
+                  borderWidth: 4,
+                  marginBottom: SIZES.padding,
+                  textAlign: "center",
+                  ...FONTS.body3,
+                }}
+                // onChangeText="Enter the comment"
+                // value="Enter the comment"
+                onChangeText={setaddComment}
+              />
+              <TouchableOpacity
+                style={{
+                  width: SIZES.width * 0.9,
+                  marginBottom: SIZES.padding,
+                  padding: SIZES.padding,
+                  backgroundColor: COLORS.primary,
+                  borderRadius: SIZES.radius,
+                  alignItems: "center",
+                }}
+                onPress={() => reportOrder()}
+              >
+                <Text style={{ ...FONTS.body3 }}>Submit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: SIZES.width * 0.9,
+                  marginBottom: SIZES.padding,
+                  padding: SIZES.padding,
+                  backgroundColor: COLORS.secondary,
+                  borderRadius: SIZES.radius,
+                  alignItems: "center",
+                }}
+                onPress={() => toggleModal(brNumber, productId)}
+              >
+                <Text style={{ ...FONTS.body3 }}>Cancle</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    );
+  }
 
   const renderList1 = (item) => {
     const id = item._id.slice(18, 23);
@@ -201,15 +278,16 @@ const UserOrders = () => {
             marginBottom: SIZES.radius,
             borderRadius: SIZES.radius * 2,
             paddingHorizontal: SIZES.padding,
-            paddingVertical: SIZES.radius,
+            paddingVertical: SIZES.padding * 2,
             backgroundColor: COLORS.gray3,
+            height: 150,
           }}
           // onPress={() => showAlert1(item)}
         >
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: COLORS.secondary, fontSize: 24 }}>
+            <Text style={{ ...FONTS.body2, color: COLORS.white }}>
               Order #{id}
             </Text>
             <Icons
@@ -246,6 +324,27 @@ const UserOrders = () => {
               LKR {item.total}.00
             </Text>
           </View>
+          <TouchableOpacity
+            style={{
+              //   width: SIZES.width * 0.9,
+              position: "absolute",
+              bottom: 5,
+              right: 55,
+              padding: SIZES.padding,
+              paddingTop: 3,
+              paddingBottom: 3,
+              backgroundColor: COLORS.primary,
+              alignItems: "center",
+              borderRadius: SIZES.radius * 3,
+              width: 150,
+              marginBottom: 3,
+            }}
+            onPress={() => {
+              toggleModal(item.br_number, item.product_id);
+            }}
+          >
+            <Text style={{ color: COLORS.black, ...FONTS.body3 }}>Report</Text>
+          </TouchableOpacity>
         </TouchableOpacity>
       );
     }
@@ -432,6 +531,7 @@ const UserOrders = () => {
       {renderHeader()}
       {renderTabs()}
       {renderOrders()}
+      {popupReview()}
     </SafeAreaView>
   );
 };

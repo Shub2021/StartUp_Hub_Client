@@ -28,6 +28,7 @@ import StartupStatistics from "./screens/Investor/StartupStatistics";
 import PostAgreement from "./screens/Investor/PostAgreement";
 import ViewPostPlan from "./screens/Investor/ViewPostPlan";
 import ItemReviews from "./screens/client/ItemReviews";
+import ClientProfile from "./screens/client/Profile";
 import Login from "./screens/login";
 import Register from "./screens/client/ClientRegistration";
 import postRegisterForm from "./screens/postRegisterForm";
@@ -110,6 +111,7 @@ function LoadClientScreens() {
         />
         <ClientStack.Screen name="UserOrders" component={UserOrders} />
         <ClientStack.Screen name="StripeApp" component={StripeApp} />
+        <ClientStack.Screen name="ClientProfile" component={ClientProfile} />
         <ClientStack.Screen
           name="UserRequestedServices"
           component={UserRequestedServices}

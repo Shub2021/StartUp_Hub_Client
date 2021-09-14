@@ -9,12 +9,9 @@ require("./models/InvestmentPlan");
 require("./models/Users");
 require("./models/Cart");
 require("./models/Investors");
-<<<<<<< HEAD
 require("./models/Service");
-=======
 require("./models/PostPlan");
 require("./models/jobs");
->>>>>>> d80977e611f8267e92d04af53444f22c9520e6c5
 
 const userRoutes = require("./routes/user");
 const companyRoutes = require("./routes/company");
@@ -30,6 +27,7 @@ const paymentRoutes = require("./routes/payment");
 const serviceRoutes = require("./routes/service");
 const postPlanRoutes = require("./routes/post_plan");
 const jobsRoutes = require("./routes/jobs");
+const complainRoutes = require("./routes/complaints");
 
 application.use(bodyParser.json());
 
@@ -74,6 +72,7 @@ application.use("/order", orderRoutes);
 application.use("/payment", paymentRoutes);
 application.use("/services", serviceRoutes);
 application.use("/jobs", jobsRoutes);
+application.use("/complains", complainRoutes);
 
 application.listen(3000, () => {
   console.log("server running");

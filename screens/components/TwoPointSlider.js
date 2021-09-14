@@ -9,7 +9,7 @@ const TwoPointSlider = ({
   max,
   prefix,
   postfix,
-  onValuesChange,
+  onValuesChangeFinish,
 }) => {
   return (
     <MultiSlider
@@ -61,7 +61,7 @@ const TwoPointSlider = ({
           </View>
         );
       }}
-      onValuesChange={(values) => onValuesChange(values)}
+      onValuesChangeFinish={(values) => onValuesChangeFinish(values)}
     />
   );
 };

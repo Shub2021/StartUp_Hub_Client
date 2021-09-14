@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  TextInput,
 } from "react-native";
-
+import filter from "lodash.filter";
 import { icons, images, SIZES, COLORS, FONTS, URLs } from "../../constants";
 
 const ServicesHome = ({ navigation }) => {
@@ -309,6 +310,7 @@ const ServicesHome = ({ navigation }) => {
   const [categories, setCategories] = React.useState(categoryData);
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [restaurants, setRestaurants] = React.useState(restaurantData);
+  const [query, setQuery] = React.useState("");
   const [currentLocation, setCurrentLocation] = React.useState(
     initialCurrentLocation
   );
@@ -337,7 +339,7 @@ const ServicesHome = ({ navigation }) => {
       setselectedProducts(data);
     } else {
       let serviceList = data.filter((a) =>
-        a.service_type.includes(category.name)
+        a.company_category.includes(category.name)
       );
 
       setselectedProducts(serviceList);
@@ -353,9 +355,38 @@ const ServicesHome = ({ navigation }) => {
     return "";
   }
 
+  const contains = (name, query) => {
+    if (name.service_name.includes(query)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleSearch = (text) => {
+    const formattedQuery = text;
+
+    if (text === "") {
+      setselectedProducts(data);
+    } else {
+      const filteredData = filter(selectedProducts, (prod) => {
+        return contains(prod, formattedQuery);
+      });
+
+      setselectedProducts(filteredData);
+      setQuery(text);
+    }
+  };
+
   function renderHeader() {
     return (
-      <View style={{ flexDirection: "row", height: 50 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          height: 50,
+          marginBottom: SIZES.padding2 * 2,
+        }}
+      >
         <TouchableOpacity
           style={{
             width: 50,
@@ -413,6 +444,61 @@ const ServicesHome = ({ navigation }) => {
             }}
           />
         </TouchableOpacity>
+      </View>
+    );
+  }
+
+  function renderSearch() {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          height: 40,
+          alignItems: "center",
+          marginHorizontal: SIZES.padding,
+          marginVertical: SIZES.bases,
+          paddingHorizontal: SIZES.padding2 * 2,
+          borderRadius: SIZES.radius,
+          backgroundColor: COLORS.lightGray3,
+        }}
+      >
+        {/* icon */}
+        <Image
+          source={icons.search}
+          style={{
+            height: 20,
+            width: 20,
+            tintColor: COLORS.black,
+          }}
+        />
+        {/* text input */}
+        <TextInput
+          style={{
+            flex: 1,
+            marginLeft: SIZES.radius,
+            ...FONTS.body3,
+          }}
+          onChangeText={(queryText) => handleSearch(queryText)}
+          placeholder="Search"
+        />
+
+        {/* filter Button */}
+        {/* <TouchableOpacity
+          onPress={() => {
+            setShowFilterModel(true);
+            getMinPrice();
+            getMaxPrice();
+          }}
+        >
+          <Image
+            source={icons.filter}
+            style={{
+              height: 20,
+              width: 20,
+              tintColor: COLORS.black,
+            }}
+          />
+        </TouchableOpacity> */}
       </View>
     );
   }
@@ -489,32 +575,33 @@ const ServicesHome = ({ navigation }) => {
 
   function renderServiceList() {
     const renderItem = ({ item }) => (
-      <TouchableOpacity
-        style={{ marginBottom: SIZES.padding * 2 }}
-        onPress={() =>
-          navigation.navigate("SelectetService", {
-            item,
-            currentLocation,
-          })
-        }
-      >
-        {/* Image */}
-        <View
-          style={{
-            marginBottom: SIZES.padding,
-          }}
+      <View>
+        <TouchableOpacity
+          style={{ marginBottom: SIZES.padding * 2 }}
+          onPress={() =>
+            navigation.navigate("SelectetService", {
+              item,
+              currentLocation,
+            })
+          }
         >
-          <Image
-            source={{ uri: item.picture }}
-            resizeMode="cover"
+          {/* Image */}
+          <View
             style={{
-              width: "100%",
-              height: 200,
-              borderRadius: SIZES.radius,
+              marginBottom: SIZES.padding,
             }}
-          />
+          >
+            <Image
+              source={{ uri: item.picture }}
+              resizeMode="cover"
+              style={{
+                width: "100%",
+                height: 200,
+                borderRadius: SIZES.radius * 0.5,
+              }}
+            />
 
-          {/* <View
+            {/* <View
             style={{
               position: "absolute",
               bottom: 0,
@@ -530,36 +617,37 @@ const ServicesHome = ({ navigation }) => {
           >
             <Text style={{ ...FONTS.h4 }}>{item.service_type}</Text>
           </View> */}
-        </View>
+          </View>
 
-        {/* Restaurant Info */}
-        <Text style={{ ...FONTS.body2 }}>{item.service_name}</Text>
+          {/* Restaurant Info */}
+          <Text style={{ ...FONTS.body2 }}>{item.service_name}</Text>
 
-        <View
-          style={{
-            marginTop: SIZES.padding,
-            flexDirection: "row",
-          }}
-        >
-          {/* Rating */}
-          <Image
-            source={icons.star}
+          <View
             style={{
-              height: 20,
-              width: 20,
-              tintColor: COLORS.primary,
-              marginRight: 10,
+              marginTop: SIZES.padding,
+              marginBottom: SIZES.padding,
+              flexDirection: "row",
             }}
-          />
-          <Text style={{ ...FONTS.body3 }}>{item.service_type}</Text>
+          >
+            {/* Rating */}
+            <Image
+              source={icons.star}
+              style={{
+                height: 20,
+                width: 20,
+                tintColor: COLORS.primary,
+                marginRight: 10,
+              }}
+            />
+            <Text style={{ ...FONTS.body3 }}>{item.service_type}</Text>
 
-          {/* Categories */}
-          {/* <View
+            {/* Categories */}
+            {/* <View
             style={{
               flexDirection: "row",
               marginLeft: 10,
             }}
-          >
+              >
             {item.categories.map((categoryId) => {
               return (
                 <View style={{ flexDirection: "row" }} key={categoryId}>
@@ -575,9 +663,18 @@ const ServicesHome = ({ navigation }) => {
             })}
 
            
-          </View>  */}
-        </View>
-      </TouchableOpacity>
+              </View>  */}
+          </View>
+        </TouchableOpacity>
+
+        <View
+          style={{
+            marginBottom: SIZES.padding,
+            borderBottomColor: COLORS.secondary,
+            borderBottomWidth: 1,
+          }}
+        />
+      </View>
     );
 
     return (
@@ -596,6 +693,7 @@ const ServicesHome = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       {renderHeader()}
+      {renderSearch()}
       {renderMainCategories()}
       {renderServiceList()}
     </SafeAreaView>

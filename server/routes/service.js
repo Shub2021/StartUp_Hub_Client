@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Service = require("../models/Service");
 
 router.get("/", (req, res, next) => {
-  Service.find()
+  Service.find({ company_status: "active" })
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -20,7 +20,7 @@ router.get("/", (req, res, next) => {
 
 router.get("/:service_id", (req, res, next) => {
   const id = req.params.service_id;
-  Service.find({ _id: id })
+  Service.find({ _id: id, company_status: "active"})
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -33,5 +33,7 @@ router.get("/:service_id", (req, res, next) => {
       });
     });
 });
+
+
 
 module.exports = router;

@@ -85,7 +85,7 @@ export const SIZES = {
 
 export const FONTS = {
   largeTitle: {
-    fontFamily: "Roboto-regular",
+    fontFamily: "Roboto-Bold",
     fontSize: SIZES.largeTitle,
     lineHeight: 55,
   },

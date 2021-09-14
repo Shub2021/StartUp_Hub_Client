@@ -20,7 +20,8 @@ const OrderDelivery = ({ route, navigation }) => {
 
   React.useEffect(() => {
     let { product, currentLocation } = route.params;
-
+    console.log(route.params);
+    console.log(currentLocation.gps);
     let fromLoc = currentLocation.gps;
     let toLoc = product.location;
     let street = currentLocation.streetName;
