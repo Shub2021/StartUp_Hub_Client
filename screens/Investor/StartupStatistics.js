@@ -333,64 +333,24 @@ const StartupStatistics = (props) => {
             />
           </View>
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
           >
-            <Card
-              style={styles.card3}
-              onPress={() => props.navigation.navigate("Orders")}
-            >
-              <View
-                style={{
-                  justifyContent: "space-between",
-                  paddingHorizontal: 10,
-                  paddingVertical: 15,
-                }}
-              >
-                <Text style={{ fontSize: 20 }}>Income</Text>
-                <Text style={{ fontSize: 15 }}>LKR {total}.00</Text>
+            <Card style={styles.card__3}>
+              <View style={styles.squareBody}>
+                <Text style={styles.squareTitle}>Income</Text>
+                <Text style={styles.squareBottom}>LKR {total}.00</Text>
               </View>
             </Card>
-            <Card
-              style={styles.card3}
-              onPress={() => props.navigation.navigate("Partners")}
-            >
-              <View
-                style={{
-                  justifyContent: "space-between",
-                  paddingHorizontal: 10,
-                  paddingVertical: 15,
-                }}
-              >
-                <Text style={{ fontSize: 20 }}>Expence</Text>
-                <Text style={{ fontSize: 15 }}>LKR {expence}.00</Text>
-              </View>
-            </Card>
-            <Card
-              style={styles.card3}
-              onPress={() => props.navigation.navigate("Partners")}
-            >
-              <View
-                style={{
-                  justifyContent: "space-between",
-                  paddingHorizontal: 10,
-                  paddingVertical: 15,
-                }}
-              >
-                <Text style={{ fontSize: 20 }}>Profit</Text>
-                <Text style={{ fontSize: 15 }}>LKR {profit}.00</Text>
+
+            <Card style={styles.card__3}>
+              <View style={styles.squareBody}>
+                <Text style={styles.squareTitle}>Profit</Text>
+                <Text style={styles.squareBottom}>LKR {profit}.00</Text>
               </View>
             </Card>
           </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              padding: 10,
-              marginTop: 50,
-              marginBottom: 50,
-            }}
-          >
+          <View style={styles.viewBtn}>
             {planExist ? (
               <Button
                 style={styles.button}
@@ -503,17 +463,47 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginVertical: 10,
   },
-  card3: {
-    borderRadius: 23,
+  card__3: {
+    borderRadius: 10,
     height: 80,
     width: 110,
-    marginHorizontal: 5,
-    backgroundColor: "white",
+    marginHorizontal: 15,
+    borderWidth: 1.25,
+    borderColor: "#ffad81",
+    backgroundColor: "#ff9b65",
     marginVertical: 10,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   card2: {
     borderRadius: 20,
     marginHorizontal: 15,
+  },
+  squareTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase",
+  },
+  squareBottom: {
+    fontSize: 15,
+    alignSelf: "center",
+    marginTop: 4,
+  },
+  viewBtn: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+    marginTop: 50,
+    marginBottom: 50,
+  },
+  squareBody: {
+    paddingVertical: 18,
   },
 });
 

@@ -12,6 +12,7 @@ require("./models/Investors");
 require("./models/Service");
 require("./models/PostPlan");
 require("./models/jobs");
+require("./models/Service");
 
 const userRoutes = require("./routes/user");
 const companyRoutes = require("./routes/company");
@@ -27,6 +28,7 @@ const paymentRoutes = require("./routes/payment");
 const serviceRoutes = require("./routes/service");
 const postPlanRoutes = require("./routes/post_plan");
 const jobsRoutes = require("./routes/jobs");
+const serviceRoutes = require("./routes/service");
 const complainRoutes = require("./routes/complaints");
 
 application.use(bodyParser.json());
@@ -72,6 +74,7 @@ application.use("/order", orderRoutes);
 application.use("/payment", paymentRoutes);
 application.use("/services", serviceRoutes);
 application.use("/jobs", jobsRoutes);
+application.use("/service", serviceRoutes);
 application.use("/complains", complainRoutes);
 
 application.listen(3000, () => {

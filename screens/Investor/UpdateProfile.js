@@ -11,37 +11,53 @@ import { TextInput, Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { URLs } from "../../constants";
+import Input from "../components/Input";
 
 const UpdateProfile = ({ navigation }) => {
   const [cName, setcName] = useState("");
+  const [cNameValid, setcNameValid] = useState(false);
   const [investorId, setInvestorId] = useState("");
   const [investArea, setinvestArea] = useState("");
+  const [investAreaValid, setinvestAreaValid] = useState(false);
   const [cAddress, setcAddress] = useState("");
+  const [cAddressValid, setcAddressValid] = useState(false);
   const [nic, setnic] = useState("");
+  const [nicValid, setnicValid] = useState(false);
   const [cTel, setcTel] = useState("");
+  const [cTelValid, setcTelValid] = useState(false);
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
   const submitData = () => {
-    fetch(URLs.cn + "/investor/update/" + investorId, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        cName,
-        investArea,
-        cAddress,
-        nic,
-        cTel,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        Alert.alert("Profile Updated Succesfully");
-        navigation.navigate("Profile");
-      });
+    if (
+      cNameValid &&
+      investAreaValid &&
+      cAddressValid &&
+      nicValid &&
+      cTelValid
+    ) {
+      fetch(URLs.cn + "/investor/update/" + investorId, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cName,
+          investArea,
+          cAddress,
+          nic,
+          cTel,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          Alert.alert("Profile Updated Succesfully");
+          navigation.navigate("Profile");
+        });
+    } else {
+      Alert.alert("Please fill the required feilds");
+    }
   };
 
   const getData = async () => {
@@ -72,47 +88,106 @@ const UpdateProfile = ({ navigation }) => {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <ScrollView>
-          <TextInput
-            style={styles.inputStyles}
-            label="Business Name"
-            value={cName}
-            theme={theme}
-            mode="outlined"
-            onChangeText={(text) => setcName(text)}
-          />
-          <TextInput
-            style={styles.inputStyles}
-            label="Investment Area"
-            value={investArea}
-            theme={theme}
-            mode="outlined"
-            onChangeText={(text) => setinvestArea(text)}
-          />
-          <TextInput
-            style={styles.inputStyles}
-            label="Business Address"
-            value={cAddress}
-            theme={theme}
-            mode="outlined"
-            onChangeText={(text) => setcAddress(text)}
-          />
-          <TextInput
-            style={styles.inputStyles}
-            label="Investor NIC"
-            value={nic}
-            theme={theme}
-            mode="outlined"
-            onChangeText={(text) => setnic(text)}
-          />
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Business Name"
+              value={cName}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setcNameValid(isValid)}
+              onChangeText={(text) => setcName(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+            {!cNameValid ? (
+              <Text style={{ color: "tomato" }}>Company Name is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Investment Area"
+              value={investArea}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setinvestAreaValid(isValid)}
+              onChangeText={(text) => setinvestArea(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+            {!investAreaValid ? (
+              <Text style={{ color: "tomato" }}>
+                Investment Area is Required
+              </Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Business Address"
+              value={cAddress}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setcAddressValid(isValid)}
+              onChangeText={(text) => setcAddress(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+            {!cAddressValid ? (
+              <Text style={{ color: "tomato" }}>Address is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Investor NIC"
+              value={nic}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setnicValid(isValid)}
+              onChangeText={(text) => setnic(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+            {!nicValid ? (
+              <Text style={{ color: "tomato" }}>NIC is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-          <TextInput
-            style={styles.inputStyles}
-            label="Business Telephone"
-            value={cTel}
-            theme={theme}
-            mode="outlined"
-            onChangeText={(text) => setcTel(text)}
-          />
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Business Telephone"
+              value={cTel}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setcTelValid(isValid)}
+              onChangeText={(text) => setcTel(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+            {!cTelValid ? (
+              <Text style={{ color: "tomato" }}>
+                Contanct Number is Required
+              </Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
           <View>
             <Button
@@ -145,6 +220,7 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 17,
     fontWeight: "300",
+    marginBottom: 5,
   },
 });
 

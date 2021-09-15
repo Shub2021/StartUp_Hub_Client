@@ -127,7 +127,7 @@ export default function Login(props) {
         style={[styles.inputContainer, styles.btn]}
         onPress={signin}
       >
-        <Text style={{ color: "white", fontSize: 20, fontWeight: "bold"}}>
+        <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
           Log in
         </Text>
       </TouchableOpacity>
@@ -139,17 +139,6 @@ export default function Login(props) {
           Register
         </Text>
       </TouchableOpacity>
-      <Text
-        style={{
-          color: "blue",
-          fontSize: 16,
-          fontWeight: "bold",
-          textAlign: "center",
-          marginTop: 15,
-        }}
-      >
-        Forget Login
-      </Text>
     </KeyboardAvoidingView>
   );
 }
