@@ -57,7 +57,7 @@ const ViewPostPlan = ({ navigation }) => {
             <Text style={styles.filed}>{data.Startdate}</Text>
 
             <Title>iii) Payback Period</Title>
-            <Text style={styles.filed}>{data.time}</Text>
+            <Text style={styles.filed}>{data.time} months</Text>
 
             <Title>iv) Investment Rate</Title>
             <Text style={styles.filed}>{data.interestRate}%</Text>

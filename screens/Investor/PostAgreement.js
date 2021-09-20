@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -43,7 +43,7 @@ const PostAgreement = (props) => {
   }, []);
 
   const submitData = () => {
-    if (amountValid && timeValid && interestRateValid && informationValid) {
+    if (amountValid && interestRateValid && informationValid) {
       let Startdate = new Date().toISOString().slice(0, 10);
       console.log(email);
       fetch(URLs.cn + "/postplan/send", {
@@ -113,25 +113,21 @@ const PostAgreement = (props) => {
               <Text></Text>
             )}
           </View>
-          <View>
-            <Input
-              style={styles.inputStyles}
-              label="Payback Period"
-              value={time}
-              theme={theme}
-              mode="outlined"
-              pattern={"[^s]"}
-              onValidation={(isValid) => setTimeValid(isValid)}
-              onChangeText={(text) => setTime(text)}
-            />
-          </View>
-          <View style={{ marginHorizontal: 15, height: 10 }}>
-            {!timeValid ? (
-              <Text style={{ color: "tomato" }}>Title is Required</Text>
-            ) : (
-              <Text></Text>
-            )}
-          </View>
+
+          <Card style={{ margin: 10 }}>
+            <View style={styles.card}>
+              <Picker
+                selectedValue={time}
+                style={{ height: 30, width: 150 }}
+                onValueChange={(value) => setTime(value)}
+              >
+                <Picker.Item label="3 Months" value="3" />
+                <Picker.Item label="6 Months" value="6" />
+                <Picker.Item label="9 Months" value="9" />
+                <Picker.Item label="12 Months" value="12" />
+              </Picker>
+            </View>
+          </Card>
 
           <View>
             <Input

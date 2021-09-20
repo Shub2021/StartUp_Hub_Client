@@ -8,7 +8,9 @@ import {
   ScrollView,
 } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
+
 import { URLs } from "../../constants";
+import Input from "../components/Input";
 
 import {
   MaterialCommunityIcons,
@@ -23,125 +25,203 @@ const UpdatePlan = ({ navigation, route }) => {
   const [_id, setID] = useState(route.params._id);
 
   const [title, setTitle] = useState(route.params.title);
+  const [titleValid, setTitleValid] = useState(true);
   const [minInvest, setminInvest] = useState(route.params.minInvest);
+  const [minInvestValid, setminInvestValid] = useState(true);
   const [maxInvest, setmaxInvest] = useState(route.params.maxInvest);
-  const [interestTime, setinterestTime] = useState(route.params.interestTime);
+  const [maxInvestValid, setmaxInvestValid] = useState(true);
   const [interestRate, setinterestRate] = useState(route.params.interestRate);
+  const [interestRateValid, setinterestRateValid] = useState(true);
   const [description, setDescription] = useState(route.params.description);
+  const [descriptionValid, setDescriptionValid] = useState(true);
   const [condition, setCondition] = useState(route.params.condition);
+  const [conditionValid, setConditionValid] = useState(true);
 
   const submitData = () => {
-    fetch(URLs.cn + "/plan/" + _id, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        minInvest,
-        maxInvest,
-        interestTime,
-        interestRate,
-        description,
-        condition,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        Alert.alert("Investment Plan Created Succesfully");
-        navigation.navigate("ViewPlan");
-      });
+    if (
+      titleValid &&
+      minInvestValid &&
+      maxInvestValid &&
+      interestRateValid &&
+      descriptionValid &&
+      conditionValid
+    ) {
+      fetch(URLs.cn + "/plan/" + _id, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          minInvest,
+          maxInvest,
+          interestRate,
+          description,
+          condition,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          Alert.alert("Investment Plan Updated Succesfully");
+          navigation.navigate("ViewPlan");
+        });
+    }
+    Alert.alert("Please fill the required field");
   };
 
   return (
     <View style={styles.root}>
       <ScrollView>
-        <TextInput
-          style={styles.inputStyles}
-          label="Business Title"
-          value={title}
-          theme={theme}
-          mode="outlined"
-          onChangeText={(text) => setTitle(text)}
-        />
+        <View>
+          <Input
+            style={styles.inputStyles}
+            label="Business Title"
+            value={title}
+            theme={theme}
+            mode="outlined"
+            pattern={"[^s]"}
+            onValidation={(isValid) => setTitleValid(isValid)}
+            onChangeText={(text) => setTitle(text)}
+          />
+        </View>
+        <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+          {!titleValid ? (
+            <Text style={{ color: "tomato" }}>Title is Required</Text>
+          ) : (
+            <Text></Text>
+          )}
+        </View>
 
         <View style={{ flexDirection: "row" }}>
           <View style={{ width: 200 }}>
-            <TextInput
-              style={styles.inputStyles}
-              label="Minimum Investment"
-              value={minInvest.toString()}
-              theme={theme}
-              keyboardType="number-pad"
-              mode="outlined"
-              onChangeText={(Number) => setminInvest(Number)}
-            />
+            <View>
+              <Input
+                style={styles.inputStyles}
+                label="Minimum Investment"
+                value={minInvest.toString()}
+                theme={theme}
+                keyboardType="number-pad"
+                mode="outlined"
+                pattern={"[^s]"}
+                onValidation={(isValid) => setminInvestValid(isValid)}
+                onChangeText={(Number) => setminInvest(Number)}
+              />
+            </View>
+            <View
+              style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}
+            >
+              {!minInvestValid ? (
+                <Text style={{ color: "tomato" }}>Minimum is Required</Text>
+              ) : (
+                <Text></Text>
+              )}
+            </View>
           </View>
           <View style={{ width: 210 }}>
-            <TextInput
-              style={styles.inputStyles}
-              label="Maximum Investment"
-              value={maxInvest.toString()}
-              theme={theme}
-              keyboardType="number-pad"
-              mode="outlined"
-              onChangeText={(Number) => setmaxInvest(Number)}
-            />
+            <View>
+              <Input
+                style={styles.inputStyles}
+                label="Maximum Investment"
+                value={maxInvest.toString()}
+                theme={theme}
+                keyboardType="number-pad"
+                mode="outlined"
+                pattern={"[^s]"}
+                onValidation={(isValid) => setmaxInvestValid(isValid)}
+                onChangeText={(Number) => setmaxInvest(Number)}
+              />
+            </View>
+            <View
+              style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}
+            >
+              {!maxInvestValid ? (
+                <Text style={{ color: "tomato" }}>Maximum is Required</Text>
+              ) : (
+                <Text></Text>
+              )}
+            </View>
           </View>
         </View>
 
         <Text style={styles.inputStyles}>Growth Calculation Data</Text>
 
         <View style={{ flexDirection: "row" }}>
-          <Card style={{ margin: 10 }}>
-            <View style={styles.card}>
-              <Picker
-                selectedValue={interestTime}
-                style={{ height: 30, width: 150 }}
-                onValueChange={(value) => setinterestTime(value)}
-              >
-                <Picker.Item label="Annual" value="Annual" />
-                <Picker.Item label="Monthly" value="Monthly" />
-              </Picker>
-            </View>
-          </Card>
           <View style={{ width: 210 }}>
-            <TextInput
-              style={styles.inputStyles}
-              label="Growth Rate"
-              value={interestRate.toString()}
-              theme={theme}
-              mode="outlined"
-              onChangeText={(Number) => setinterestRate(Number)}
-            />
+            <View>
+              <Input
+                style={styles.inputStyles}
+                label="Return"
+                value={interestRate.toString()}
+                theme={theme}
+                mode="outlined"
+                pattern={"[^s]"}
+                onValidation={(isValid) => setinterestRateValid(isValid)}
+                onChangeText={(Number) => setinterestRate(Number)}
+              />
+            </View>
+            <View
+              style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}
+            >
+              {!interestRateValid ? (
+                <Text style={{ color: "tomato" }}>
+                  Interest Rate is Required
+                </Text>
+              ) : (
+                <Text></Text>
+              )}
+            </View>
           </View>
         </View>
 
-        <TextInput
-          style={{ margin: 10 }}
-          label="Description"
-          value={description}
-          theme={theme}
-          mode="outlined"
-          multiline={true}
-          numberOfLines={6}
-          maxLength={600}
-          onChangeText={(text) => setDescription(text)}
-        />
+        <View>
+          <Input
+            style={{ margin: 10 }}
+            label="Description"
+            value={description}
+            theme={theme}
+            mode="outlined"
+            pattern={"[^s]"}
+            onValidation={(isValid) => setDescriptionValid(isValid)}
+            multiline={true}
+            numberOfLines={6}
+            maxLength={600}
+            onChangeText={(text) => setDescription(text)}
+          />
+        </View>
+        <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+          {!descriptionValid ? (
+            <Text style={{ color: "tomato" }}>Description is Required</Text>
+          ) : (
+            <Text></Text>
+          )}
+        </View>
 
-        <TextInput
-          style={{ margin: 10 }}
-          label="Terms and Conditions"
-          value={condition}
-          theme={theme}
-          mode="outlined"
-          multiline={true}
-          numberOfLines={8}
-          maxLength={300}
-          onChangeText={(text) => setCondition(text)}
-        />
+        <View>
+          <Input
+            style={{ margin: 10 }}
+            label="Terms and Conditions"
+            value={condition}
+            theme={theme}
+            mode="outlined"
+            pattern={"[^s]"}
+            onValidation={(isValid) => setConditionValid(isValid)}
+            multiline={true}
+            numberOfLines={6}
+            maxLength={300}
+            onChangeText={(text) => setCondition(text)}
+          />
+        </View>
+        <View style={{ marginHorizontal: 15, marginBottom: 15, height: 10 }}>
+          {!conditionValid ? (
+            <Text style={{ color: "tomato" }}>
+              Terms and Condition is Required
+            </Text>
+          ) : (
+            <Text></Text>
+          )}
+        </View>
 
-        <View style={{ alignItems: "center", marginTop: 30 }}>
+        <View style={{ alignItems: "center", marginTop: 30, marginBottom: 70 }}>
           <Button
             style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
             icon=""

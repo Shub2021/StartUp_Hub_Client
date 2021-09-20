@@ -2,16 +2,9 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Service = require("../models/Service");
-<<<<<<< HEAD
-const constants = require("../../constants/keys");
-
-router.get("/", (req, res, next) => {
-  Service.find()
-=======
 
 router.get("/", (req, res, next) => {
   Service.find({ company_status: "active" })
->>>>>>> ab6ae8f6b4cb3b38dba277109b227b7b73eaca2f
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -27,11 +20,7 @@ router.get("/", (req, res, next) => {
 
 router.get("/:service_id", (req, res, next) => {
   const id = req.params.service_id;
-<<<<<<< HEAD
-  Service.findOne({ _id: id })
-=======
-  Service.find({ _id: id, company_status: "active"})
->>>>>>> ab6ae8f6b4cb3b38dba277109b227b7b73eaca2f
+  Service.find({ _id: id, company_status: "active" })
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -45,7 +34,6 @@ router.get("/:service_id", (req, res, next) => {
     });
 });
 
-<<<<<<< HEAD
 router.post("/", (req, res, next) => {
   const arr = [];
   const service = new Service({
@@ -162,8 +150,5 @@ router.get("/br/:service_id", (req, res, next) => {
       });
     });
 });
-=======
-
->>>>>>> ab6ae8f6b4cb3b38dba277109b227b7b73eaca2f
 
 module.exports = router;

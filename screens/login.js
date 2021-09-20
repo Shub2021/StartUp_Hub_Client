@@ -139,6 +139,14 @@ export default function Login(props) {
           Register
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.resetPw, styles.resetbtn]}
+        onPress={() => props.navigation.navigate("forgotPassword")}
+      >
+        <Text style={{ color: "dodgerblue", fontSize: 20, fontWeight: "bold" }}>
+          Reset Password
+        </Text>
+      </TouchableOpacity>
     </KeyboardAvoidingView>
   );
 }
@@ -194,10 +202,23 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     height: 45,
   },
+  resetPw: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 35,
+    marginTop: 24,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    height: 45,
+  },
   btn: {
     backgroundColor: "#306bff",
     justifyContent: "center",
     marginTop: 40,
+  },
+  resetbtn: {
+    justifyContent: "center",
+    marginTop: 10,
   },
   registerbtn: {
     backgroundColor: "#fff",

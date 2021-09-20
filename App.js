@@ -30,6 +30,8 @@ import ViewPostPlan from "./screens/Investor/ViewPostPlan";
 import ItemReviews from "./screens/client/ItemReviews";
 import ClientProfile from "./screens/client/Profile";
 import Login from "./screens/login";
+import forgotPassword from "./screens/forgotPassword";
+import recovery from "./screens/recovery";
 import Register from "./screens/client/ClientRegistration";
 import postRegisterForm from "./screens/postRegisterForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -265,6 +267,16 @@ export default function App() {
               options={{ ...myOptions, title: "Login" }}
             />
             <Stack.Screen
+              name="forgotPassword"
+              component={forgotPassword}
+              options={{ ...myOptions, title: "forgotPassword" }}
+            />
+            <Stack.Screen
+              name="recovery"
+              component={recovery}
+              options={{ ...myOptions, title: "recovery" }}
+            />
+            <Stack.Screen
               name="Register"
               component={Register}
               options={{ ...myOptions, title: "Register" }}
@@ -293,6 +305,16 @@ export default function App() {
               options={{ ...myOptions, title: "Login" }}
             />
             <Stack.Screen
+              name="forgotPassword"
+              component={forgotPassword}
+              options={{ ...myOptions, title: "forgotPassword" }}
+            />
+            <Stack.Screen
+              name="recovery"
+              component={recovery}
+              options={{ ...myOptions, title: "recovery" }}
+            />
+            <Stack.Screen
               name="Register"
               component={Register}
               options={{ ...myOptions, title: "Register" }}
@@ -319,6 +341,16 @@ export default function App() {
             name="Login"
             component={Login}
             options={{ ...myOptions, title: "Login" }}
+          />
+          <Stack.Screen
+            name="forgotPassword"
+            component={forgotPassword}
+            options={{ ...myOptions, title: "forgotPassword" }}
+          />
+          <Stack.Screen
+            name="recovery"
+            component={recovery}
+            options={{ ...myOptions, title: "recovery" }}
           />
           <Stack.Screen
             name="Register"

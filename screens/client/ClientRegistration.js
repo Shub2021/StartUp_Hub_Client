@@ -37,12 +37,20 @@ export default function Register(props) {
   const type = "client";
 
   function submitData() {
-    if (password == repassword) {
-      props.navigation.navigate("postRegisterForm", { name, email, password });
+    if (nameValid && emailValid && passwordValid) {
+      if (password == repassword) {
+        props.navigation.navigate("postRegisterForm", {
+          name,
+          email,
+          password,
+        });
+      } else {
+        Alert.alert("Password and re entered passwors does not match");
+      }
+      // abortController.abort();
     } else {
-      Alert.alert("Password and re entered passwors does not match");
+      Alert.alert("Pleace fill the required field");
     }
-    // abortController.abort();
   }
 
   return (
@@ -70,64 +78,52 @@ export default function Register(props) {
       <ScrollView>
         <Text style={styles.topictxt}>User details</Text>
         <View style={styles.inputContainer}>
-          <View>
-            <Input_2
-              style={styles.inputField}
-              placeholder="Name"
-              value={name}
-              pattern={"[^s]"}
-              onValidation={(isValid) => setNameValid(isValid)}
-              onChangeText={(text) => setName(text)}
-            />
-          </View>
-          <View style={{ marginHorizontal: 15, height: 10 }}>
-            {!nameValid ? (
-              <Text style={{ color: "tomato" }}>Title is Required</Text>
-            ) : (
-              <Text></Text>
-            )}
-          </View>
+          <Input_2
+            style={styles.inputField}
+            placeholder="Name"
+            value={name}
+            pattern={"[^s]"}
+            onValidation={(isValid) => setNameValid(isValid)}
+            onChangeText={(text) => setName(text)}
+          />
+        </View>
+        <View style={styles.errMesg}>
+          {!nameValid ? (
+            <Text style={{ color: "tomato" }}>User name is Required</Text>
+          ) : (
+            <Text></Text>
+          )}
         </View>
         <View style={styles.inputContainer}>
-          <View>
-            <Input_2
-              style={styles.inputField}
-              placeholder="Email"
-              value={email}
-              pattern={"[^s]"}
-              onValidation={(isValid) => setEmailValid(isValid)}
-              onChangeText={(text) => setEmail(text)}
-            />
-          </View>
-          <View style={{ marginHorizontal: 15, height: 10 }}>
-            {!emailValid ? (
-              <Text style={{ color: "tomato" }}>Title is Required</Text>
-            ) : (
-              <Text></Text>
-            )}
-          </View>
+          <Input_2
+            style={styles.inputField}
+            placeholder="Email"
+            value={email}
+            pattern={"[^s]"}
+            onValidation={(isValid) => setEmailValid(isValid)}
+            onChangeText={(text) => setEmail(text)}
+          />
+        </View>
+        <View style={styles.errMesg}>
+          {!emailValid ? (
+            <Text style={{ color: "tomato" }}>Email is Required</Text>
+          ) : (
+            <Text></Text>
+          )}
         </View>
         <View style={styles.inputContainer}>
-          <View>
-            <Input_2
-              style={styles.inputField}
-              placeholder="Password"
-              value={password}
-              pattern={"[^s]"}
-              onValidation={(isValid) => setPasswordValid(isValid)}
-              secureTextEntry={notvisible}
-              onChangeText={(text) => setPassword(text)}
-            />
-          </View>
-          <View style={{ marginHorizontal: 15, height: 10 }}>
-            {!passwordValid ? (
-              <Text style={{ color: "tomato" }}>Title is Required</Text>
-            ) : (
-              <Text></Text>
-            )}
-          </View>
+          <Input_2
+            style={styles.inputField}
+            placeholder="Password"
+            value={password}
+            pattern={"[^s]"}
+            onValidation={(isValid) => setPasswordValid(isValid)}
+            secureTextEntry={notvisible}
+            onChangeText={(text) => setPassword(text)}
+          />
+
           <TouchableOpacity
-            style={{ marginLeft: 280, top: 6, position: "absolute" }}
+            style={styles.eyeIcon}
             onPress={() => setVisible(!notvisible)}
           >
             {notvisible ? (
@@ -137,27 +133,26 @@ export default function Register(props) {
             )}
           </TouchableOpacity>
         </View>
+        <View style={styles.errMesg}>
+          {!passwordValid ? (
+            <Text style={{ color: "tomato" }}>Password is Required</Text>
+          ) : (
+            <Text></Text>
+          )}
+        </View>
         <View style={styles.inputContainer}>
-          <View>
-            <Input_2
-              style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
-              placeholder="Re Enter Password"
-              value={repassword}
-              pattern={"[^s]"}
-              onValidation={(isValid) => setRePasswordValid(isValid)}
-              secureTextEntry={notvisible}
-              onChangeText={(text) => setRePassword(text)}
-            />
-          </View>
-          <View style={{ marginHorizontal: 15, height: 10 }}>
-            {!setRePassword ? (
-              <Text style={{ color: "tomato" }}>Title is Required</Text>
-            ) : (
-              <Text></Text>
-            )}
-          </View>
+          <Input_2
+            style={{ paddingHorizontal: 10, color: "#306bff", fontSize: 20 }}
+            placeholder="Re Enter Password"
+            value={repassword}
+            pattern={"[^s]"}
+            onValidation={(isValid) => setRePasswordValid(isValid)}
+            secureTextEntry={notvisible}
+            onChangeText={(text) => setRePassword(text)}
+          />
+
           <TouchableOpacity
-            style={{ marginLeft: 280, top: 6, position: "absolute" }}
+            style={styles.eyeIcon}
             onPress={() => setVisible(!notvisible)}
           >
             {notvisible ? (
@@ -172,9 +167,7 @@ export default function Register(props) {
           style={[styles.inputContainer, styles.btn]}
           onPress={submitData}
         >
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-            Next
-          </Text>
+          <Text style={styles.nextBtn}>Next</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -193,53 +186,65 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 70,
   },
   title: {
+    color: "white",
     fontSize: 25,
     fontWeight: "bold",
-    color: "white",
     marginLeft: 10,
   },
   headerContainer: {
-    height: 70,
-    width: "100%",
-    marginLeft: 10,
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
+    height: 70,
     justifyContent: "flex-start",
+    marginLeft: 10,
+    width: "100%",
   },
 
   inputContainer: {
-    flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 35,
-    borderWidth: 1,
-    marginTop: 24,
-    paddingHorizontal: 10,
     borderColor: "#306bff",
     borderRadius: 10,
-    paddingVertical: 2,
+    borderWidth: 1,
+    flexDirection: "row",
     height: 45,
+    marginHorizontal: 35,
+    marginTop: 24,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
   },
   topictxt: {
+    // alignSelf: "center",
+    color: "#1255ff",
     fontSize: 30,
     fontWeight: "bold",
-    // alignSelf: "center",
-    padding: SIZES.padding * 2,
     marginTop: SIZES.body3,
-    color: "#1255ff",
+    padding: SIZES.padding * 2,
   },
   btn: {
     backgroundColor: "#306bff",
     justifyContent: "center",
-    marginTop: 40,
     marginBottom: 10,
+    marginTop: 40,
   },
-  registerbtn: {
-    backgroundColor: "#fff",
-    justifyContent: "center",
+  nextBtn: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  eyeIcon: {
+    marginLeft: 280,
+    position: "absolute",
+    top: 6,
+  },
+
+  errMesg: {
+    height: 10,
+    marginHorizontal: 35,
+    marginVertical: 5,
   },
   inputField: {
-    paddingHorizontal: 10,
     color: "#306bff",
     fontSize: 20,
+    paddingHorizontal: 10,
   },
 });

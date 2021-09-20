@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   RefreshControl,
+  Image,
 } from "react-native";
 import { Title, Card, Button, ActivityIndicator } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -99,7 +100,7 @@ const ViewPlan = ({ navigation }) => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#faf8f7",
+    backgroundColor: "#fff",
   },
 
   investCard: {
