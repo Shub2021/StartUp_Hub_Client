@@ -43,6 +43,12 @@ const HomeInvestor = (props) => {
         //console.log(result);
         setsentdata(result);
       });
+    fetch(URLs.cn + "/subscribe/recieved/" + email)
+      .then((res) => res.json())
+      .then((result) => {
+        //console.log(result);
+        setsubscribedata(result);
+      });
   };
 
   useEffect(() => {
@@ -104,6 +110,20 @@ const HomeInvestor = (props) => {
           Alert.alert("Request exists");
         } else {
           Alert.alert("Request Sent to the " + item.company_name);
+          // Alert.alert("Request title", "Yes No alert", [
+          //   {
+          //     text: "Yes",
+          //     onPress: () => {
+          //       console.log("Yes");
+          //     },
+          //   },
+          //   {
+          //     text: "No",
+          //     onPress: () => {
+          //       console.log("No");
+          //     },
+          //   },
+          // ]);
         }
       });
   }
@@ -118,6 +138,7 @@ const HomeInvestor = (props) => {
   }
   const startupList = (item) => {
     let sflag = false;
+    let suflag = false;
     let br_number = item.br_number;
     for (let i = 0; i < sentdata.length; i++) {
       const element = sentdata[i];
@@ -125,88 +146,96 @@ const HomeInvestor = (props) => {
         sflag = true;
       }
     }
-    return (
-      <TouchableWithoutFeedback
-        onPress={async () => {
-          await AsyncStorage.setItem("br", br_number);
-          props.navigation.navigate("StartupProfile");
-        }}
-      >
-        <Card style={styles.comDetails}>
-          <View style={styles.allCards}>
-            <View>
-              <View style={{ flexDirection: "row" }}>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      marginTop: 5,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Startup Name
-                  </Text>
-                  <Text style={{ fontSize: 17, textTransform: "uppercase" }}>
-                    {item.company_name}
-                  </Text>
+    for (let i = 0; i < subscribedata.length; i++) {
+      const element = subscribedata[i];
+      if (item.br_number === element.startupId) {
+        suflag = true;
+      }
+    }
+    if (!suflag) {
+      return (
+        <TouchableWithoutFeedback
+          onPress={async () => {
+            await AsyncStorage.setItem("br", br_number);
+            props.navigation.navigate("StartupProfile");
+          }}
+        >
+          <Card style={styles.comDetails}>
+            <View style={styles.allCards}>
+              <View>
+                <View style={{ flexDirection: "row" }}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        marginTop: 5,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Startup Name
+                    </Text>
+                    <Text style={{ fontSize: 17, textTransform: "uppercase" }}>
+                      {item.company_name}
+                    </Text>
+                  </View>
+
+                  <View>
+                    <Text style={styles.cardTitle}>Business Category</Text>
+                    <Text style={styles.result}>{item.category}</Text>
+                  </View>
                 </View>
 
-                <View>
-                  <Text style={styles.cardTitle}>Business Category</Text>
-                  <Text style={styles.result}>{item.category}</Text>
-                </View>
-              </View>
-
-              <View style={{ flexDirection: "row" }}>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      marginTop: 15,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Startup Type
-                  </Text>
-                  <Text
-                    style={styles.categoryBtn}
-                    mode="outlined"
-                    theme={theme}
-                  >
-                    {item.type}
-                  </Text>
-                </View>
-                {sflag ? (
+                <View style={{ flexDirection: "row" }}>
                   <View>
-                    <Button
-                      style={styles.cancelBtn}
-                      icon="close"
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        marginTop: 15,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Startup Type
+                    </Text>
+                    <Text
+                      style={styles.categoryBtn}
                       mode="outlined"
                       theme={theme}
-                      onPress={() => cancleRequest(item)}
                     >
-                      Cancel Request
-                    </Button>
+                      {item.type}
+                    </Text>
                   </View>
-                ) : (
-                  <View>
-                    <Button
-                      style={styles.sendBtn}
-                      icon="send"
-                      mode="outlined"
-                      theme={theme}
-                      onPress={() => sendRequest(item)}
-                    >
-                      Send Request
-                    </Button>
-                  </View>
-                )}
+                  {sflag ? (
+                    <View>
+                      <Button
+                        style={styles.cancelBtn}
+                        icon="close"
+                        mode="outlined"
+                        theme={theme}
+                        onPress={() => cancleRequest(item)}
+                      >
+                        Cancel Request
+                      </Button>
+                    </View>
+                  ) : (
+                    <View>
+                      <Button
+                        style={styles.sendBtn}
+                        icon="send"
+                        mode="outlined"
+                        theme={theme}
+                        onPress={() => sendRequest(item)}
+                      >
+                        Send Request
+                      </Button>
+                    </View>
+                  )}
+                </View>
               </View>
             </View>
-          </View>
-        </Card>
-      </TouchableWithoutFeedback>
-    );
+          </Card>
+        </TouchableWithoutFeedback>
+      );
+    }
   };
 
   return (

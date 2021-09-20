@@ -24,9 +24,9 @@ import { URLs } from "../../constants";
 const StartupProfile = (props) => {
   const openDial = () => {
     if (Platform.OS === "android") {
-      Linking.openURL("tel:");
+      Linking.openURL(`tel:${data.contact}`);
     } else {
-      Linking.openURL("telprompt:");
+      Linking.openURL(`telprompt:${data.contact}`);
     }
   };
 

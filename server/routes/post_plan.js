@@ -59,21 +59,23 @@ router.post("/send", (req, res) => {
     });
 });
 
-router.post("/delete", (req, res) => {
-  postplan
-    .findByIdAndRemove(req.body.id)
-    .then((data) => {
-      console.log(data);
-      res.send(data);
+router.delete("/:startupId/:investorEmail", (req, res, next) => {
+  const startupId = req.params.startupId;
+  const investorEmail = req.params.investorEmail;
+  PostPlan.deleteMany({ br_number: startupId, email: investorEmail })
+    .exec()
+    .then((result) => {
+      res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
+      res.status(500).json({ error: err });
     });
 });
 
 router.patch("/:planID", (req, res, next) => {
   const id = req.params.planID;
-  Postplan.findByIdAndUpdate(
+  PostPlan.findByIdAndUpdate(
     { _id: id },
     {
       amount: req.body.amount,

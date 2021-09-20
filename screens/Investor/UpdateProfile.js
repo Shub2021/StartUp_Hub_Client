@@ -15,16 +15,16 @@ import Input from "../components/Input";
 
 const UpdateProfile = ({ navigation }) => {
   const [cName, setcName] = useState("");
-  const [cNameValid, setcNameValid] = useState(false);
+  const [cNameValid, setcNameValid] = useState(true);
   const [investorId, setInvestorId] = useState("");
   const [investArea, setinvestArea] = useState("");
-  const [investAreaValid, setinvestAreaValid] = useState(false);
+  const [investAreaValid, setinvestAreaValid] = useState(true);
   const [cAddress, setcAddress] = useState("");
-  const [cAddressValid, setcAddressValid] = useState(false);
+  const [cAddressValid, setcAddressValid] = useState(true);
   const [nic, setnic] = useState("");
-  const [nicValid, setnicValid] = useState(false);
+  const [nicValid, setnicValid] = useState(true);
   const [cTel, setcTel] = useState("");
-  const [cTelValid, setcTelValid] = useState(false);
+  const [cTelValid, setcTelValid] = useState(true);
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);

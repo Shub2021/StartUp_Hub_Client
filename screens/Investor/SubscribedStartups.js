@@ -45,13 +45,60 @@ const HomeInvestor = (props) => {
     console.log(data);
   }, []);
 
-  function unsubscribeRequest(item) {
+  function removeSubscription(item) {
     fetch(URLs.cn + "/subscribe/" + item.br_number + "/" + email, {
       method: "delete",
     })
       .then((res) => res.json())
       .then((data) => {
         Alert.alert("successfuly unsubscribed " + item.company_name);
+      });
+  }
+  function removePostPlan(item) {
+    fetch(URLs.cn + "/postplan/" + item.br_number + "/" + email, {
+      method: "delete",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert("successfuly unsubscribed " + item.company_name);
+      });
+  }
+
+  function unsubscribeRequest(item) {
+    let flag = true;
+    console.log(item);
+    fetch(URLs.cn + "/postplan/" + email + "/" + item.br_number)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.length > 0) {
+          let investYear = parseInt(json[0].Startdate.slice(0, 4));
+          let investMonth = parseInt(json[0].Startdate.slice(5, 7));
+          let paybackTime = parseInt(json[0].time);
+          let x = investMonth + paybackTime;
+          const d = new Date();
+          let currentMonth = d.getMonth() + 1;
+          let currentYear = d.getFullYear();
+
+          if (x > 12) {
+            investYear = investYear + 1;
+            x = x - 12;
+          }
+          if (investYear < currentYear) {
+            removeSubscription(item);
+            removePostPlan(item);
+          } else if (investYear === currentYear) {
+            if (currentMonth > x) {
+              removeSubscription(item);
+              removePostPlan(item);
+            } else {
+              Alert.alert("Plan agreement exist. Cannot delete! ❌");
+            }
+          } else {
+            Alert.alert("Plan agreement exist. Cannot delete! ❌");
+          }
+        } else {
+          removeSubscription(item);
+        }
       });
   }
 
