@@ -12,6 +12,7 @@ import MapViewDirections from "react-native-maps-directions";
 
 import { COLORS, FONTS, icons, SIZES, GOOGLE_API_KEY } from "../../constants";
 import * as Location from "expo-location";
+import { Linking } from "react-native";
 
 const OrderDelivery = ({ route, navigation }) => {
   const mapView = React.useRef();
@@ -341,7 +342,7 @@ const OrderDelivery = ({ route, navigation }) => {
                 justifyContent: "center",
                 borderRadius: 10,
               }}
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => Linking.openURL(`tel:${startup.contact}`)}
             >
               <Text style={{ ...FONTS.h4, color: COLORS.white }}>Call</Text>
             </TouchableOpacity>

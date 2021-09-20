@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import {
+  Alert,
   FlatList,
   Image,
   Modal,
@@ -13,6 +14,7 @@ import {
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES, URLs } from "../../constants";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Card } from "react-native-paper";
 
 const listTabs = [
   {
@@ -29,7 +31,7 @@ const listTabs = [
   },
 ];
 
-const UserOrders = ({navigation}) => {
+const UserOrders = ({ navigation }) => {
   const [status, setStatus] = React.useState("Ordered");
   const [email, setEmail] = React.useState(null);
   const [orders, setOrders] = React.useState(null);
@@ -55,6 +57,16 @@ const UserOrders = ({navigation}) => {
       .then((result) => {
         setOrders(result);
         setIsLoading(false);
+      });
+  };
+
+  const cancleOrder = (orderID) => {
+    fetch(URLs.cn + "/order/" + orderID, {
+      method: "delete",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setDatatoState(email);
       });
   };
 
@@ -113,14 +125,14 @@ const UserOrders = ({navigation}) => {
             justifyContent: "center",
           }}
         >
-          <Image
+          {/* <Image
             source={icons.basket}
             resizeMode="contain"
             style={{
               width: 30,
               height: 30,
             }}
-          />
+          /> */}
         </TouchableOpacity>
       </View>
     );
@@ -172,23 +184,28 @@ const UserOrders = ({navigation}) => {
   };
 
   function reportOrder() {
-    let placed_date = new Date();
-    fetch(URLs.cn + "/complains", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        client_email: email,
-        br_number: brNumber,
-        item_id: productId,
-        description: addComment,
-        placed_date: new Date(),
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Report Successful");
-        toggleModal(brNumber, productId);
-      });
+    if (addComment == "") {
+      Alert.alert("Fill the comment first!");
+    } else {
+      let placed_date = new Date();
+      fetch(URLs.cn + "/complains", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          client_email: email,
+          br_number: brNumber,
+          item_id: productId,
+          description: addComment,
+          placed_date: new Date(),
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          alert("Report Successful");
+          toggleModal(brNumber, productId);
+          setaddComment("");
+        });
+    }
   }
 
   function popupReview() {
@@ -269,83 +286,124 @@ const UserOrders = ({navigation}) => {
     );
   }
 
+  const createTwoButtonAlert = (orderID) =>
+    Alert.alert(
+      "Cancle Order",
+      "Do you want to cancle the Order?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => cancleOrder(orderID) },
+      ],
+      { cancelable: false }
+    );
+
   const renderList1 = (item) => {
     const id = item._id.slice(18, 23);
     if (item.order_status === "placed") {
       return (
-        <TouchableOpacity
-          style={{
-            marginBottom: SIZES.radius,
-            borderRadius: SIZES.radius * 2,
-            paddingHorizontal: SIZES.padding,
-            paddingVertical: SIZES.padding * 2,
-            backgroundColor: COLORS.gray3,
-            height: 150,
-          }}
-          // onPress={() => showAlert1(item)}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ ...FONTS.body2, color: COLORS.white }}>
-              Order #{id}
-            </Text>
-            <Icons
-              name="eye"
-              color={COLORS.secondary}
-              size={28}
-              // onPress={() => showAlert4(item)}
-            />
-          </View>
+        <Card style={styles.profileCard}>
+          <View style={styles.cardIcon}>
+            <TouchableOpacity
+              style={{
+                // marginBottom: SIZES.radius,
+                borderRadius: SIZES.radius * 0.5,
+                paddingHorizontal: SIZES.padding,
+                paddingVertical: SIZES.padding * 2,
+                backgroundColor: COLORS.lightGray3,
+                height: 150,
+              }}
+              // onPress={() => showAlert1(item)}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ ...FONTS.h3, color: COLORS.black }}>
+                  Order #{id}
+                </Text>
+                {/* <Icons
+                  name="eye"
+                  color={COLORS.secondary}
+                  size={28}
+                  // onPress={() => showAlert4(item)}
+                /> */}
+              </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginRight: 5,
-            }}
-          >
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              {item.product_name}
-            </Text>
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              {item.quantity}
-            </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>{item.product_name}</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.quantity}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Total</Text>
+                <Text style={{ ...FONTS.body3 }}>LKR {item.total}.00</Text>
+              </View>
+              <TouchableOpacity
+                style={{
+                  //   width: SIZES.width * 0.9,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 5,
+                  padding: SIZES.padding * 0.5,
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  backgroundColor: "#FFA133",
+                  alignItems: "center",
+                  borderRadius: SIZES.radius * 3,
+                  width: 100,
+                  marginBottom: 3,
+                }}
+                onPress={() => {
+                  toggleModal(item.br_number, item.product_id);
+                }}
+              >
+                <Text style={{ color: COLORS.black, ...FONTS.body3 }}>
+                  Report
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  //   width: SIZES.width * 0.9,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 115,
+                  padding: SIZES.padding * 0.5,
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  backgroundColor: "#FE2020",
+                  alignItems: "center",
+                  borderRadius: SIZES.radius * 3,
+                  width: 100,
+                  marginBottom: 3,
+                }}
+                onPress={() => {
+                  createTwoButtonAlert(item._id);
+                }}
+              >
+                <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
+                  Cancle
+                </Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginRight: 5,
-            }}
-          >
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>Total</Text>
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              LKR {item.total}.00
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={{
-              //   width: SIZES.width * 0.9,
-              position: "absolute",
-              bottom: 5,
-              right: 55,
-              padding: SIZES.padding,
-              paddingTop: 3,
-              paddingBottom: 3,
-              backgroundColor: COLORS.primary,
-              alignItems: "center",
-              borderRadius: SIZES.radius * 3,
-              width: 150,
-              marginBottom: 3,
-            }}
-            onPress={() => {
-              toggleModal(item.br_number, item.product_id);
-            }}
-          >
-            <Text style={{ color: COLORS.black, ...FONTS.body3 }}>Report</Text>
-          </TouchableOpacity>
-        </TouchableOpacity>
+        </Card>
       );
     }
   };
@@ -354,56 +412,78 @@ const UserOrders = ({navigation}) => {
     const id = item._id.slice(18, 23);
     if (item.order_status === "processing") {
       return (
-        <TouchableOpacity
-          style={{
-            marginBottom: SIZES.radius,
-            borderRadius: SIZES.radius * 2,
-            paddingHorizontal: SIZES.padding,
-            paddingVertical: SIZES.radius,
-            backgroundColor: COLORS.gray3,
-          }}
-          // onPress={() => showAlert2(item)}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ color: COLORS.secondary, fontSize: 24 }}>
-              Order #{id}
-            </Text>
-            <Icons
+        <Card style={styles.profileCard}>
+          <View>
+            <TouchableOpacity
+              style={{
+                borderRadius: SIZES.radius * 0.5,
+                paddingHorizontal: SIZES.padding,
+                paddingVertical: SIZES.padding * 2,
+                backgroundColor: COLORS.lightGray3,
+                height: 150,
+              }}
+              // onPress={() => showAlert2(item)}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ ...FONTS.h3 }}>Order #{id}</Text>
+                {/* <Icons
               name="eye"
               color={COLORS.secondary}
               size={28}
               // onPress={() => showAlert4(item)}
-            />
+            /> */}
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>{item.product_name}</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.quantity}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Total</Text>
+                <Text style={{ ...FONTS.body3 }}>LKR {item.total}.00</Text>
+              </View>
+              <TouchableOpacity
+                style={{
+                  //   width: SIZES.width * 0.9,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 5,
+                  padding: SIZES.padding * 0.5,
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  backgroundColor: "#FFA133",
+                  alignItems: "center",
+                  borderRadius: SIZES.radius * 3,
+                  width: 100,
+                  marginBottom: 3,
+                }}
+                onPress={() => {
+                  toggleModal(item.br_number, item.product_id);
+                }}
+              >
+                <Text style={{ color: COLORS.black, ...FONTS.body3 }}>
+                  Report
+                </Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginRight: 5,
-            }}
-          >
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              {item.product_name}
-            </Text>
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              {item.quantity}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginRight: 5,
-            }}
-          >
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>Total</Text>
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              LKR {item.total}.00
-            </Text>
-          </View>
-        </TouchableOpacity>
+        </Card>
       );
     }
   };
@@ -411,55 +491,77 @@ const UserOrders = ({navigation}) => {
     const id = item._id.slice(18, 23);
     if (item.order_status === "completed") {
       return (
-        <TouchableOpacity
-          style={{
-            marginBottom: SIZES.radius,
-            borderRadius: SIZES.radius * 2,
-            paddingHorizontal: SIZES.padding,
-            paddingVertical: SIZES.radius,
-            backgroundColor: COLORS.gray3,
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ color: COLORS.secondary, fontSize: 24 }}>
-              Order #{id}
-            </Text>
-            <Icons
+        <Card style={styles.profileCard}>
+          <View>
+            <TouchableOpacity
+              style={{
+                borderRadius: SIZES.radius * 0.5,
+                paddingHorizontal: SIZES.padding,
+                paddingVertical: SIZES.padding * 2,
+                backgroundColor: COLORS.lightGray3,
+                height: 150,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ ...FONTS.h3 }}>Order #{id}</Text>
+                {/* <Icons
               name="eye"
               color={COLORS.secondary}
               size={28}
               // onPress={() => showAlert4(item)}
-            />
+            /> */}
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>{item.product_name}</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.quantity}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Total</Text>
+                <Text style={{ ...FONTS.body3 }}>LKR {item.total}.00</Text>
+              </View>
+              <TouchableOpacity
+                style={{
+                  //   width: SIZES.width * 0.9,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 5,
+                  padding: SIZES.padding * 0.5,
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  backgroundColor: "#FFA133",
+                  alignItems: "center",
+                  borderRadius: SIZES.radius * 3,
+                  width: 100,
+                  marginBottom: 3,
+                }}
+                onPress={() => {
+                  toggleModal(item.br_number, item.product_id);
+                }}
+              >
+                <Text style={{ color: COLORS.black, ...FONTS.body3 }}>
+                  Report
+                </Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginRight: 5,
-            }}
-          >
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              {item.product_name}
-            </Text>
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              {item.quantity}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginRight: 5,
-            }}
-          >
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>Total</Text>
-            <Text style={{ color: COLORS.white, fontSize: 18 }}>
-              LKR {item.total}.00
-            </Text>
-          </View>
-        </TouchableOpacity>
+        </Card>
       );
     }
   };
@@ -472,9 +574,10 @@ const UserOrders = ({navigation}) => {
             {/* Placed Orders */}
             <FlatList
               style={{
-                marginTop: SIZES.radius,
+                paddingBottom: SIZES.padding2 * 2,
+                marginTop: SIZES.radius * 0.5,
                 marginBottom: SIZES.radius * 5,
-                paddingHorizontal: SIZES.radius,
+                paddingHorizontal: SIZES.padding2,
               }}
               data={orders}
               renderItem={({ item }) => {
@@ -490,9 +593,10 @@ const UserOrders = ({navigation}) => {
             {/* Processing Orders */}
             <FlatList
               style={{
-                marginTop: SIZES.radius,
-                paddingHorizontal: SIZES.radius,
+                paddingBottom: SIZES.padding2 * 2,
+                marginTop: SIZES.radius * 0.5,
                 marginBottom: SIZES.radius * 5,
+                paddingHorizontal: SIZES.padding2,
               }}
               data={orders}
               renderItem={({ item }) => {
@@ -508,9 +612,10 @@ const UserOrders = ({navigation}) => {
             {/* Completed Orders */}
             <FlatList
               style={{
-                marginTop: SIZES.radius,
+                paddingBottom: SIZES.padding2 * 2,
+                marginTop: SIZES.radius * 0.5,
                 marginBottom: SIZES.radius * 5,
-                paddingHorizontal: SIZES.radius,
+                paddingHorizontal: SIZES.padding2,
               }}
               data={orders}
               renderItem={({ item }) => {
@@ -550,6 +655,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 1,
+  },
+  profileCard: {
+    padding: 5,
+    marginTop: 10,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5,
+    borderRadius: 10,
+    shadowColor: COLORS.secondary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    backgroundColor: COLORS.lightGray3,
+  },
+  cardIcon: {
+    // flexDirection: "row",
   },
 });
 

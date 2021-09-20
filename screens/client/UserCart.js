@@ -173,7 +173,7 @@ const UserCart = ({ navigation }) => {
             style={{
               width: "100%",
               height: 200,
-              borderRadius: SIZES.radius,
+              borderRadius: SIZES.radius * 0.5,
             }}
           />
 
@@ -185,7 +185,7 @@ const UserCart = ({ navigation }) => {
               width: SIZES.width * 0.3,
               backgroundColor: COLORS.white,
               borderTopRightRadius: SIZES.radius,
-              borderBottomLeftRadius: SIZES.radius,
+              borderBottomLeftRadius: SIZES.radius * 0.5,
               alignItems: "center",
               justifyContent: "center",
               ...styles.shadow,
@@ -225,7 +225,8 @@ const UserCart = ({ navigation }) => {
         </View>
         <View
           style={{
-            marginTop: SIZES.padding,
+            // marginTop: SIZES.padding * 0.5,
+            marginBottom: SIZES.padding,
             flexDirection: "row",
           }}
         >
@@ -286,6 +287,13 @@ const UserCart = ({ navigation }) => {
             ))} */}
           </View>
         </View>
+        <View
+          style={{
+            marginBottom: SIZES.padding,
+            borderBottomColor: COLORS.secondary,
+            borderBottomWidth: 1,
+          }}
+        />
       </TouchableOpacity>
     );
 

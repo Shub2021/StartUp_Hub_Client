@@ -26,11 +26,15 @@ export const sushi = require("../assets/icons/sushi.png");
 export const user = require("../assets/icons/user.png");
 export const filter = require("../assets/icons/filter.png");
 export const cross = require("../assets/icons/cross.png");
+export const check = require("../assets/icons/check.png");
+export const product = require("../assets/icons/product.png");
+export const service = require("../assets/icons/service.png");
 
 export default {
   back,
   car,
   cart,
+  check,
   cross,
   cutlery,
   donut,
@@ -48,11 +52,13 @@ export default {
   noodle,
   pin,
   pizza,
+  product,
   red_pin,
   rice_bowl,
   salad,
   search,
   basket,
+  service,
   star,
   sushi,
   user,

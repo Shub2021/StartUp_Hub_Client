@@ -9,6 +9,7 @@ import {
   Image,
   Animated,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 
 // import PayHere from "@payhere/payhere-mobilesdk-reactnative";
@@ -37,30 +38,12 @@ const Item = ({ route, navigation }) => {
   const [totalPrice, setTotalPrice] = React.useState(0.0);
 
   let total;
-  // const paymentObject = {
-  //   sandbox: true, // true if using Sandbox Merchant ID
-  //   preapprove: true, // Required
-  //   merchant_id: "1214228", // Replace your Merchant ID
-  //   // "merchant_secret": "xyz",        // See step 4e
-  //   notify_url: "",
-  //   order_id: "ItemNo12345",
-  //   items: "Hello from React Native!",
-  //   currency: "LKR",
-  //   first_name: "Saman",
-  //   last_name: "Perera",
-  //   email: "samanp@gmail.com",
-  //   phone: "0771234567",
-  //   address: "No.1, Galle Road",
-  //   city: "Colombo",
-  //   country: "Sri Lanka",
-  // };
 
   React.useEffect(() => {
     fetchData();
     fetchCompanyData();
     getData();
     setCurrentLocation(initialCurrentLocation);
-    setloading(false);
   }, []);
 
   const initialCurrentLocation = {
@@ -87,8 +70,8 @@ const Item = ({ route, navigation }) => {
         .then((res) => res.json())
         .then((result) => {
           setCompany(result);
+          setloading(false);
         });
-      setloading(false);
     }
   };
 
@@ -110,7 +93,7 @@ const Item = ({ route, navigation }) => {
       for (let Object of cart.productList) {
         if (Object._id == product._id) {
           alreadyAdded = true;
-          Alert.alert("Product already added to the Cart!");
+          Alert.alert("Product already added to the Wish List!");
           return;
         }
       }
@@ -128,7 +111,7 @@ const Item = ({ route, navigation }) => {
         })
           .then((res) => res.json())
           .then((data) => {
-            Alert.alert("Product added to the Cart Succesfully");
+            Alert.alert("Product added to the Wish List Succesfully");
           });
       }
     } else {
@@ -147,7 +130,7 @@ const Item = ({ route, navigation }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          Alert.alert("Product added to the Cart Succesfully");
+          Alert.alert("Product added to the Wish List Succesfully");
         });
     }
   }
@@ -258,14 +241,14 @@ const Item = ({ route, navigation }) => {
             justifyContent: "center",
           }}
         >
-          <Image
+          {/* <Image
             source={icons.list}
             resizeMode="contain"
             style={{
               width: 30,
               height: 30,
             }}
-          />
+          /> */}
         </TouchableOpacity>
       </View>
     );
@@ -364,7 +347,7 @@ const Item = ({ route, navigation }) => {
                     marginRight: 10,
                   }}
                 />
-                {/* <Text style={{ ...FONTS.body3 }}>{item.rating}</Text> */}
+                <Text style={{ ...FONTS.body3 }}>{item.avg_rate}</Text>
                 <View
                   style={{
                     flexDirection: "row",
@@ -600,7 +583,16 @@ const Item = ({ route, navigation }) => {
     );
   }
 
+  const validateOrder = () => {
+    if (sumOrder() == "0.00") {
+      Alert.alert("Set the quantity first!");
+    } else {
+      navigation.navigate("StripeApp", { total, product, email });
+    }
+  };
+
   function renderOrder() {
+    // console.log(company);
     return (
       <View
         style={{
@@ -615,6 +607,12 @@ const Item = ({ route, navigation }) => {
             backgroundColor: COLORS.white,
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
+            borderTopColor: COLORS.black,
+            borderLeftColor: COLORS.black,
+            borderRightColor: COLORS.black,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            borderTopWidth: 3,
           }}
         >
           <View
@@ -651,17 +649,63 @@ const Item = ({ route, navigation }) => {
               justifyContent: "center",
             }}
           >
-            <View style={{ flexDirection: "row", flex: 1 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                height: "100%",
+                backgroundColor: COLORS.primary,
+                // backgroundColor: "#FA5B",
+                // backgroundColor: "#0247FE",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Image
                 source={icons.pin}
                 resizeMode="contain"
                 style={{
                   width: 20,
                   height: 20,
-                  tintColor: COLORS.darkgray,
+                  tintColor: COLORS.white,
                 }}
               />
-              <TouchableOpacity
+              {company.location.lat == null ? (
+                <TouchableOpacity
+                  onPress={() => Alert.alert("Company Location hasn't updated")}
+                >
+                  <Text
+                    style={{
+                      color: COLORS.white,
+                      marginLeft: SIZES.padding,
+                      ...FONTS.h4,
+                    }}
+                  >
+                    Location
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("ItemLocation", {
+                      product: company.location,
+                      currentLocation: currentLocation,
+                      company: company,
+                    })
+                  }
+                >
+                  <Text
+                    style={{
+                      color: COLORS.white,
+                      marginLeft: SIZES.padding,
+                      ...FONTS.h4,
+                    }}
+                  >
+                    Location
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {/* <TouchableOpacity
                 onPress={() =>
                   navigation.navigate("ItemLocation", {
                     product: company.location,
@@ -673,13 +717,14 @@ const Item = ({ route, navigation }) => {
                 <Text style={{ marginLeft: SIZES.padding, ...FONTS.h4 }}>
                   Location
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <TouchableOpacity
               style={{
                 padding: SIZES.padding * 0.2,
-                backgroundColor: COLORS.secondary,
+                // backgroundColor: "#FFA133",
+                backgroundColor: "#FFA500",
                 alignItems: "center",
                 // borderRadius: SIZES.radius,
                 // marginBottom: SIZES.padding,
@@ -687,23 +732,26 @@ const Item = ({ route, navigation }) => {
               }}
               onPress={addItemToCart}
             >
-              <Text style={{ color: COLORS.white, ...FONTS.h2 }}>
-                Add to Cart
+              <Text style={{ color: COLORS.white, ...FONTS.h4 }}>Add to</Text>
+              <Text style={{ color: COLORS.white, ...FONTS.h4 }}>
+                Wish List
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 padding: SIZES.padding * 0.2,
-                backgroundColor: COLORS.primary,
+                // backgroundColor: "#66B132",
+                backgroundColor: "#27AE60",
                 alignItems: "center",
                 // borderRadius: SIZES.radius,
+                height: "100%",
                 flex: 1,
+                paddingTop: 15,
+                // justifyContent: "center",
               }}
-              onPress={() =>
-                navigation.navigate("StripeApp", { total, product, email })
-              }
+              onPress={() => validateOrder()}
             >
-              <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Order</Text>
+              <Text style={{ color: COLORS.white, ...FONTS.h4 }}>Order</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -721,11 +769,17 @@ const Item = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {renderHeader()}
-      {orderMenuItems()}
-      {renderItemInfo()}
-      {renderOtherProducts()}
-      {renderOrder()}
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <>
+          {renderHeader()}
+          {orderMenuItems()}
+          {renderItemInfo()}
+          {renderOtherProducts()}
+          {renderOrder()}
+        </>
+      )}
     </SafeAreaView>
   );
 };
