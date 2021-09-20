@@ -59,6 +59,7 @@ const Item = ({ route, navigation }) => {
     fetchData();
     fetchCompanyData();
     getData();
+    setCurrentLocation(initialCurrentLocation);
     setloading(false);
   }, []);
 
@@ -665,6 +666,7 @@ const Item = ({ route, navigation }) => {
                   navigation.navigate("ItemLocation", {
                     product: company.location,
                     currentLocation: currentLocation,
+                    company: company,
                   })
                 }
               >
@@ -686,7 +688,7 @@ const Item = ({ route, navigation }) => {
               onPress={addItemToCart}
             >
               <Text style={{ color: COLORS.white, ...FONTS.h2 }}>
-                Add to cart
+                Add to Cart
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
