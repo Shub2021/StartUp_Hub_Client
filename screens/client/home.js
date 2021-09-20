@@ -277,14 +277,14 @@ const Home = ({ navigation }) => {
             justifyContent: "center",
           }}
         >
-          <Image
+          {/* <Image
             source={icons.nearby}
             resizeMode="contain"
             style={{
               width: 30,
               height: 30,
             }}
-          />
+          /> */}
         </TouchableOpacity>
         <View
           style={{
@@ -539,7 +539,7 @@ const Home = ({ navigation }) => {
     );
   };
 
-  const FilterModel = ({ isVisible, onClose, min, max }) => {
+  const FilterModel = ({ isVisible }) => {
     if (showFilterModel) {
       Animated.timing(modelAnimatedValue, {
         toValue: 1,
@@ -551,12 +551,12 @@ const Home = ({ navigation }) => {
         toValue: 0,
         duration: 500,
         useNativeDriver: false,
-      }).start(() => onClose());
+      }).start();
     }
 
     const modelY = modelAnimatedValue.interpolate({
       inputRange: [0, 1],
-      //cange popup height
+      //change popup height
       outputRange: [SIZES.height, SIZES.height - 340],
     });
 
@@ -733,7 +733,7 @@ const Home = ({ navigation }) => {
       {renderSearch()}
 
       {
-        showFilterModel && FilterModel(showFilterModel, minPrice, maxPrice)
+        showFilterModel && FilterModel(showFilterModel)
         // <FilterModel
         //   isVisible={showFilterModel}
         //   min={minPrice}

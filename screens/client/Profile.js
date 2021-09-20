@@ -14,7 +14,7 @@ import {
   Fontisto,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { COLORS } from "../../constants/theme";
+import { COLORS, FONTS } from "../../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { URLs } from "../../constants";
 
@@ -88,6 +88,7 @@ const Profile = ({ props, navigation }) => {
                     alignItems: "center",
                     marginLeft: 15,
                     marginBottom: 40,
+                    ...FONTS.h2,
                   }}
                 >
                   User Profile
@@ -111,8 +112,10 @@ const Profile = ({ props, navigation }) => {
                 color="black"
               />
               <View style={{ marginLeft: 20 }}>
-                <Text style={styles.fieldTitle}>Name</Text>
-                <Text style={styles.cardField}>{user.name}</Text>
+                <Text style={{ ...FONTS.h4, marginTop: 1 }}>Name</Text>
+                <Text style={{ marginTop: 2.5, ...FONTS.body4 }}>
+                  {user.name}
+                </Text>
               </View>
             </View>
           </Card>
@@ -125,8 +128,10 @@ const Profile = ({ props, navigation }) => {
                 color="black"
               />
               <View style={{ marginLeft: 20 }}>
-                <Text style={styles.fieldTitle}>E-mail</Text>
-                <Text style={styles.cardField}>{user.email}</Text>
+                <Text style={{ ...FONTS.h4, marginTop: 1 }}>E-mail</Text>
+                <Text style={{ marginTop: 2.5, ...FONTS.body4 }}>
+                  {user.email}
+                </Text>
               </View>
             </View>
           </Card>
@@ -145,7 +150,7 @@ const Profile = ({ props, navigation }) => {
             icon="autorenew"
             mode="contained"
           >
-            Change Password
+            <Text style={{ ...FONTS.body4 }}>Change Password</Text>
           </Button>
           <Button
             style={{
@@ -156,13 +161,14 @@ const Profile = ({ props, navigation }) => {
               marginRight: 50,
               marginBottom: 20,
               backgroundColor: COLORS.primary,
+              ...FONTS.body3,
             }}
             color="#0396FF"
             icon="logout"
             mode="contained"
             onPress={logout}
           >
-            Sign Out
+            <Text style={{ ...FONTS.body4 }}> Sign Out </Text>
           </Button>
         </ScrollView>
       )}
@@ -193,15 +199,9 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
-  fieldTitle: {
-    fontWeight: "bold",
-    marginTop: 1,
-  },
+  fieldTitle: {},
 
-  cardField: {
-    marginTop: 2.5,
-    fontSize: 17,
-  },
+  cardField: {},
   cardIcon: {
     flexDirection: "row",
   },

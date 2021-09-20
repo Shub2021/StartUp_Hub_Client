@@ -10,6 +10,7 @@ import {
   Animated,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import ProgressBar from "../components/ProgressBar";
 import Modal from "react-native-modal";
@@ -39,11 +40,33 @@ const ItemReviews = ({ route, navigation }) => {
   const [userId, setUserId] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [loading, setloading] = React.useState(true);
+  const [userAlreadyAddedComment, setUserAlreadyAddedComment] =
+    React.useState(false);
 
   React.useEffect(() => {
     let allRateCount = product.rating.length;
-    setRateCount(allRateCount);
+    // setRateCount(allRateCount);
 
+    loadProduct();
+    getData();
+  }, []);
+
+  const loadProduct = () => {
+    fetch(URLs.cn + "/product/getProductbyID/" + product._id)
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.rating[0].client === "none") {
+          result.rating.shift();
+        }
+        setData(result.rating);
+        setProduct(result);
+        setRateCount(result.rating.length);
+        loadRatingBars();
+      });
+  };
+
+  const loadRatingBars = () => {
+    let allRateCount = product.rating.length;
     if (product.rating.length > 0) {
       let fiveStarCount = 0;
       let fourStarCount = 0;
@@ -77,19 +100,6 @@ const ItemReviews = ({ route, navigation }) => {
 
       setlowAvgCount((oneStarCount / allRateCount) * 100);
     }
-    loadProduct();
-    getData();
-    setloading(false);
-  }, []);
-
-  const loadProduct = () => {
-    fetch(URLs.cn + "/product/getProductbyID/" + product._id)
-      .then((res) => res.json())
-      .then((result) => {
-        // console.log(result);
-        setData(result.rating);
-        setProduct(result);
-      });
   };
 
   const getData = async () => {
@@ -99,6 +109,7 @@ const ItemReviews = ({ route, navigation }) => {
       .then((res) => res.json())
       .then((result) => {
         setUser(result);
+        setloading(false);
       });
   };
 
@@ -107,42 +118,49 @@ const ItemReviews = ({ route, navigation }) => {
   };
 
   function addCommenttoDB() {
-    let avgRate = parseInt((starCount + rating * rateCount) / (rateCount + 1));
-    setRateCount(rateCount + 1);
-    setRating(avgRate);
+    if (starCount === 0) {
+      Alert.alert("Set your Rating!");
+    } else {
+      if (addComment == "") {
+        Alert.alert("Set your Comment!");
+      } else {
+        let avgRate = parseInt(
+          (starCount + rating * rateCount) / (rateCount + 1)
+        );
+        setRateCount(rateCount + 1);
+        setRating(avgRate);
 
-    console.log(avgRate);
+        let ratingarray = [];
 
-    let ratingarray = [];
+        for (let i = 0; i < product.rating.length; i++) {
+          ratingarray.push(product.rating[i]);
+        }
 
-    for (let i = 0; i < product.rating.length; i++) {
-      ratingarray.push(product.rating[i]);
+        let newComent = {
+          rate: starCount,
+          comment: addComment,
+          clientId: userId,
+          client: user.name,
+        };
+
+        ratingarray.push(newComent);
+
+        fetch(URLs.cn + "/product/" + product._id, {
+          method: "patch",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            avg_rate: avgRate,
+            rating: ratingarray,
+          }),
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            setUserAlreadyAddedComment(true);
+            loadProduct();
+            toggleModal();
+          });
+      }
     }
-
-    let newComent = {
-      rate: starCount,
-      comment: addComment,
-      clientId: userId,
-      client: user.name,
-    };
-
-    ratingarray.push(newComent);
-    console.log(data);
-
-    fetch(URLs.cn + "/product/" + product._id, {
-      method: "patch",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        avg_rate: avgRate,
-        rating: ratingarray,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        loadProduct;
-        toggleModal;
-        console.log(data);
-      });
   }
 
   function onStarRatingPress(rating) {
@@ -418,7 +436,9 @@ const ItemReviews = ({ route, navigation }) => {
               alignItems: "center",
             }}
           >
-            <Text style={{ ...FONTS.body3, marginRight : 5 }}>{item.rate}.0</Text>
+            <Text style={{ ...FONTS.body3, marginRight: 5 }}>
+              {item.rate}.0
+            </Text>
             <Image
               source={icons.star}
               style={{
@@ -464,7 +484,18 @@ const ItemReviews = ({ route, navigation }) => {
     );
   }
 
-  function renderBottom() {
+  const validateUserAddedComment = () => {
+    let userAddedComment = data.filter((comment) => comment.clientId == userId);
+
+    if (userAddedComment.length > 0) {
+      if (!userAlreadyAddedComment) {
+        setUserAlreadyAddedComment(true);
+      }
+    }
+  };
+
+  const renderBottom = () => {
+    validateUserAddedComment();
     return (
       <View
         style={{
@@ -481,21 +512,36 @@ const ItemReviews = ({ route, navigation }) => {
           backgroundColor: "rgba(205,205,210, 0.8)",
         }}
       >
-        <TouchableOpacity
-          style={{
-            width: SIZES.width * 0.9,
-            padding: SIZES.padding,
-            backgroundColor: COLORS.primary,
-            alignItems: "center",
-            borderRadius: SIZES.radius,
-          }}
-          onPress={toggleModal}
-        >
-          <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Add review</Text>
-        </TouchableOpacity>
+        {userAlreadyAddedComment ? (
+          <TouchableOpacity
+            style={{
+              width: SIZES.width * 0.9,
+              padding: SIZES.padding,
+              backgroundColor: COLORS.secondary,
+              alignItems: "center",
+              borderRadius: SIZES.radius,
+            }}
+            onPress={() => Alert.alert("You have already added your review")}
+          >
+            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Add review</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              width: SIZES.width * 0.9,
+              padding: SIZES.padding,
+              backgroundColor: COLORS.primary,
+              alignItems: "center",
+              borderRadius: SIZES.radius,
+            }}
+            onPress={toggleModal}
+          >
+            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Add review</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
-  }
+  };
 
   function popupReview() {
     return (
@@ -596,9 +642,10 @@ const ItemReviews = ({ route, navigation }) => {
         <>
           {renderRatings()}
           {renderComments()}
+          {data != null && renderBottom()}
         </>
       )}
-      {renderBottom()}
+
       {popupReview()}
     </SafeAreaView>
   );

@@ -11,7 +11,7 @@ require("./models/Cart");
 require("./models/Investors");
 require("./models/Service");
 require("./models/PostPlan");
-require("./models/jobs");
+require("./models/job");
 require("./models/Service");
 
 const userRoutes = require("./routes/user");
@@ -74,7 +74,6 @@ application.use("/order", orderRoutes);
 application.use("/payment", paymentRoutes);
 application.use("/services", serviceRoutes);
 application.use("/jobs", jobsRoutes);
-application.use("/service", serviceRoutes);
 application.use("/complains", complainRoutes);
 application.use("/mail", mailRoutes);
 

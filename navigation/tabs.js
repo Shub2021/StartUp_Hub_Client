@@ -82,11 +82,11 @@ class Tabs extends Component {
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
-                source={icons.cutlery}
+                source={icons.product}
                 resizeMode="contain"
                 style={{
-                  width: 25,
-                  height: 25,
+                  width: 28,
+                  height: 28,
                   tintColor: focused ? COLORS.primary : COLORS.secondary,
                 }}
               />
@@ -101,11 +101,11 @@ class Tabs extends Component {
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
-                source={icons.search}
+                source={icons.service}
                 resizeMode="contain"
                 style={{
-                  width: 25,
-                  height: 25,
+                  width: 28,
+                  height: 28,
                   tintColor: focused ? COLORS.primary : COLORS.secondary,
                 }}
               />

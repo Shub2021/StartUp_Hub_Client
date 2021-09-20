@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const Jobs = require("../models/jobs");
+const Jobs = require("../models/job");
 const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
@@ -120,11 +120,9 @@ router.get("/userservices/:userrEmail", (req, res, next) => {
     });
 });
 
-
-/*
-router.delete("/:productId", (req, res, next) => {
-  const id = req.params.productId;
-  Product.remove({ _id: id })
+router.delete("/:jobId", (req, res, next) => {
+  const id = req.params.jobId;
+  Jobs.remove({ _id: id })
     .exec()
     .then((result) => {
       console.log(result);
@@ -135,22 +133,20 @@ router.delete("/:productId", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
-router.get("/:category", (req, res, next) => {
-  const category = req.params.category;
-  Product.find({ product_category: category })
-    .exec()
-    .then((docs) => {
-      console.log(docs);
-      res.status(200).json(docs);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
-    });
-});
+// router.get("/:category", (req, res, next) => {
+//   const category = req.params.category;
+//   Product.find({ product_category: category })
+//     .exec()
+//     .then((docs) => {
+//       console.log(docs);
+//       res.status(200).json(docs);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({
+//         error: err,
+//       });
+//     });
+// });
 
-
-*/
 module.exports = router;

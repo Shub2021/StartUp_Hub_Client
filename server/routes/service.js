@@ -20,7 +20,7 @@ router.get("/", (req, res, next) => {
 
 router.get("/:service_id", (req, res, next) => {
   const id = req.params.service_id;
-  Service.find({ _id: id, company_status: "active" })
+  Service.find({ _id: id, company_status: "active"})
     .exec()
     .then((docs) => {
       console.log(docs);

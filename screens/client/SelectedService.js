@@ -9,6 +9,7 @@ import {
   Animated,
   ActivityIndicator,
   TextInput,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import { isIphoneX } from "react-native-iphone-x-helper";
@@ -60,44 +61,48 @@ const SelectetService = ({ route, navigation }) => {
 
   const submitServiceReq = () => {
     console.log(screenNo);
-    let d = new Date();
-    let newdate = d.getDate();
-    let month = d.getMonth() + 1;
-    if (newdate < 10) {
-      newdate = "0" + newdate;
-    }
-    if (month < 10) {
-      month = "0" + month;
-    }
-    const year = d.getFullYear();
-    const paymentDate = year + "-" + month + "-" + newdate;
-
-    fetch(URLs.cn + "/jobs/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        date: paymentDate,
-        description: addComment,
-        serviceid: service._id,
-        client_email: userEmail,
-        br_number: service.br_number,
-        job_status: "placed",
-        service_name: service.service_name,
-        package_id: service.package[screenNo]._id,
-        price: service.package[screenNo].price,
-        package_name: service.package[screenNo].Package_type,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        alert("Service Requested successfully");
-        console.log("Service Requested successfully");
+    if (addComment == "") {
+      Alert.alert("Add your Requirments First!");
+    } else {
+      let d = new Date();
+      let newdate = d.getDate();
+      let month = d.getMonth() + 1;
+      if (newdate < 10) {
+        newdate = "0" + newdate;
+      }
+      if (month < 10) {
+        month = "0" + month;
+      }
+      const year = d.getFullYear();
+      const paymentDate = year + "-" + month + "-" + newdate;
+      console.log("userEmail : " + userEmail);
+      fetch(URLs.cn + "/jobs/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: paymentDate,
+          description: addComment,
+          serviceid: service._id,
+          client_email: userEmail,
+          br_number: service.br_number,
+          job_status: "placed",
+          service_name: service.service_name,
+          package_id: service.package[screenNo]._id,
+          price: service.package[screenNo].price,
+          package_name: service.package[screenNo].Package_type,
+        }),
       })
-      .then((result) => {
-        // toggleModal;
-      });
+        .then((res) => res.json())
+        .then((result) => {
+          alert("Service Requested successfully");
+          console.log("Service Requested successfully");
+        })
+        .then((result) => {
+          toggleModal();
+        });
 
       toggleModal;
+    }
   };
 
   function renderHeader() {
