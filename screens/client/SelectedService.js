@@ -155,14 +155,14 @@ const SelectetService = ({ route, navigation }) => {
             justifyContent: "center",
           }}
         >
-          <Image
+          {/* <Image
             source={icons.list}
             resizeMode="contain"
             style={{
               width: 30,
               height: 30,
             }}
-          />
+          /> */}
         </TouchableOpacity>
       </View>
     );

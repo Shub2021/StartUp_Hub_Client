@@ -140,14 +140,14 @@ const UserRequestedServices = ({ navigation }) => {
             justifyContent: "center",
           }}
         >
-          <Image
+          {/* <Image
             source={icons.basket}
             resizeMode="contain"
             style={{
               width: 30,
               height: 30,
             }}
-          />
+          /> */}
         </TouchableOpacity>
       </View>
     );
@@ -763,6 +763,17 @@ const UserRequestedServices = ({ navigation }) => {
   }
 
   function reportService() {
+    let d = new Date();
+    let newdate = d.getDate();
+    let month = d.getMonth() + 1;
+    if (newdate < 10) {
+      newdate = "0" + newdate;
+    }
+    if (month < 10) {
+      month = "0" + month;
+    }
+    const year = d.getFullYear();
+    const reportDate = year + "-" + month + "-" + newdate;
     if (addComment == "") {
       Alert.alert("Fill the comment first!");
     } else {
@@ -775,7 +786,7 @@ const UserRequestedServices = ({ navigation }) => {
           br_number: brNumber,
           item_id: serviceId,
           description: addComment,
-          placed_date: new Date(),
+          placed_date: reportDate,
         }),
       })
         .then((res) => res.json())

@@ -184,6 +184,17 @@ const UserOrders = ({ navigation }) => {
   };
 
   function reportOrder() {
+    let d = new Date();
+    let newdate = d.getDate();
+    let month = d.getMonth() + 1;
+    if (newdate < 10) {
+      newdate = "0" + newdate;
+    }
+    if (month < 10) {
+      month = "0" + month;
+    }
+    const year = d.getFullYear();
+    const reportDate = year + "-" + month + "-" + newdate;
     if (addComment == "") {
       Alert.alert("Fill the comment first!");
     } else {
@@ -196,7 +207,7 @@ const UserOrders = ({ navigation }) => {
           br_number: brNumber,
           item_id: productId,
           description: addComment,
-          placed_date: new Date(),
+          placed_date: reportDate,
         }),
       })
         .then((res) => res.json())
