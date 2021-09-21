@@ -58,8 +58,11 @@ const UserCart = ({ navigation }) => {
       <View
         style={{
           flexDirection: "row",
-          height: 50,
+          // height: 50,
           marginBottom: SIZES.padding2 * 2,
+          borderBottomColor: COLORS.secondary,
+          borderBottomWidth: 1,
+          paddingBottom: 5,
         }}
       >
         <TouchableOpacity
@@ -69,14 +72,14 @@ const UserCart = ({ navigation }) => {
             justifyContent: "center",
           }}
         >
-          <Image
+          {/* <Image
             source={icons.nearby}
             resizeMode="contain"
             style={{
               width: 30,
               height: 30,
             }}
-          />
+          /> */}
         </TouchableOpacity>
         <View
           style={{
@@ -89,7 +92,7 @@ const UserCart = ({ navigation }) => {
           <View
             style={{
               width: "70%",
-              height: "100%",
+              // height: "100%",
               backgroundColor: COLORS.lightGray3,
               alignItems: "center",
               borderRadius: SIZES.radius,
@@ -107,14 +110,14 @@ const UserCart = ({ navigation }) => {
             justifyContent: "center",
           }}
         >
-          <Image
+          {/* <Image
             source={icons.basket}
             resizeMode="contain"
             style={{
               width: 30,
               height: 30,
             }}
-          />
+          /> */}
         </TouchableOpacity>
       </View>
     );

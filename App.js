@@ -291,6 +291,7 @@ export default function App() {
               component={InvestorRegistration}
               options={{ ...myOptions, title: "Investor Registration" }}
             />
+            <Stack.Screen name="LoadInvestor" component={LoadInvestor} />
           </Stack.Navigator>
         ) : (
           <Stack.Navigator
@@ -329,6 +330,10 @@ export default function App() {
               component={InvestorRegistration}
               options={{ ...myOptions, title: "Investor Registration" }}
             />
+            <Stack.Screen
+            name="LoadClientScreens"
+            component={LoadClientScreens}
+          />
           </Stack.Navigator>
         )
       ) : (
