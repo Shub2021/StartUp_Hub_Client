@@ -51,7 +51,7 @@ const ViewPostPlan = ({ navigation }) => {
           <Card style={styles.investCard}>
             <Text></Text>
             <Title>i) Investment Amount</Title>
-            <Text style={styles.filed}>{data.amount}</Text>
+            <Text style={styles.filed}>Rs. {data.amount}</Text>
 
             <Title>ii) Investment Date</Title>
             <Text style={styles.filed}>{data.Startdate}</Text>
