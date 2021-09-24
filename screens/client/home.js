@@ -60,7 +60,11 @@ const Home = ({ navigation }) => {
     const formattedQuery = text;
 
     if (text === "") {
-      setselectedProducts(data);
+      if (selectedCategory.name === "All") {
+        setselectedProducts(data);
+      } else {
+        onSelectCategory(selectedCategory);
+      }
     } else {
       const filteredData = filter(selectedProducts, (prod) => {
         return contains(prod, formattedQuery);
@@ -186,7 +190,6 @@ const Home = ({ navigation }) => {
       );
       setselectedProducts(productlist);
     }
-
     setSelectedCategory(category);
   }
 

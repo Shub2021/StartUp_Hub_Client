@@ -126,7 +126,7 @@ const UserCart = ({ navigation }) => {
   const createTwoButtonAlert = (item) =>
     Alert.alert(
       "Product Remove From Cart",
-      "Do you want to remove the product from the cart?",
+      "Do you want to remove the product from the wish list?",
       [
         {
           text: "Cancel",

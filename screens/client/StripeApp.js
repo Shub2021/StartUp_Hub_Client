@@ -200,6 +200,7 @@ const StripeApp = (props) => {
             is24Hour={true}
             display="default"
             onChange={onChange}
+            minimumDate={new Date()}
           />
         )}
       </View>
@@ -207,7 +208,7 @@ const StripeApp = (props) => {
       <CardField
         postalCodeEnabled={true}
         placeholder={{
-          number: "4242 4242 4242 4242",
+          number: "Enter the card number",
         }}
         cardStyle={styles.card}
         style={styles.cardContainer}

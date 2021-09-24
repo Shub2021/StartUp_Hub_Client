@@ -448,6 +448,16 @@ const UserRequestedServices = ({ navigation }) => {
                 <Text style={{ ...FONTS.body3 }}>Total</Text>
                 <Text style={{ ...FONTS.body3 }}>LKR {item.price}.00</Text>
               </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Requested date</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.date}</Text>
+              </View>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -547,6 +557,17 @@ const UserRequestedServices = ({ navigation }) => {
                 <Text style={{ ...FONTS.body3 }}>Total</Text>
                 <Text style={{ ...FONTS.body3 }}>LKR {item.price}.00</Text>
               </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Requested date</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.date}</Text>
+              </View>
+
               <TouchableOpacity
                 style={{
                   //   width: SIZES.width * 0.9,
@@ -599,7 +620,30 @@ const UserRequestedServices = ({ navigation }) => {
   };
   const renderList3 = (item) => {
     const id = item._id.slice(18, 23);
-    if (item.job_status === "completed") {
+    if (item.job_status === "Completed") {
+      let serReqDate = new Date(item.date);
+      let viewReportOption = true;
+      let date = serReqDate.getDate();
+      let month = serReqDate.getMonth();
+
+      if (new Date().getFullYear() - serReqDate.getFullYear() > 1) {
+        viewReportOption = false;
+      } else {
+        if (new Date().getMonth()  - month < 1) {
+
+          viewReportOption = true;
+        } else if (new Date().getMonth() - month == 1) {
+
+          if (new Date().getDate() - date > 0) {
+            viewReportOption = false;
+          }
+        } else {
+          viewReportOption = false;
+        }
+      }
+
+      // console.log( month);
+      // if(item.date){}
       return (
         <Card style={styles.profileCard}>
           <View>
@@ -646,50 +690,86 @@ const UserRequestedServices = ({ navigation }) => {
                 <Text style={{ ...FONTS.body3 }}>Total</Text>
                 <Text style={{ ...FONTS.body3 }}>LKR {item.price}.00</Text>
               </View>
-              <TouchableOpacity
+              <View
                 style={{
-                  //   width: SIZES.width * 0.9,
-                  position: "absolute",
-                  bottom: 5,
-                  right: 5,
-                  padding: SIZES.padding * 0.5,
-                  paddingTop: 3,
-                  paddingBottom: 3,
-                  backgroundColor: "#FFA133",
-                  alignItems: "center",
-                  borderRadius: SIZES.radius * 3,
-                  width: 100,
-                  marginBottom: 3,
-                }}
-                onPress={() => {
-                  toggleModal(item.br_number, item.serviceid);
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
                 }}
               >
-                <Text style={{ color: COLORS.black, ...FONTS.body3 }}>
-                  Report
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  //   width: SIZES.width * 0.9,
-                  position: "absolute",
-                  bottom: 5,
-                  right: 115,
-                  padding: SIZES.padding * 0.5,
-                  paddingTop: 3,
-                  paddingBottom: 3,
-                  backgroundColor: "#27AE60",
-                  alignItems: "center",
-                  borderRadius: SIZES.radius * 3,
-                  width: 100,
-                  marginBottom: 3,
-                }}
-                onPress={() => getDatatoRenderTasks(item._id)}
-              >
-                <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
-                  View Tasks
-                </Text>
-              </TouchableOpacity>
+                <Text style={{ ...FONTS.body3 }}>Requested date</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.date}</Text>
+              </View>
+              {viewReportOption ? (
+                <>
+                  <TouchableOpacity
+                    style={{
+                      //   width: SIZES.width * 0.9,
+                      position: "absolute",
+                      bottom: 5,
+                      right: 5,
+                      padding: SIZES.padding * 0.5,
+                      paddingTop: 3,
+                      paddingBottom: 3,
+                      backgroundColor: "#FFA133",
+                      alignItems: "center",
+                      borderRadius: SIZES.radius * 3,
+                      width: 100,
+                      marginBottom: 3,
+                    }}
+                    onPress={() => {
+                      toggleModal(item.br_number, item.serviceid);
+                    }}
+                  >
+                    <Text style={{ color: COLORS.black, ...FONTS.body3 }}>
+                      Report
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      //   width: SIZES.width * 0.9,
+                      position: "absolute",
+                      bottom: 5,
+                      right: 115,
+                      padding: SIZES.padding * 0.5,
+                      paddingTop: 3,
+                      paddingBottom: 3,
+                      backgroundColor: "#27AE60",
+                      alignItems: "center",
+                      borderRadius: SIZES.radius * 3,
+                      width: 100,
+                      marginBottom: 3,
+                    }}
+                    onPress={() => getDatatoRenderTasks(item._id)}
+                  >
+                    <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
+                      View Tasks
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  style={{
+                    //   width: SIZES.width * 0.9,
+                    position: "absolute",
+                    bottom: 5,
+                    right: 5,
+                    padding: SIZES.padding * 0.5,
+                    paddingTop: 3,
+                    paddingBottom: 3,
+                    backgroundColor: "#27AE60",
+                    alignItems: "center",
+                    borderRadius: SIZES.radius * 3,
+                    width: 100,
+                    marginBottom: 3,
+                  }}
+                  onPress={() => getDatatoRenderTasks(item._id)}
+                >
+                  <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
+                    View Tasks
+                  </Text>
+                </TouchableOpacity>
+              )}
             </TouchableOpacity>
           </View>
         </Card>
