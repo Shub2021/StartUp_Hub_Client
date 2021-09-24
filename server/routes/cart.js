@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Cart = require("../models/Cart");
-const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
   Cart.find()
@@ -66,8 +65,6 @@ router.patch("/:cartId", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
-
-
 
 // router.post("/", (req,res, next) => {
 //     _id: new mongoose.Types.ObjectId(),

@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const constants = require("../../constants/keys");
 const InvestmentPlan = require("../models/InvestmentPlan");
 
 router.get("/", (req, res) => {

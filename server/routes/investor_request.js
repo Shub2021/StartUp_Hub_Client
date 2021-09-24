@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const IRequest = require("../models/Investor_Request");
-const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
   IRequest.find()

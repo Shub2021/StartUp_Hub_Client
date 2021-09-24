@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Company = require("../models/Startup_Company");
-const constants = require("../../constants/keys");
 const bcrypt = require("bcrypt");
 
 // ***************get all startup companies***************

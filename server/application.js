@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const application = express();
 
+let port = process.env.PORT || 3000;
+
 require("./models/Startup_Company");
 require("./models/Startup_User");
 require("./models/InvestmentPlan");
@@ -77,7 +79,7 @@ application.use("/jobs", jobsRoutes);
 application.use("/complains", complainRoutes);
 application.use("/mail", mailRoutes);
 
-application.listen(3000, () => {
+application.listen(port, () => {
   console.log("server running");
 });
 

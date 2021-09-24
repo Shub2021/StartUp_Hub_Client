@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Subscribe = require("../models/Subscribe");
-const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
   Subscribe.find()

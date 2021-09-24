@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Jobs = require("../models/job");
-const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
   Jobs.find()

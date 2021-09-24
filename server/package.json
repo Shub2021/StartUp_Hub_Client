@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "set NODE_ENV=development&& node application.js",
+    "start-prod": "set NODE_ENV=production&& node application.js"
   },
+
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -16,6 +19,7 @@
     "nodemailer": "^6.6.3",
     "stripe": "^8.174.0"
   },
+  "engines": {"node": "14.17.0"},
   "devDependencies": {},
   "description": ""
 }

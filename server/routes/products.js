@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Product = require("../models/Product");
-const constants = require("../../constants/keys");
 
 router.get("/", (req, res, next) => {
   Product.find({ company_status: "active" })
@@ -20,7 +19,7 @@ router.get("/", (req, res, next) => {
 });
 router.get("/br/:br", (req, res, next) => {
   const br = req.params.br;
-  Product.find({ br_number: br, company_status: "active"})
+  Product.find({ br_number: br, company_status: "active" })
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -60,7 +59,7 @@ router.post("/", (req, res, next) => {
 });
 router.get("/:category", (req, res, next) => {
   const category = req.params.category;
-  Product.find({ product_category: category, company_status: "active"})
+  Product.find({ product_category: category, company_status: "active" })
     .exec()
     .then((docs) => {
       // console.log(docs);
@@ -76,7 +75,7 @@ router.get("/:category", (req, res, next) => {
 
 router.get("/getProductbyID/:productID", (req, res, next) => {
   const productID = req.params.productID;
-  Product.findOne({ _id: productID, company_status: "active"})
+  Product.findOne({ _id: productID, company_status: "active" })
     .exec()
     .then((docs) => {
       // console.log(docs);

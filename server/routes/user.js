@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/Users");
-const constants = require("../../constants/keys");
+const jwtkey = "abcd";
 
 router.get("/", (req, res, next) => {
   User.find()
@@ -84,7 +84,7 @@ router.post("/login", (req, res, next) => {
               userId: user[0]._id,
               username: user[0].name,
             },
-            constants.jwtkey,
+            jwtkey,
             {
               expiresIn: "1d",
             }

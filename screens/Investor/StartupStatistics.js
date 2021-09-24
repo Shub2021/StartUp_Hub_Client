@@ -31,6 +31,7 @@ const StartupStatistics = (props) => {
     color: (opacity = 0.5) => `rgba(255, 255, 255, ${opacity})`,
     strokeWidth: 1, // optional, default 3
     barPercentage: 0.8,
+    decimalPlaces: 0,
     useShadowColorFromDataset: false, // optional
   };
   const chartConfig2 = {
@@ -165,7 +166,7 @@ const StartupStatistics = (props) => {
                 });
             });
         } else {
-          fetch(URLs.cn + "/service/br/" + br_number)
+          fetch(URLs.cn + "/services/br/" + br_number)
             .then((res) => res.json())
             .then((result) => {
               //console.log(result);
