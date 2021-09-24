@@ -28,6 +28,7 @@ const OrderDelivery = ({ route, navigation }) => {
   const [angle, setAngle] = React.useState(0);
   const [loading, setloading] = React.useState(true);
   const [errorMsg, setErrorMsg] = React.useState(null);
+  const [refreshPage, setRefreshPage] = React.useState("");
 
   React.useEffect(() => {
     let { product, currentLocation, company } = route.params;
@@ -65,17 +66,17 @@ const OrderDelivery = ({ route, navigation }) => {
 
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("status : " + status);
     if (status !== "granted") {
       setErrorMsg("Permission to access location was denied");
       Alert.alert("COLOMBO will take as user default location");
       return;
+    } else {
+      let loc = await Location.getCurrentPositionAsync({});
+      console.log(loc.coords.latitude);
+      initialCurrentLocation.gps.latitude = loc.coords.latitude;
+      initialCurrentLocation.gps.longitude = loc.coords.longitude;
     }
-
-    let loc = await Location.getCurrentPositionAsync({});
-    console.log(loc.coords.latitude);
-    initialCurrentLocation.gps.latitude = loc.coords.latitude;
-    initialCurrentLocation.gps.longitude = loc.coords.longitude;
-
     setFromLocation(initialCurrentLocation.gps);
     setloading(false);
   };
@@ -412,10 +413,90 @@ const OrderDelivery = ({ route, navigation }) => {
     );
   }
 
+  function renderHeader() {
+    return (
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          style={{
+            width: 50,
+            paddingLeft: SIZES.padding * 2,
+            justifyContent: "center",
+          }}
+          onPress={() => navigation.goBack()}
+        >
+          <Image
+            source={icons.back}
+            resizeMode="contain"
+            style={{
+              width: 30,
+              height: 30,
+            }}
+          />
+        </TouchableOpacity>
+
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              height: 50,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingHorizontal: SIZES.padding * 3,
+              borderRadius: SIZES.radius,
+              backgroundColor: COLORS.lightGray3,
+            }}
+          >
+            <Text style={{ ...FONTS.h3 }}>Company Location</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={{
+            width: 50,
+            paddingRight: SIZES.padding * 2,
+            justifyContent: "center",
+          }}
+        >
+          {/* <Image
+            source={icons.list}
+            resizeMode="contain"
+            style={{
+              width: 30,
+              height: 30,
+            }}
+          /> */}
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <>
+          {renderHeader()}
+          <ActivityIndicator size="large" color="#0000ff" />
+          <View
+            style={{
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                ...FONTS.h4,
+              }}
+            >
+              Go back and Reload the Page
+            </Text>
+          </View>
+        </>
       ) : (
         <>
           {renderMap()}
