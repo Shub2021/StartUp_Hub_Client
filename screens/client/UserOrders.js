@@ -40,6 +40,7 @@ const UserOrders = ({ navigation }) => {
   const [addComment, setaddComment] = React.useState("");
   const [brNumber, setBrNumber] = React.useState("");
   const [productId, setProductId] = React.useState("");
+  const [selectedOrderCompany, setSelectedOrderCompany] = React.useState("");
 
   React.useEffect(() => {
     setData();
@@ -49,6 +50,14 @@ const UserOrders = ({ navigation }) => {
     const useremail = await AsyncStorage.getItem("email");
     setEmail(useremail);
     setDatatoState(useremail);
+  };
+
+  const initialCurrentLocation = {
+    streetName: "Colombo",
+    gps: {
+      latitude: 6.927079,
+      longitude: 79.861244,
+    },
   };
 
   const setDatatoState = (userEmail) => {
@@ -312,8 +321,27 @@ const UserOrders = ({ navigation }) => {
       { cancelable: false }
     );
 
+  function getCompany(comp_br_number) {
+    fetch(URLs.cn + "/company/" + comp_br_number)
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        if (result.location.lat == null) {
+          Alert.alert("Company Location hasn't updated");
+        } else {
+          navigation.navigate("ItemLocation", {
+            product: result.location,
+            currentLocation: initialCurrentLocation,
+            company: result,
+          });
+        }
+      });
+  }
+
   const renderList1 = (item) => {
     const id = item._id.slice(18, 23);
+    // let company = getCompany(item.br_number);
+
     if (item.order_status === "placed") {
       return (
         <Card style={styles.profileCard}>
@@ -366,6 +394,17 @@ const UserOrders = ({ navigation }) => {
                 <Text style={{ ...FONTS.body3 }}>Total</Text>
                 <Text style={{ ...FONTS.body3 }}>LKR {item.total}.00</Text>
               </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Requested date</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.req_date}</Text>
+              </View>
+
               <TouchableOpacity
                 style={{
                   //   width: SIZES.width * 0.9,
@@ -387,29 +426,6 @@ const UserOrders = ({ navigation }) => {
               >
                 <Text style={{ color: COLORS.black, ...FONTS.body3 }}>
                   Report
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  //   width: SIZES.width * 0.9,
-                  position: "absolute",
-                  bottom: 5,
-                  right: 115,
-                  padding: SIZES.padding * 0.5,
-                  paddingTop: 3,
-                  paddingBottom: 3,
-                  backgroundColor: "#FE2020",
-                  alignItems: "center",
-                  borderRadius: SIZES.radius * 3,
-                  width: 100,
-                  marginBottom: 3,
-                }}
-                onPress={() => {
-                  createTwoButtonAlert(item._id);
-                }}
-              >
-                <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
-                  Cancle
                 </Text>
               </TouchableOpacity>
             </TouchableOpacity>
@@ -469,6 +485,16 @@ const UserOrders = ({ navigation }) => {
                 <Text style={{ ...FONTS.body3 }}>Total</Text>
                 <Text style={{ ...FONTS.body3 }}>LKR {item.total}.00</Text>
               </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Requested date</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.req_date}</Text>
+              </View>
               <TouchableOpacity
                 style={{
                   //   width: SIZES.width * 0.9,
@@ -492,6 +518,29 @@ const UserOrders = ({ navigation }) => {
                   Report
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  //   width: SIZES.width * 0.9,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 115,
+                  padding: SIZES.padding * 0.5,
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  backgroundColor: "dodgerblue",
+                  alignItems: "center",
+                  borderRadius: SIZES.radius * 3,
+                  width: 100,
+                  marginBottom: 3,
+                }}
+                onPress={() => {
+                  getCompany(item.br_number);
+                }}
+              >
+                <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
+                  Location
+                </Text>
+              </TouchableOpacity>
             </TouchableOpacity>
           </View>
         </Card>
@@ -501,6 +550,27 @@ const UserOrders = ({ navigation }) => {
   const renderList3 = (item) => {
     const id = item._id.slice(18, 23);
     if (item.order_status === "completed") {
+      // let reqDate = item.req_date;
+      // console.log(reqDate.slice(0, 5));
+
+      // // let serReqDate = new Date(item.req_date);
+      // // let viewReportOption = true;
+      // // let date = serReqDate.getDate();
+      // // let month = serReqDate.getMonth();
+
+      // // if (new Date().getFullYear() - serReqDate.getFullYear() > 1) {
+      // //   viewReportOption = false;
+      // // } else {
+      // //   if (new Date().getMonth() - month < 1) {
+      // //     viewReportOption = true;
+      // //   } else if (new Date().getMonth() - month == 1) {
+      // //     if (new Date().getDate() - date > 0) {
+      // //       viewReportOption = false;
+      // //     }
+      // //   } else {
+      // //     viewReportOption = false;
+      // //   }
+      // // }
       return (
         <Card style={styles.profileCard}>
           <View>
@@ -547,6 +617,16 @@ const UserOrders = ({ navigation }) => {
                 <Text style={{ ...FONTS.body3 }}>Total</Text>
                 <Text style={{ ...FONTS.body3 }}>LKR {item.total}.00</Text>
               </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginRight: 5,
+                }}
+              >
+                <Text style={{ ...FONTS.body3 }}>Requested date</Text>
+                <Text style={{ ...FONTS.body3 }}>{item.req_date}</Text>
+              </View>
               <TouchableOpacity
                 style={{
                   //   width: SIZES.width * 0.9,
@@ -568,6 +648,29 @@ const UserOrders = ({ navigation }) => {
               >
                 <Text style={{ color: COLORS.black, ...FONTS.body3 }}>
                   Report
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  //   width: SIZES.width * 0.9,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 115,
+                  padding: SIZES.padding * 0.5,
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  backgroundColor: "dodgerblue",
+                  alignItems: "center",
+                  borderRadius: SIZES.radius * 3,
+                  width: 100,
+                  marginBottom: 3,
+                }}
+                onPress={() => {
+                  getCompany(item.br_number);
+                }}
+              >
+                <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
+                  Location
                 </Text>
               </TouchableOpacity>
             </TouchableOpacity>

@@ -31,6 +31,7 @@ const OrderDelivery = ({ route, navigation }) => {
 
   React.useEffect(() => {
     let { product, currentLocation, company } = route.params;
+
     let fromLoc = currentLocation.gps;
     let locationTo = {
       latitude: parseFloat(product.lat),

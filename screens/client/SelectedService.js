@@ -96,6 +96,7 @@ const SelectetService = ({ route, navigation }) => {
         .then((result) => {
           alert("Service Requested successfully");
           console.log("Service Requested successfully");
+          setaddComment("");
         })
         .then((result) => {
           toggleModal();
@@ -177,6 +178,7 @@ const SelectetService = ({ route, navigation }) => {
   };
 
   function renderServiceInfo() {
+    console.log(service.package == null);
     return (
       <Animated.ScrollView
         horizontal
@@ -189,91 +191,115 @@ const SelectetService = ({ route, navigation }) => {
           { useNativeDriver: false, listener: (event) => handleScroll(event) }
         )}
       >
-        {service?.package.map((item, index) => (
-          <View key={`menu-${index}`} style={{ alignItems: "center" }}>
-            <View style={{ height: SIZES.height * 0.35 }}>
-              {/* Food Image */}
-              <Image
-                source={{ uri: service.picture }}
-                resizeMode="cover"
-                style={{
-                  width: SIZES.width,
-                  height: "100%",
-                }}
-              />
+        {service.package == null ? (
+          <View
+            style={{
+              width: SIZES.width,
+              alignItems: "center",
+              marginTop: 15,
+              paddingHorizontal: SIZES.padding * 2,
+            }}
+          >
+            <Text
+              style={{ marginVertical: 10, textAlign: "center", ...FONTS.h2 }}
+            >
+              No Packages Added by the Service Company.
+            </Text>
+            <Text style={{ ...FONTS.body3 }}></Text>
+          </View>
+        ) : (
+          <>
+            {service?.package.map((item, index) => (
+              <View key={`menu-${index}`} style={{ alignItems: "center" }}>
+                <View style={{ height: SIZES.height * 0.35 }}>
+                  {/* Food Image */}
+                  <Image
+                    source={{ uri: service.picture }}
+                    resizeMode="cover"
+                    style={{
+                      width: SIZES.width,
+                      height: "100%",
+                    }}
+                  />
 
-              {/* Quantity */}
-              {/* <View
-                style={{
-                  position: "absolute",
-                  bottom: -20,
-                  width: SIZES.width,
-                  height: 50,
-                  justifyContent: "center",
-                  flexDirection: "row",
-                }}
-              >
-                <TouchableOpacity
+                  {/* Quantity */}
+                  {/* <View
                   style={{
-                    width: 50,
-                    backgroundColor: COLORS.white,
-                    alignItems: "center",
+                    position: "absolute",
+                    bottom: -20,
+                    width: SIZES.width,
+                    height: 50,
                     justifyContent: "center",
-                    borderTopLeftRadius: 25,
-                    borderBottomLeftRadius: 25,
-                  }}
-                  onPress={() => editOrder("-", item.menuId, item.price)}
-                >
-                  <Text style={{ ...FONTS.body1 }}>-</Text>
-                </TouchableOpacity>
-
-                <View
-                  style={{
-                    width: 50,
-                    backgroundColor: COLORS.white,
-                    alignItems: "center",
-                    justifyContent: "center",
+                    flexDirection: "row",
                   }}
                 >
-                  <Text style={{ ...FONTS.h2 }}>
-                    {getOrderQty(item.menuId)}
-                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      width: 50,
+                      backgroundColor: COLORS.white,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderTopLeftRadius: 25,
+                      borderBottomLeftRadius: 25,
+                    }}
+                    onPress={() => editOrder("-", item.menuId, item.price)}
+                  >
+                    <Text style={{ ...FONTS.body1 }}>-</Text>
+                  </TouchableOpacity>
+  
+                  <View
+                    style={{
+                      width: 50,
+                      backgroundColor: COLORS.white,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ ...FONTS.h2 }}>
+                      {getOrderQty(item.menuId)}
+                    </Text>
+                  </View>
+  
+                  <TouchableOpacity
+                    style={{
+                      width: 50,
+                      backgroundColor: COLORS.white,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderTopRightRadius: 25,
+                      borderBottomRightRadius: 25,
+                    }}
+                    onPress={() => editOrder("+", item.menuId, item.price)}
+                  >
+                    <Text style={{ ...FONTS.body1 }}>+</Text>
+                  </TouchableOpacity>
+                </View> */}
                 </View>
 
-                <TouchableOpacity
+                {/* Name & Description */}
+                <View
                   style={{
-                    width: 50,
-                    backgroundColor: COLORS.white,
+                    width: SIZES.width,
                     alignItems: "center",
-                    justifyContent: "center",
-                    borderTopRightRadius: 25,
-                    borderBottomRightRadius: 25,
+                    marginTop: 15,
+                    paddingHorizontal: SIZES.padding * 2,
                   }}
-                  onPress={() => editOrder("+", item.menuId, item.price)}
                 >
-                  <Text style={{ ...FONTS.body1 }}>+</Text>
-                </TouchableOpacity>
-              </View> */}
-            </View>
-
-            {/* Name & Description */}
-            <View
-              style={{
-                width: SIZES.width,
-                alignItems: "center",
-                marginTop: 15,
-                paddingHorizontal: SIZES.padding * 2,
-              }}
-            >
-              <Text
-                style={{ marginVertical: 10, textAlign: "center", ...FONTS.h2 }}
-              >
-                {item.Package_type} - {item.price.toFixed(2)}
-              </Text>
-              <Text style={{ ...FONTS.body3 }}>{item.pk_discription}</Text>
-            </View>
-          </View>
-        ))}
+                  <Text
+                    style={{
+                      marginVertical: 10,
+                      textAlign: "center",
+                      ...FONTS.h2,
+                    }}
+                  >
+                    {item.Package_type} - {item.price.toFixed(2)}
+                  </Text>
+                  <Text style={{ ...FONTS.body3 }}>{item.pk_discription}</Text>
+                </View>
+              </View>
+            ))}
+          </>
+        )}
       </Animated.ScrollView>
     );
   }
