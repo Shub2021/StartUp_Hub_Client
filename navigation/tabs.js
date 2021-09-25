@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 
 import Home from "../screens/client/home";
+import ClientProfile from "../screens/client/Profile";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import { COLORS, icons } from "../constants";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Svg, { Path } from "react-native-svg";
+import UserCart from "../screens/client/UserCart";
+import ServicesHome from "../screens/client/ServicesHome";
 
 const Tab = createBottomTabNavigator();
 
@@ -79,11 +82,11 @@ class Tabs extends Component {
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
-                source={icons.cutlery}
+                source={icons.product}
                 resizeMode="contain"
                 style={{
-                  width: 25,
-                  height: 25,
+                  width: 28,
+                  height: 28,
                   tintColor: focused ? COLORS.primary : COLORS.secondary,
                 }}
               />
@@ -93,16 +96,16 @@ class Tabs extends Component {
         />
 
         <Tab.Screen
-          name="Search"
-          component={Home}
+          name="ServicesHome"
+          component={ServicesHome}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
-                source={icons.search}
+                source={icons.service}
                 resizeMode="contain"
                 style={{
-                  width: 25,
-                  height: 25,
+                  width: 28,
+                  height: 28,
                   tintColor: focused ? COLORS.primary : COLORS.secondary,
                 }}
               />
@@ -112,8 +115,8 @@ class Tabs extends Component {
         />
 
         <Tab.Screen
-          name="Like"
-          component={Home}
+          name="UserCart"
+          component={UserCart}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
@@ -131,8 +134,8 @@ class Tabs extends Component {
         />
 
         <Tab.Screen
-          name="User"
-          component={Home}
+          name="UserProfile"
+          component={ClientProfile}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image

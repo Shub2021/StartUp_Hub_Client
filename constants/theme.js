@@ -5,6 +5,7 @@ export const COLORS = {
   // base colors
   primary: "#FC6D3F", // orange
   secondary: "#CDCDD2", // gray
+  transparentPrimray: "rgba(227, 120, 75, 0.4)",
 
   // colors
   black: "#1E1F20",
@@ -16,6 +17,14 @@ export const COLORS = {
   lightGray4: "#F8F8F9",
   transparent: "transparent",
   darkgray: "#898C95",
+
+  gray: "#898B9A",
+  gray2: "#BBBDC1",
+  gray3: "#CFD0D7",
+
+  transparent: "transparent",
+  transparentBlack1: "rgba(0, 0, 0, 0.1)",
+  transparentBlack7: "rgba(0, 0, 0, 0.7)",
 };
 
 export const SIZES = {
@@ -43,32 +52,69 @@ export const SIZES = {
   height,
 };
 
+// export const FONTS = {
+//   largeTitle: {
+//     fontSize: SIZES.largeTitle,
+//     lineHeight: 55,
+//   },
+//   h1: { fontSize: SIZES.h1, lineHeight: 36 },
+//   h2: { fontSize: SIZES.h2, lineHeight: 30 },
+//   h3: { fontSize: SIZES.h3, lineHeight: 22 },
+//   h4: { fontSize: SIZES.h4, lineHeight: 22 },
+//   body1: {
+//     fontSize: SIZES.body1,
+//     lineHeight: 36,
+//   },
+//   body2: {
+//     fontSize: SIZES.body2,
+//     lineHeight: 30,
+//   },
+//   body3: {
+//     fontSize: SIZES.body3,
+//     lineHeight: 22,
+//   },
+//   body4: {
+//     fontSize: SIZES.body4,
+//     lineHeight: 22,
+//   },
+//   body5: {
+//     fontSize: SIZES.body5,
+//     lineHeight: 22,
+//   },
+// };
+
 export const FONTS = {
   largeTitle: {
+    fontFamily: "Roboto-Bold",
     fontSize: SIZES.largeTitle,
     lineHeight: 55,
   },
-  h1: { fontSize: SIZES.h1, lineHeight: 36 },
-  h2: { fontSize: SIZES.h2, lineHeight: 30 },
-  h3: { fontSize: SIZES.h3, lineHeight: 22 },
-  h4: { fontSize: SIZES.h4, lineHeight: 22 },
+  h1: { fontFamily: "Roboto-Black", fontSize: SIZES.h1, lineHeight: 36 },
+  h2: { fontFamily: "Roboto-Bold", fontSize: SIZES.h2, lineHeight: 30 },
+  h3: { fontFamily: "Roboto-Bold", fontSize: SIZES.h3, lineHeight: 22 },
+  h4: { fontFamily: "Roboto-Bold", fontSize: SIZES.h4, lineHeight: 22 },
   body1: {
+    fontFamily: "Roboto-Regular",
     fontSize: SIZES.body1,
     lineHeight: 36,
   },
   body2: {
+    fontFamily: "Roboto-Regular",
     fontSize: SIZES.body2,
     lineHeight: 30,
   },
   body3: {
+    fontFamily: "Roboto-Regular",
     fontSize: SIZES.body3,
     lineHeight: 22,
   },
   body4: {
+    fontFamily: "Roboto-Regular",
     fontSize: SIZES.body4,
     lineHeight: 22,
   },
   body5: {
+    fontFamily: "Roboto-Regular",
     fontSize: SIZES.body5,
     lineHeight: 22,
   },

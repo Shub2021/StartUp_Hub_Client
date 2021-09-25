@@ -6,23 +6,25 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ScrollView,
   FlatList,
   Animated,
-  Button,
   TextInput,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import ProgressBar from "../components/ProgressBar";
 import Modal from "react-native-modal";
 import StarRating from "react-native-star-rating";
 
 import { icons, COLORS, SIZES, FONTS, URLs } from "../../constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ItemReviews = ({ route, navigation }) => {
   const scrollX = new Animated.Value(0);
 
   const [product, setProduct] = React.useState(route.params);
-  const [rating, setRating] = React.useState(0);
+  const [rating, setRating] = React.useState(route.params.avg_rate);
+  const [data, setData] = React.useState(null);
   const [rateCount, setRateCount] = React.useState(0);
   const [exceletCount, setexceletCount] = React.useState(0);
   const [goodCount, setgoodCount] = React.useState(0);
@@ -33,41 +35,133 @@ const ItemReviews = ({ route, navigation }) => {
   const [isModalVisible, setModalVisible] = React.useState(false);
   const [starCount, setstarCount] = React.useState(0);
 
+  const [addComment, setaddComment] = React.useState("");
+  const [userRate, setuseRate] = React.useState(0);
+  const [userId, setUserId] = React.useState(null);
+  const [user, setUser] = React.useState(null);
+  const [loading, setloading] = React.useState(true);
+  const [userAlreadyAddedComment, setUserAlreadyAddedComment] =
+    React.useState(false);
+
   React.useEffect(() => {
-    var rate = 0;
-    var rateCount = 0;
-    if (product.rating.length > 1) {
-      for (let i = 1; i < product.rating.length; i++) {
+    let allRateCount = product.rating.length;
+    // setRateCount(allRateCount);
+
+    loadProduct();
+    getData();
+  }, []);
+
+  const loadProduct = () => {
+    fetch(URLs.cn + "/product/getProductbyID/" + product._id)
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.rating[0].client === "none") {
+          result.rating.shift();
+        }
+        setData(result.rating);
+        setProduct(result);
+        setRateCount(result.rating.length);
+        loadRatingBars();
+      });
+  };
+
+  const loadRatingBars = () => {
+    let allRateCount = product.rating.length;
+    if (product.rating.length > 0) {
+      let fiveStarCount = 0;
+      let fourStarCount = 0;
+      let threeStarCount = 0;
+      let twoStarCount = 0;
+      let oneStarCount = 0;
+
+      for (let i = 0; i < product.rating.length; i++) {
         const element = product.rating[i].rate;
-        rate = rate + element;
-        rateCount = i;
+
         if (element == 5) {
-          var count = ((exceletCount + 1) / rateCount) * 100;
-          setexceletCount(count);
+          fiveStarCount++;
         } else if (element == 4) {
-          var count = ((goodCount + 1) / rateCount) * 100;
-          setgoodCount(count);
+          fourStarCount++;
         } else if (element == 3) {
-          var count = ((avgCount + 1) / rateCount) * 100;
-          setavgCount(count);
+          threeStarCount++;
         } else if (element == 2) {
-          var count = ((lowAvgCount + 1) / rateCount) * 100;
-          setlowAvgCount(count);
+          twoStarCount++;
         } else if (element == 1) {
-          var count = ((poorCount + 1) / rateCount) * 100;
-          setlowAvgCount(count);
+          oneStarCount++;
         }
       }
 
-      rate = rate / rateCount;
+      setexceletCount((fiveStarCount / allRateCount) * 100);
+
+      setgoodCount((fourStarCount / allRateCount) * 100);
+
+      setavgCount((threeStarCount / allRateCount) * 100);
+
+      setlowAvgCount((twoStarCount / allRateCount) * 100);
+
+      setlowAvgCount((oneStarCount / allRateCount) * 100);
     }
-    setRateCount(rateCount);
-    setRating(parseInt(rate));
-  }, []);
+  };
+
+  const getData = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    setUserId(userId);
+    fetch(URLs.cn + "/users/" + userId)
+      .then((res) => res.json())
+      .then((result) => {
+        setUser(result);
+        setloading(false);
+      });
+  };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  function addCommenttoDB() {
+    if (starCount === 0) {
+      Alert.alert("Set your Rating!");
+    } else {
+      if (addComment == "") {
+        Alert.alert("Set your Comment!");
+      } else {
+        let avgRate = parseInt(
+          (starCount + rating * rateCount) / (rateCount + 1)
+        );
+        setRateCount(rateCount + 1);
+        setRating(avgRate);
+
+        let ratingarray = [];
+
+        for (let i = 0; i < product.rating.length; i++) {
+          ratingarray.push(product.rating[i]);
+        }
+
+        let newComent = {
+          rate: starCount,
+          comment: addComment,
+          clientId: userId,
+          client: user.name,
+        };
+
+        ratingarray.push(newComent);
+
+        fetch(URLs.cn + "/product/" + product._id, {
+          method: "patch",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            avg_rate: avgRate,
+            rating: ratingarray,
+          }),
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            setUserAlreadyAddedComment(true);
+            loadProduct();
+            toggleModal();
+          });
+      }
+    }
+  }
 
   function onStarRatingPress(rating) {
     setstarCount(rating);
@@ -80,31 +174,6 @@ const ItemReviews = ({ route, navigation }) => {
     { bgcolor: "#F5A523", completed: lowAvgCount },
     { bgcolor: "#EC3A12", completed: poorCount },
   ];
-
-  const data = product.rating;
-  // [
-  //   {
-  //     id: 1,
-  //     image: "https://bootdey.com/img/Content/avatar/avatar1.png",
-  //     name: "Nimal Perera",
-  //     comment:
-  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-  //   },
-  //   {
-  //     id: 2,
-  //     image: "https://bootdey.com/img/Content/avatar/avatar6.png",
-  //     name: "Amal Perera",
-  //     comment:
-  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-  //   },
-  //   {
-  //     id: 3,
-  //     image: "https://bootdey.com/img/Content/avatar/avatar7.png",
-  //     name: "Kamal Perera",
-  //     comment:
-  //       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.",
-  //   },
-  // ];
 
   function renderHeader() {
     return (
@@ -244,7 +313,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Excellent
             </Text>
             <View style={{ flex: 1 }}>
@@ -265,7 +334,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Good
             </Text>
             <View style={{ flex: 1 }}>
@@ -286,7 +355,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Average
             </Text>
             <View style={{ flex: 1 }}>
@@ -307,7 +376,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Below Average
             </Text>
             <View style={{ flex: 1 }}>
@@ -328,7 +397,7 @@ const ItemReviews = ({ route, navigation }) => {
               paddingEnd: SIZES.padding * 2,
             }}
           >
-            <Text style={{ marginRight: 10, width: 90, ...FONTS.body3 }}>
+            <Text style={{ marginRight: 10, width: 90, ...FONTS.body5 }}>
               Poor
             </Text>
             <View style={{ flex: 1 }}>
@@ -354,15 +423,42 @@ const ItemReviews = ({ route, navigation }) => {
   function renderComments() {
     const renderItem = ({ item }) => (
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => {}}>
-          {/* <Image style={styles.image} source={{ uri: item.image }} /> */}
+        <TouchableOpacity>
+          <Image style={styles.image} source={icons.user} />
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.contentHeader}>
-            <Text style={styles.name}>{item._id}</Text>
-            <Text style={styles.time}>9:58 am</Text>
+            <Text style={styles.name}>{item.client}</Text>
           </View>
-          <Text rkType="primary3 mediumLine">{item.comment}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ ...FONTS.body3, marginRight: 5 }}>
+              {item.rate}.0
+            </Text>
+            <Image
+              source={icons.star}
+              style={{
+                height: 15,
+                width: 15,
+                tintColor: COLORS.primary,
+                marginRight: 10,
+              }}
+            />
+          </View>
+          <Text style={{ ...FONTS.body5 }} rkType="primary3 mediumLine">
+            {item.comment}
+          </Text>
+          {/* <View
+            style={{
+              borderBottomColor: "black",
+              borderBottomWidth: 1,
+              marginTop: 5,
+            }}
+          /> */}
         </View>
       </View>
     );
@@ -377,6 +473,8 @@ const ItemReviews = ({ route, navigation }) => {
         keyExtractor={(item) => {
           return item._id.toString();
         }}
+        onRefresh={() => loadProduct()}
+        refreshing={loading}
         renderItem={renderItem}
         contentContainerStyle={{
           paddingHorizontal: SIZES.padding,
@@ -386,37 +484,64 @@ const ItemReviews = ({ route, navigation }) => {
     );
   }
 
-  function renderBottom() {
+  const validateUserAddedComment = () => {
+    let userAddedComment = data.filter((comment) => comment.clientId == userId);
+
+    if (userAddedComment.length > 0) {
+      if (!userAlreadyAddedComment) {
+        setUserAlreadyAddedComment(true);
+      }
+    }
+  };
+
+  const renderBottom = () => {
+    validateUserAddedComment();
     return (
       <View
         style={{
           position: "absolute",
-          height: 100,
+          // height: 100,
           bottom: 0,
-          left: 0,
+          // left: 0,
           width: "100%",
           // backgroundColor: "red",
           justifyContent: "center",
           alignItems: "center",
-
+          padding: SIZES.padding * 2,
+          marginBottom: 0,
           backgroundColor: "rgba(205,205,210, 0.8)",
         }}
       >
-        <TouchableOpacity
-          style={{
-            width: SIZES.width * 0.9,
-            padding: SIZES.padding,
-            backgroundColor: COLORS.primary,
-            alignItems: "center",
-            borderRadius: SIZES.radius,
-          }}
-          onPress={toggleModal}
-        >
-          <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Add review</Text>
-        </TouchableOpacity>
+        {userAlreadyAddedComment ? (
+          <TouchableOpacity
+            style={{
+              width: SIZES.width * 0.9,
+              padding: SIZES.padding,
+              backgroundColor: COLORS.secondary,
+              alignItems: "center",
+              borderRadius: SIZES.radius,
+            }}
+            onPress={() => Alert.alert("You have already added your review")}
+          >
+            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Add review</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              width: SIZES.width * 0.9,
+              padding: SIZES.padding,
+              backgroundColor: COLORS.primary,
+              alignItems: "center",
+              borderRadius: SIZES.radius,
+            }}
+            onPress={toggleModal}
+          >
+            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Add review</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
-  }
+  };
 
   function popupReview() {
     return (
@@ -429,6 +554,7 @@ const ItemReviews = ({ route, navigation }) => {
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
+              backgroundColor: COLORS.transparentBlack7,
             }}
           >
             <View
@@ -440,7 +566,7 @@ const ItemReviews = ({ route, navigation }) => {
                 padding: SIZES.padding * 2,
               }}
             >
-              <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding }}>
+              <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding }}>
                 Rate the Product
               </Text>
               <StarRating
@@ -455,7 +581,7 @@ const ItemReviews = ({ route, navigation }) => {
                 }}
               />
               <View style={styles.separator} />
-              <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding }}>
+              <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding }}>
                 Add your comment
               </Text>
               <TextInput
@@ -468,10 +594,11 @@ const ItemReviews = ({ route, navigation }) => {
                   borderWidth: 4,
                   marginBottom: SIZES.padding,
                   textAlign: "center",
+                  ...FONTS.body3,
                 }}
                 // onChangeText="Enter the comment"
                 // value="Enter the comment"
-                // onChangeText=""
+                onChangeText={setaddComment}
               />
               <TouchableOpacity
                 style={{
@@ -482,7 +609,7 @@ const ItemReviews = ({ route, navigation }) => {
                   borderRadius: SIZES.radius,
                   alignItems: "center",
                 }}
-                onPress={toggleModal}
+                onPress={addCommenttoDB}
               >
                 <Text style={{ ...FONTS.body3 }}>Submit</Text>
               </TouchableOpacity>
@@ -509,10 +636,16 @@ const ItemReviews = ({ route, navigation }) => {
   return (
     <SafeAreaView style={{ height: "100%" }}>
       {renderHeader()}
-      {renderRatings()}
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <>
+          {renderRatings()}
+          {renderComments()}
+          {data != null && renderBottom()}
+        </>
+      )}
 
-      {renderComments()}
-      {renderBottom()}
       {popupReview()}
     </SafeAreaView>
   );
@@ -544,18 +677,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#CCCCCC",
   },
   image: {
-    width: 45,
-    height: 45,
+    width: 20,
+    height: 20,
     borderRadius: 20,
-    marginLeft: 20,
+    marginLeft: 0,
   },
   time: {
     fontSize: 11,
     color: "#808080",
   },
   name: {
+    ...FONTS.body3,
     fontSize: SIZES.body3,
-    fontWeight: "bold",
+    // fontWeight: "bold",
   },
 });
 

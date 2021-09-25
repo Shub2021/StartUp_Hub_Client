@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/Users");
-const constants = require("../../constants/keys");
+const jwtkey = "abcd";
 
 router.get("/", (req, res, next) => {
   User.find()
@@ -22,7 +22,7 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-  console.log("awaaaaaaaaaaa");
+  console.log(req.body);
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -37,7 +37,6 @@ router.post("/signup", (req, res, next) => {
               error: err,
             });
           } else {
-            console.log(hash);
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               name: req.body.name,
@@ -85,7 +84,7 @@ router.post("/login", (req, res, next) => {
               userId: user[0]._id,
               username: user[0].name,
             },
-            constants.jwtkey,
+            jwtkey,
             {
               expiresIn: "1d",
             }
@@ -103,6 +102,122 @@ router.post("/login", (req, res, next) => {
         res.status(401).json({
           message: "Auth faild",
         });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+});
+
+router.get("/:userId", (req, res, next) => {
+  const userId = req.params.userId;
+  User.findOne({ _id: userId })
+    .exec()
+    .then((docs) => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
+router.patch("/reset/:userID", (req, res, next) => {
+  const id = req.params.userID;
+  User.find({ email: id })
+    .exec()
+    .then((user) => {
+      if (user.length < 1) {
+        return res.status(401).json({
+          message: "Reset faild a",
+        });
+      }
+      bcrypt.compare(req.body.curpass, user[0].password, (err, result) => {
+        if (err) {
+          return res.status(401).json({
+            message: "Reset faild",
+          });
+        }
+        if (result) {
+          bcrypt.hash(req.body.newpass, 10, (err, hash) => {
+            if (err) {
+              return res.status(500).json({
+                message: "Reset faild b",
+              });
+            } else {
+              User.findOneAndUpdate(
+                { email: id },
+                {
+                  password: hash,
+                }
+              )
+                .exec()
+                .then((result) => {
+                  console.log(result);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.status(500).json({ error: err });
+                });
+
+              return res.status(200).json({
+                message: "Reset successful",
+              });
+            }
+          });
+        } else {
+          return res.status(401).json({
+            message: "Reset faild",
+          });
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+});
+
+router.patch("/forgot/:userID", (req, res, next) => {
+  const id = req.params.userID;
+  User.find({ email: id })
+    .exec()
+    .then((user) => {
+      if (user.length < 1) {
+        return res.status(401).json({
+          message: "Reset faild a",
+        });
+      }
+
+      bcrypt.hash(req.body.newpass, 10, (err, hash) => {
+        if (err) {
+          return res.status(500).json({
+            message: "Reset faild b",
+          });
+        } else {
+          User.findOneAndUpdate(
+            { email: id },
+            {
+              password: hash,
+            }
+          )
+            .exec()
+            .then((result) => {
+              console.log(result);
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(500).json({ error: err });
+            });
+
+          return res.status(200).json({
+            message: "Reset successful",
+          });
+        }
       });
     })
     .catch((err) => {

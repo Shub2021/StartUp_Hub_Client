@@ -1,9 +1,18 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
 import { COLORS, FONTS, icons, SIZES, GOOGLE_API_KEY } from "../../constants";
+import * as Location from "expo-location";
+import { Linking } from "react-native";
 
 const OrderDelivery = ({ route, navigation }) => {
   const mapView = React.useRef();
@@ -17,12 +26,19 @@ const OrderDelivery = ({ route, navigation }) => {
   const [duration, setDuration] = React.useState(0);
   const [isReady, setIsReady] = React.useState(false);
   const [angle, setAngle] = React.useState(0);
+  const [loading, setloading] = React.useState(true);
+  const [errorMsg, setErrorMsg] = React.useState(null);
+  const [refreshPage, setRefreshPage] = React.useState("");
 
   React.useEffect(() => {
-    let { product, currentLocation } = route.params;
+    let { product, currentLocation, company } = route.params;
 
     let fromLoc = currentLocation.gps;
-    let toLoc = product.location;
+    let locationTo = {
+      latitude: parseFloat(product.lat),
+      longitude: parseFloat(product.long),
+    };
+    let toLoc = locationTo;
     let street = currentLocation.streetName;
 
     let mapRegion = {
@@ -32,12 +48,38 @@ const OrderDelivery = ({ route, navigation }) => {
       longitudeDelta: Math.abs(fromLoc.longitude - toLoc.longitude) * 2,
     };
 
-    setStartup(product);
+    setStartup(company);
     setStreetName(street);
     setFromLocation(fromLoc);
     setToLocation(toLoc);
     setRegion(mapRegion);
+    getLocation();
   }, []);
+
+  const initialCurrentLocation = {
+    streetName: "Colombo",
+    gps: {
+      latitude: 6.927079,
+      longitude: 79.861244,
+    },
+  };
+
+  const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("status : " + status);
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      Alert.alert("COLOMBO will take as user default location");
+      return;
+    } else {
+      let loc = await Location.getCurrentPositionAsync({});
+      console.log(loc.coords.latitude);
+      initialCurrentLocation.gps.latitude = loc.coords.latitude;
+      initialCurrentLocation.gps.longitude = loc.coords.longitude;
+    }
+    setFromLocation(initialCurrentLocation.gps);
+    setloading(false);
+  };
 
   function calculateAngle(coordinates) {
     let startLat = coordinates[0]["latitude"];
@@ -213,7 +255,7 @@ const OrderDelivery = ({ route, navigation }) => {
           />
 
           <View style={{ flex: 1 }}>
-            <Text style={{ ...FONTS.body3 }}>{streetName}</Text>
+            <Text style={{ ...FONTS.body3 }}>To Destination : </Text>
           </View>
 
           <Text style={{ ...FONTS.body3 }}>{Math.ceil(duration)} mins</Text>
@@ -245,14 +287,14 @@ const OrderDelivery = ({ route, navigation }) => {
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {/* Avatar */}
-            <Image
+            {/* <Image
               source={startup?.courier.avatar}
               style={{
                 width: 50,
                 height: 50,
                 borderRadius: 25,
               }}
-            />
+            /> */}
 
             <View style={{ flex: 1, marginLeft: SIZES.padding }}>
               {/* Name & Rating */}
@@ -262,7 +304,7 @@ const OrderDelivery = ({ route, navigation }) => {
                   justifyContent: "space-between",
                 }}
               >
-                <Text style={{ ...FONTS.h4 }}>{startup?.courier.name}</Text>
+                <Text style={{ ...FONTS.h4 }}>{startup.company_name}</Text>
                 <View style={{ flexDirection: "row" }}>
                   <Image
                     source={icons.star}
@@ -273,13 +315,13 @@ const OrderDelivery = ({ route, navigation }) => {
                       marginRight: SIZES.padding,
                     }}
                   />
-                  <Text style={{ ...FONTS.body3 }}>{startup?.rating}</Text>
+                  <Text style={{ ...FONTS.body3 }}>{startup.address}</Text>
                 </View>
               </View>
 
               {/* startup */}
               <Text style={{ color: COLORS.darkgray, ...FONTS.body4 }}>
-                {startup?.name}
+                {startup.contact}
               </Text>
             </View>
           </View>
@@ -302,7 +344,7 @@ const OrderDelivery = ({ route, navigation }) => {
                 justifyContent: "center",
                 borderRadius: 10,
               }}
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => Linking.openURL(`tel:${startup.contact}`)}
             >
               <Text style={{ ...FONTS.h4, color: COLORS.white }}>Call</Text>
             </TouchableOpacity>
@@ -318,7 +360,7 @@ const OrderDelivery = ({ route, navigation }) => {
               }}
               onPress={() => navigation.goBack()}
             >
-              <Text style={{ ...FONTS.h4, color: COLORS.white }}>Cancel</Text>
+              <Text style={{ ...FONTS.h4, color: COLORS.white }}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -371,12 +413,98 @@ const OrderDelivery = ({ route, navigation }) => {
     );
   }
 
+  function renderHeader() {
+    return (
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          style={{
+            width: 50,
+            paddingLeft: SIZES.padding * 2,
+            justifyContent: "center",
+          }}
+          onPress={() => navigation.goBack()}
+        >
+          <Image
+            source={icons.back}
+            resizeMode="contain"
+            style={{
+              width: 30,
+              height: 30,
+            }}
+          />
+        </TouchableOpacity>
+
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              height: 50,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingHorizontal: SIZES.padding * 3,
+              borderRadius: SIZES.radius,
+              backgroundColor: COLORS.lightGray3,
+            }}
+          >
+            <Text style={{ ...FONTS.h3 }}>Company Location</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={{
+            width: 50,
+            paddingRight: SIZES.padding * 2,
+            justifyContent: "center",
+          }}
+        >
+          {/* <Image
+            source={icons.list}
+            resizeMode="contain"
+            style={{
+              width: 30,
+              height: 30,
+            }}
+          /> */}
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      {renderMap()}
-      {renderDestinationHeader()}
-      {renderDeliveryInfo()}
-      {renderButtons()}
+      {loading ? (
+        <>
+          {renderHeader()}
+          <ActivityIndicator size="large" color="#0000ff" />
+          <View
+            style={{
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                ...FONTS.h4,
+              }}
+            >
+              Go back and Reload the Page
+            </Text>
+          </View>
+        </>
+      ) : (
+        <>
+          {renderMap()}
+          {renderDestinationHeader()}
+          {renderDeliveryInfo()}
+          {renderButtons()}
+        </>
+      )}
     </View>
   );
 };

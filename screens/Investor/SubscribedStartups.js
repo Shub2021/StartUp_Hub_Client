@@ -1,85 +1,205 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
-import { Card, Button, IconButton, Colors } from "react-native-paper";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  Alert,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { Card, Button } from "react-native-paper";
+import { URLs } from "../../constants";
 
-const SubscribedStartups = (props) => {
-  const data = [
-    { id: 1, addedDate: "2021-10-12", cType: "Retail Business" },
-    { id: 2, addedDate: "2021-10-12", cType: "Retail Business" },
-    { id: 3, addedDate: "2021-10-12", cType: "Retail Business" },
-    // { id: 4, addedDate: "2021-10-12", cType: "Retail Business" },
-    // { id: 5, addedDate: "2021-10-12", cType: "Retail Business" },
-  ];
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const HomeInvestor = (props) => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [email, setEmail] = useState("");
+  const [sentdata, setsentdata] = useState([]);
+  const [subscribedata, setsubscribedata] = useState([]);
+  const [recieveddata, setrecieveddata] = useState([]);
+
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    const userId = await AsyncStorage.getItem("userId");
+    setEmail(email);
+    setLoading(false);
+    fetch(URLs.cn + "/company/")
+      .then((response) => response.json())
+      .then((json) => {
+        setData(json);
+      });
+    fetch(URLs.cn + "/subscribe/recieved/" + email)
+      .then((res) => res.json())
+      .then((result) => {
+        //console.log(result);
+        setsubscribedata(result);
+      });
+  };
+
+  useEffect(() => {
+    // .catch((error) => console.error(error))
+    getData();
+    console.log(data);
+  }, []);
+
+  function removeSubscription(item) {
+    fetch(URLs.cn + "/subscribe/" + item.br_number + "/" + email, {
+      method: "delete",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert("successfuly unsubscribed " + item.company_name);
+      });
+  }
+  function removePostPlan(item) {
+    fetch(URLs.cn + "/postplan/" + item.br_number + "/" + email, {
+      method: "delete",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert("successfuly unsubscribed " + item.company_name);
+      });
+  }
+
+  function unsubscribeRequest(item) {
+    let flag = true;
+    console.log(item);
+    fetch(URLs.cn + "/postplan/" + email + "/" + item.br_number)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.length > 0) {
+          let investYear = parseInt(json[0].Startdate.slice(0, 4));
+          let investMonth = parseInt(json[0].Startdate.slice(5, 7));
+          let paybackTime = parseInt(json[0].time);
+          let x = investMonth + paybackTime;
+          const d = new Date();
+          let currentMonth = d.getMonth() + 1;
+          let currentYear = d.getFullYear();
+
+          if (x > 12) {
+            investYear = investYear + 1;
+            x = x - 12;
+          }
+          if (investYear < currentYear) {
+            removeSubscription(item);
+            removePostPlan(item);
+          } else if (investYear === currentYear) {
+            if (currentMonth > x) {
+              removeSubscription(item);
+              removePostPlan(item);
+            } else {
+              Alert.alert("Plan agreement exist. Cannot delete! ❌");
+            }
+          } else {
+            Alert.alert("Plan agreement exist. Cannot delete! ❌");
+          }
+        } else {
+          removeSubscription(item);
+        }
+      });
+  }
+
   const startupList = (item) => {
-    return (
-      <Card style={styles.comDetails} kety={item.id}>
-        <View style={styles.allCards}>
-          <Image
-            style={{ width: 80, height: 80, borderRadius: 40, marginTop: 10 }}
-            source={{
-              uri: "https://images.pexels.com/photos/3748221/pexels-photo-3748221.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-            }}
-          />
-
-          <View style={{ flexDirection: "row" }}>
-            <View>
-              <Text style={styles.cardTitle}>Added Date</Text>
-              <Text style={{ marginLeft: 25, fontSize: 15 }}>
-                {item.addedDate}
-              </Text>
-            </View>
-
-            <View>
-              <Text style={styles.cardTitle}>Startup Type</Text>
-              <Text style={{ marginLeft: 25 }}>{item.cType}</Text>
-            </View>
-          </View>
-        </View>
-        <View
-          style={{
-            padding: 5,
-            marginBottom: 10,
-            marginLeft: 20,
-            marginRight: 40,
-            // width: "100%",
-            // alignItems: "center",
+    let sflag = false;
+    for (let i = 0; i < subscribedata.length; i++) {
+      const element = subscribedata[i];
+      if (item.br_number === element.startupId) {
+        sflag = true;
+      }
+    }
+    if (sflag) {
+      return (
+        <TouchableWithoutFeedback
+          onPress={async () => {
+            await AsyncStorage.setItem("br", item.br_number);
+            props.navigation.navigate("StartupStatistics");
           }}
         >
-          <Button
-            icon="information-outline"
-            theme={dtheme}
-            mode="contained"
-            onPress={() => props.navigation.navigate("Notifications")}
-          >
-            View Startup
-          </Button>
-        </View>
-      </Card>
-    );
+          <Card style={styles.comDetails}>
+            <View style={styles.allCards}>
+              <View>
+                <View style={{ flexDirection: "row" }}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        marginTop: 5,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Startup Name
+                    </Text>
+                    <Text style={{ fontSize: 20 }}>{item.company_name}</Text>
+                  </View>
+
+                  <View>
+                    <Text style={styles.cardTitle}>Startup Type</Text>
+                    <Text style={styles.result}>{item.type}</Text>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: "row" }}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        marginTop: 15,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Business Category
+                    </Text>
+                    <Button
+                      style={styles.categoryBtn}
+                      mode="outlined"
+                      theme={theme}
+                    >
+                      {item.category}
+                    </Button>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <View>
+                      <Button
+                        style={styles.sendBtn}
+                        icon="checkbox-marked-circle-outline"
+                        mode="outlined"
+                        theme={theme}
+                        onPress={() => unsubscribeRequest(item)}
+                      >
+                        UNSUBSCRIBE
+                      </Button>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Card>
+        </TouchableWithoutFeedback>
+      );
+    }
   };
 
   return (
-    <View>
+    <View style={{ marginBottom: 100 }}>
       <FlatList
         data={data}
         renderItem={({ item }) => {
           return startupList(item);
         }}
-        keyExtractor={(item) => `${item.id}`}
+        keyExtractor={(item) => `${item._id}`}
+        onRefresh={() => getData()}
+        refreshing={isLoading}
       />
     </View>
   );
 };
 
-const dtheme = {
+const theme = {
   colors: {
-    primary: "#8699fe",
-  },
-};
-const atheme = {
-  colors: {
-    primary: "green",
+    primary: "#313cfb",
   },
 };
 
@@ -90,27 +210,46 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 10,
     shadowColor: "#000",
+    backgroundColor: "#fcfcfc",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
   },
 
   allCards: {
-    flexDirection: "row",
-    padding: 20,
+    padding: 15,
   },
 
   cardTitle: {
-    marginTop: 20,
-    marginLeft: 20,
-    padding: 5,
+    fontSize: 15,
+    marginTop: 5,
+    marginLeft: 100,
     fontWeight: "bold",
+  },
+  categoryBtn: {
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "#ffc211",
+    marginTop: 10,
+    width: 130,
+  },
+
+  result: {
+    marginLeft: 100,
+    fontSize: 20,
+  },
+  sendBtn: {
+    marginTop: 43,
+    marginLeft: 50,
+    borderWidth: 1.25,
+    borderColor: "#cee4f9",
+    backgroundColor: "#cee4f9",
+    borderRadius: 50,
   },
 });
 
-export default SubscribedStartups;
+export default HomeInvestor;

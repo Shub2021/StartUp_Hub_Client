@@ -1,133 +1,256 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, Picker, View } from "react-native";
-import { TextInput, Button, Card } from "react-native-paper";
-import { URLs } from "../../constants";
-
+import React, { useState, useEffect } from "react";
 import {
-  MaterialCommunityIcons,
-  Ionicons,
-  Fontisto,
-  MaterialIcons,
-} from "@expo/vector-icons";
+  StyleSheet,
+  Text,
+  Picker,
+  View,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { TextInput, Button, Card } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { URLs } from "../../constants";
+import Input from "../components/Input";
 
 const CreateInvestment = (props) => {
-  const [selectedValue, setSelectedValue] = useState("Annual");
+  const [isLoading, setLoading] = useState(true);
+
   const [title, setTitle] = useState("");
-  const [contact, setContact] = useState("");
+  const [titleValid, setTitleValid] = useState(false);
   const [email, setEmail] = useState("");
+  const [minInvest, setminInvest] = useState("");
+  const [minInvestValid, setminInvestValid] = useState(false);
+  const [maxInvest, setmaxInvest] = useState("");
+  const [maxInvestValid, setmaxInvestValid] = useState(false);
+  const [interestRate, setinterestRate] = useState("");
+  const [interestRateValid, setinterestRateValid] = useState(false);
   const [description, setDescription] = useState("");
+  const [descriptionValid, setDescriptionValid] = useState(false);
   const [condition, setCondition] = useState("");
+  const [conditionValid, setConditionValid] = useState(false);
+
+  const getData = async () => {
+    const email = await AsyncStorage.getItem("email");
+    const userId = await AsyncStorage.getItem("userId");
+    setEmail(email);
+    setLoading(false);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
 
   const submitData = () => {
-    fetch(URLs.cn + "/plan/send", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        email,
-        description,
-        condition,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      });
+    if (
+      titleValid &&
+      minInvest &&
+      maxInvest &&
+      interestRate &&
+      description &&
+      condition
+    ) {
+      console.log(email);
+      fetch(URLs.cn + "/plan/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          email,
+          minInvest,
+          maxInvest,
+          interestRate,
+          description,
+          condition,
+        }),
+      }).then((res) => res.json());
+      Alert.alert("Investment Plan Created Succesfully");
+      props.navigation.navigate("ViewPlan");
+    } else {
+      Alert.alert("Please fill the required feilds");
+    }
   };
 
   return (
     <View style={styles.root}>
-      <TextInput
-        style={styles.inputStyles}
-        label="Title"
-        value={title}
-        theme={theme}
-        mode="outlined"
-        onChangeText={(text) => setTitle()}
-      />
+      {!isLoading ? (
+        <ScrollView>
+          <View>
+            <Input
+              style={styles.inputStyles}
+              label="Business Title"
+              value={title}
+              theme={theme}
+              mode="outlined"
+              pattern={"[^s]"}
+              onValidation={(isValid) => setTitleValid(isValid)}
+              onChangeText={(text) => setTitle(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!titleValid ? (
+              <Text style={{ color: "tomato" }}>Title is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-      <TextInput
-        style={styles.inputStyles}
-        label="Contact Number"
-        value={contact}
-        theme={theme}
-        keyboardType="number-pad"
-        mode="outlined"
-        onChangeText={(Number) => setContact()}
-      />
-      <TextInput
-        style={styles.inputStyles}
-        label="E-mail"
-        value={email}
-        theme={theme}
-        mode="outlined"
-        onChangeText={(text) => setEmail()}
-      />
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ width: 200 }}>
+              <View>
+                <Input
+                  style={styles.inputStyles}
+                  label="Minimum Investment"
+                  value={minInvest}
+                  theme={theme}
+                  pattern={"[^s]"}
+                  onValidation={(isValid) => setminInvestValid(isValid)}
+                  keyboardType="number-pad"
+                  mode="outlined"
+                  onChangeText={(Number) => setminInvest(Number)}
+                />
+              </View>
+              <View style={{ marginHorizontal: 15, height: 10 }}>
+                {!minInvestValid ? (
+                  <Text style={{ color: "tomato" }}>
+                    Minimum Investment is Required
+                  </Text>
+                ) : (
+                  <Text></Text>
+                )}
+              </View>
+            </View>
+            <View style={{ width: 210 }}>
+              <View>
+                <Input
+                  style={styles.inputStyles}
+                  label="Maximum Investment"
+                  value={maxInvest}
+                  theme={theme}
+                  pattern={"[^s]"}
+                  onValidation={(isValid) => setmaxInvestValid(isValid)}
+                  keyboardType="number-pad"
+                  mode="outlined"
+                  onChangeText={(Number) => setmaxInvest(Number)}
+                />
+              </View>
+              <View style={{ marginHorizontal: 15, height: 10 }}>
+                {!maxInvestValid ? (
+                  <Text style={{ color: "tomato" }}>
+                    Maximum Investment is Required
+                  </Text>
+                ) : (
+                  <Text></Text>
+                )}
+              </View>
+            </View>
+          </View>
 
-      <Text style={styles.inputStyles}>Period of Calculation interest</Text>
-      <Card style={{ margin: 10 }}>
-        <View style={styles.card}>
-          <Picker
-            selectedValue={selectedValue}
-            style={{ height: 30, width: 200 }}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedValue(itemValue)
-            }
-          >
-            <Picker.Item label="Annual" value="annual" />
-            <Picker.Item label="Monthly" value="monthly" />
-          </Picker>
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ width: 210 }}>
+              <View>
+                <Input
+                  style={styles.inputStyles}
+                  label="Return"
+                  value={interestRate}
+                  theme={theme}
+                  pattern={"[^s]"}
+                  onValidation={(isValid) => setinterestRateValid(isValid)}
+                  mode="outlined"
+                  onChangeText={(Number) => setinterestRate(Number)}
+                />
+              </View>
+              <View style={{ marginHorizontal: 15, height: 10 }}>
+                {!interestRateValid ? (
+                  <Text style={{ color: "tomato" }}>
+                    Interest Rate is Required
+                  </Text>
+                ) : (
+                  <Text></Text>
+                )}
+              </View>
+            </View>
+          </View>
 
-          {/* </View> */}
-        </View>
-      </Card>
+          <View>
+            <Input
+              style={{ margin: 10 }}
+              label="Description"
+              value={description}
+              theme={theme}
+              mode="outlined"
+              multiline={true}
+              numberOfLines={6}
+              maxLength={600}
+              pattern={"[^s]"}
+              onValidation={(isValid) => setDescriptionValid(isValid)}
+              onChangeText={(text) => setDescription(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!descriptionValid ? (
+              <Text style={{ color: "tomato" }}>Description is Required</Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-      <TextInput
-        style={{ margin: 10 }}
-        label="Description"
-        value={description}
-        theme={theme}
-        mode="outlined"
-        multiline={true}
-        // numberOfLines={6}
-        // maxLength={600}
-        onChangeText={(text) => setDescription()}
-      />
+          <View>
+            <Input
+              style={{ margin: 10 }}
+              label="Terms and Conditions"
+              value={condition}
+              theme={theme}
+              mode="outlined"
+              multiline={true}
+              pattern={"[^s]"}
+              onValidation={(isValid) => setConditionValid(isValid)}
+              numberOfLines={8}
+              maxLength={300}
+              onChangeText={(text) => setCondition(text)}
+            />
+          </View>
+          <View style={{ marginHorizontal: 15, height: 10 }}>
+            {!conditionValid ? (
+              <Text style={{ color: "tomato" }}>
+                {" "}
+                Terms & Condition is Required
+              </Text>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-      <TextInput
-        style={{ margin: 10 }}
-        label="Terms and Conditions"
-        value={condition}
-        theme={theme}
-        mode="outlined"
-        multiline={true}
-        // numberOfLines={4}
-        // maxLength={300}
-        onChangeText={(text) => setCondition()}
-      />
-
-      <View style={{ alignItems: "center", marginTop: 30 }}>
-        <Button
-          // onPress={()=>props.navigation.navigate('CreateInvestment')}
-          style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
-          icon=""
-          mode="contained"
-          onPress={() => submitData()}
-        >
-          Publish
-        </Button>
-        <Button
-          onPress={() => props.navigation.navigate("ViewPlan")}
-          style={{ width: 300, padding: 3, marginTop: 50 }}
-          color="#0396FF"
-          icon="cursor-default-click-outline"
-          mode="outlined"
-        >
-          View Plan
-        </Button>
-      </View>
+          <View style={{ alignItems: "center", marginTop: 30 }}>
+            <Button
+              style={{ backgroundColor: "#0396FF", width: 200, padding: 3 }}
+              icon=""
+              mode="contained"
+              onPress={() => submitData()}
+            >
+              Publish
+            </Button>
+            <Button
+              onPress={() => props.navigation.navigate("ViewPlan")}
+              style={{
+                width: 300,
+                padding: 3,
+                marginTop: 50,
+                marginBottom: 50,
+              }}
+              color="#0396FF"
+              icon="cursor-default-click-outline"
+              mode="outlined"
+            >
+              View Plan
+            </Button>
+          </View>
+        </ScrollView>
+      ) : (
+        <ActivityIndicator size="large" color="#0000ff" />
+      )}
     </View>
   );
 };
